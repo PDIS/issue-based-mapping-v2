@@ -1,0 +1,93 @@
+<template>
+<div>
+<v-navigation-drawer
+      persistent
+      :mini-variant="miniVariant"
+      :clipped="clipped"
+      v-model="drawer"
+      enable-resize-watcher
+      fixed
+      app
+    >
+      <v-list>
+        <v-list-tile
+          value="true"
+          v-for="(item, i) in items"
+          :key="i"
+        >
+          <v-list-tile-action>
+            <v-icon v-html="item.icon"></v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title v-text="item.title"></v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+    </v-navigation-drawer>
+    <v-toolbar
+      app
+      :clipped-left="clipped"
+    >
+      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-btn icon @click.stop="miniVariant = !miniVariant">
+        <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'"></v-icon>
+      </v-btn>
+      <v-btn icon @click.stop="clipped = !clipped">
+        <v-icon>web</v-icon>
+      </v-btn>
+      <v-btn icon @click.stop="fixed = !fixed">
+        <v-icon>remove</v-icon>
+      </v-btn>
+      <v-toolbar-title v-text="title"></v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn icon @click.stop="login">
+        <v-icon>person</v-icon>
+      </v-btn>
+    </v-toolbar>
+</div>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      clipped: false,
+      drawer: true,
+      fixed: false,
+ /*      items: [{
+        icon: '',
+        title: ''
+      }], */
+      items: [],
+      miniVariant: false,
+      right: true,
+      rightDrawer: false,
+      title: '議題分析表v2'
+    }
+  },
+  methods: {
+    login: function () {
+      Trello.authorize({name: '協作會議議題分析表' ,expiration:'1day',scope: { read: true, write: true },})
+    },
+    menu: function () {
+      console.log(this.items)
+    }
+  },
+  created: function() {
+    this.login()
+    let a = Trello.organizations.get('ibm249/boards',{'filter':'all'}, function(res) {
+      this.items = []
+      res.map(b => {
+        let item = {};
+        item.icon = 'bubble_chart'
+        item.title = b.name
+        this.items.push(item)
+      })
+    })
+  }
+}
+</script>
+
+<style>
+
+</style>
