@@ -36,11 +36,48 @@
                   v-model="boardname"
                 ></v-text-field>
               </v-flex>
-                <v-flex xs12>
+              <v-flex xs12>
                 <v-text-field
                   label="議題名稱"
                   v-model="desc.title"
                 ></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <v-text-field
+                  label="提案人"
+                  v-model="desc.person"
+                ></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <v-text-field
+                  label="提案日期"
+                  v-model="desc.date"
+                ></v-text-field>
+                 <v-menu
+        ref="menu"
+        lazy
+        :close-on-content-click="false"
+        v-model="menu"
+        transition="scale-transition"
+        offset-y
+        full-width
+        :nudge-right="40"
+        min-width="290px"
+        :return-value.sync="date"
+      >
+        <v-text-field
+          slot="activator"
+          label="Picker in menu"
+          v-model="date"
+          prepend-icon="event"
+          readonly
+        ></v-text-field>
+        <v-date-picker v-model="date" no-title scrollable>
+          <v-spacer></v-spacer>
+          <v-btn flat color="primary" @click="menu = false">Cancel</v-btn>
+          <v-btn flat color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+        </v-date-picker>
+      </v-menu>
               </v-flex>
             </v-layout>
           </v-container>
@@ -85,16 +122,17 @@ a {
         },
         boardname:'',
         desc:{
-          'title':'aaa',
-          'person':'bbb',
-          'date':'ccc'
+          'title':'',
+          'person':'',
+          'date':''
           }
       }
     },
     methods: {
       submit: function() {
+        let that = this
         Trello.post('boards',{'name':this.boardname,'idOrganization':'5ad56d6d96cb269a7a2aaa0a','idBoardSource':'5ab49c39f2917ad1cff1a3de','prefs_permissionLevel':'org','keepFromSource':'none'},function(res) {
-          Trello.put('boards/' + res.id ,{'desc':"{'aa':'123','b':'c'}"})
+          Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.desc)})
         })
       }
     }
