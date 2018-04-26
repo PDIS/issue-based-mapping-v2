@@ -1,20 +1,28 @@
 <template>
   <v-container grid-list-md text-xs-center>
     <v-layout row wrap>
-       <v-flex xs3 v-for="board in boards" :key="board.id">
+       <v-flex xs3  v-for="board in boards" :key="board.id">
         <v-card color="white">
            <v-card-title primary-title>
           <div>
             <h3 class="headline mb-0">{{board.title}}</h3>
-
             <p>{{board.desc.title}}</p>
-            <p>{{board.desc.people}}</p>
+            <p>{{board.desc.person}}</p>
+            <p>{{board.desc.date}}</p>
           </div>
         </v-card-title>
           <v-card-actions>
           <v-btn flat color="orange">修改</v-btn>
           <v-btn flat color="purple">刪除</v-btn>
         </v-card-actions>
+        </v-card>
+       </v-flex>
+       <v-flex xs3>
+        <v-card height='20em'>
+          <p>新增議題分析表</p>
+              <v-btn color="red" dark to='newboard'>
+      <v-icon dark center>add</v-icon>
+    </v-btn>
         </v-card>
       </v-flex>
     </v-layout>
