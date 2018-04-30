@@ -29,7 +29,7 @@
       :clipped-left="clipped"
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
+     <!--  <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'"></v-icon>
       </v-btn>
       <v-btn icon @click.stop="clipped = !clipped">
@@ -37,12 +37,20 @@
       </v-btn>
       <v-btn icon @click.stop="fixed = !fixed">
         <v-icon>remove</v-icon>
-      </v-btn>
+      </v-btn> -->
       <v-toolbar-title v-text="title"></v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon @click.stop="login">
+     <v-avatar>
+      <img :src="me.avatar" alt="username">
+    </v-avatar> 
+
+          
+      <!-- <v-btn color="primary" dark>{{me.name}}
+        <v-icon dark right>person</v-icon>
+      </v-btn> -->
+<!--       <v-btn icon @click.stop="login">
         <v-icon>person</v-icon>
-      </v-btn>
+      </v-btn> -->
     </v-toolbar>
 </div>
 </template>
@@ -62,7 +70,19 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: '議題分析表v2'
+      title: '議題分析表v2',
+      me: {
+        'name':'',
+        'avatar': ''
+      },
+      message: 
+        {
+          avatar: 'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460',
+          name: 'John Leider',
+          title: 'Welcome to Vuetify.js!',
+          excerpt: 'Thank you for joining our community...'
+        },
+      
     }
   },
   methods: {
@@ -71,10 +91,13 @@ export default {
     },
     menu: function () {
       console.log(this.items)
+    },
+    getsuccessed: function(res) {
+      console.log(res)
     }
   },
   created: function() {
-    this.login()
+    let that = this
     let a = Trello.organizations.get('ibm249/boards',{'filter':'all'}, function(res) {
       this.items = []
       res.map(b => {
@@ -84,6 +107,11 @@ export default {
         this.items.push(item)
       })
     })
+    Trello.members.get('me', function (res) {
+      that.me.name = res.username,
+      that.me.avatar = res.avatarUrl + '/50.png'
+      //console.log(that.me)
+    },this.login())
   }
 }
 </script>

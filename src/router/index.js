@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import index from '@/components/index'
 import newboard from '@/components/newboard'
+import board from '@/components/board'
 
 Vue.use(Router)
 
@@ -17,6 +18,11 @@ export default new Router({
       path: '/newboard',
       name: 'newboard',
       component: newboard
+    },
+    {
+      path: '/board/:id',
+      name: 'board',
+      component: board
     },
     {
       path: '/HelloWorld',

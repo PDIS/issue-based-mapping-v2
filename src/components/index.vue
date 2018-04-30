@@ -1,8 +1,8 @@
 <template>
-  <v-container grid-list-md text-xs-center>
+  <v-container grid-list-md>
     <v-layout row wrap>
        <v-flex xs3  v-for="board in boards" :key="board.id">
-        <v-card color="white">
+        <v-card color="white" :to="{name:'board', params:{id:board.id}}">
            <v-card-title primary-title>
           <div>
             <h3 class="headline mb-0">{{board.title}}</h3>
@@ -17,9 +17,11 @@
         </v-card-actions>
         </v-card>
        </v-flex>
-       <v-flex xs3>
+       <v-flex xs3 text-xs-center>
         <v-card height='20em'>
-          <p>新增議題分析表</p>
+
+          <h1 class="headline mb-0">新增議題分析表</h1>
+
               <v-btn color="red" dark to='newboard'>
       <v-icon dark center>add</v-icon>
     </v-btn>
@@ -40,14 +42,14 @@ export default {
     getboards: function () {
       let that = this
       Trello.organizations.get('ibm249/boards',{'filter':'all'}, function(res) {
-      res.map(b => {
-        let board = {};
-        board.id = b.id
-        board.title = b.name
-        if (b.desc != '') {
-          board.desc = JSON.parse(b.desc)
-        }
-        that.boards.push(board)
+        res.map(b => {
+          let board = {};
+          board.id = b.id
+          board.title = b.name
+          if (b.desc != '') {
+            board.desc = JSON.parse(b.desc)
+          }
+          that.boards.push(board)
         })
       })
     }
