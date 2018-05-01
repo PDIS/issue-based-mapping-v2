@@ -1,7 +1,37 @@
 <template>
-  <div class="v-container">
-   <h1> params.id：{{ $route.params }}</h1>
-  </div>
+<v-container grid-list-md>
+     <v-layout row>
+    <v-flex xs2 sm6  v-for="list in lists" :key="list.id">
+      <v-card>
+        <v-toolbar color="teal" dark>
+          <v-toolbar-title>{{list.name}}</v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
+        <v-list>
+          <v-list-group
+            v-for="card in list.cards"
+            :key="card.id"
+            no-action
+          >
+            <v-list-tile slot="activator">
+              <v-list-tile-content>
+                <v-list-tile-title>{{ card.name }}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile v-for="card in list.cards" :key="card.id" @click="">
+              <v-list-tile-content>
+                <v-list-tile-title>{{ card.name }}</v-list-tile-title>
+              </v-list-tile-content>
+             <!--  <v-list-tile-action>
+                <v-icon>{{ subItem.action }}</v-icon>
+              </v-list-tile-action> -->
+            </v-list-tile>
+          </v-list-group>
+        </v-list>
+      </v-card>
+    </v-flex>
+  </v-layout>
+  </v-container>
 </template>
 
 <script>

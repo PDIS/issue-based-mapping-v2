@@ -87,7 +87,7 @@ export default {
   },
   methods: {
     login: function () {
-      Trello.authorize({name: '協作會議議題分析表' ,expiration:'never',scope: { read: true, write: true },})
+      Trello.authorize({name: '議題分析表' ,expiration:'never',scope: { read: true, write: true },})
     },
     menu: function () {
       console.log(this.items)
