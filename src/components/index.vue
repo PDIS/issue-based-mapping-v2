@@ -30,9 +30,15 @@
        </v-flex>
        <v-flex xs3 text-xs-center>
         <v-card height='20em' hover>
+          <v-container fill-height>
+               <v-layout align-center justify-center>
           <v-card-text>
-            <p class="text-xs-center">Center align on all viewport sizes</p>
+              <v-btn fab dark large color="purple" :to="{name:'newboard'}">
+      <v-icon dark>add</v-icon>
+    </v-btn>
           </v-card-text>
+               </v-layout>
+          </v-container>
         </v-card>
       </v-flex>
     </v-layout>
