@@ -50,7 +50,7 @@
             </v-layout>
           </v-container>
               <v-divider class="mt-5"></v-divider>
-              <v-btn color="primary" flat @click="submit">新增</v-btn>
+              <v-btn color="primary" flat @click="submit">修改</v-btn>
         </v-card>
       </v-flex>
     </v-layout>
@@ -65,6 +65,7 @@
   export default {
     data () {
       return {
+        id:'',
         boardname:'',
         desc:{
           'title':'',
@@ -78,12 +79,22 @@
     methods: {
       submit: function() {
         let that = this
-        Trello.post('boards',{'name':this.boardname,'idOrganization':'5ad56d6d96cb269a7a2aaa0a','idBoardSource':'5ab49c39f2917ad1cff1a3de','prefs_permissionLevel':'org','keepFromSource':'none'},function(res) {
+        Trello.put('boards/' + this.id,{'name':this.boardname},function(res) {
           Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.desc)},function() {
             that.$router.push('/')
           })
         })
       }
+    },
+    created: function() {
+      let that = this
+      this.id = this.$route.params.id
+      Trello.boards.get(this.id, function(res) {
+        that.boardname = res.name
+        if (res.desc != '') {
+          that.desc = JSON.parse(res.desc)
+        }
+      })
     }
   }
 </script>

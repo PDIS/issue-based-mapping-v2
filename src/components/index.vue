@@ -1,30 +1,37 @@
 <template>
   <v-container grid-list-md>
     <v-layout row wrap>
-       <v-flex xs3  v-for="board in boards" :key="board.id">
-        <v-card color="white" :to="{name:'board', params:{id:board.id}}">
+      <v-flex xs12>
+        <v-text-field
+        prepend-icon="search"
+        label="搜尋提案"
+        flat
+        v-model="search"
+      ></v-text-field>
+      </v-flex>
+       <v-flex xs3  v-for="board in filteredList" :key="board.id" >
+        <v-card color="white" :to="{name:'board', params:{id:board.id}}" hover>
            <v-card-title primary-title>
           <div>
             <h3 class="headline mb-0">{{board.title}}</h3>
-            <p>{{board.desc.title}}</p>
-            <p>{{board.desc.person}}</p>
-            <p>{{board.desc.date}}</p>
           </div>
         </v-card-title>
+        <v-card-text>
+            <div>提案名稱:{{board.desc.title}}</div>
+            <div>提案人:{{board.desc.person}}</div>
+            <div>日期:{{board.desc.date}}</div>
+        </v-card-text>
           <v-card-actions>
-          <v-btn flat color="orange">修改</v-btn>
-          <v-btn flat color="purple">刪除</v-btn>
+          <v-btn flat color="orange" :to="{name:'editboard',params:{id:board.id}}">修改</v-btn>
+          <v-btn flat color="purple" @click.native="closeboard(board.id)" >刪除</v-btn>
         </v-card-actions>
         </v-card>
        </v-flex>
        <v-flex xs3 text-xs-center>
-        <v-card height='20em'>
-
-          <h1 class="headline mb-0">新增議題分析表</h1>
-
-              <v-btn color="red" dark to='newboard'>
-      <v-icon dark center>add</v-icon>
-    </v-btn>
+        <v-card height='20em' hover>
+          <v-card-text>
+            <p class="text-xs-center">Center align on all viewport sizes</p>
+          </v-card-text>
         </v-card>
       </v-flex>
     </v-layout>
@@ -35,13 +42,14 @@
 export default {
   data () {
     return {
-      boards:[]
+      boards:[],
+      search:''
     }
   },
   methods: {
     getboards: function () {
       let that = this
-      Trello.organizations.get('ibm249/boards',{'filter':'all'}, function(res) {
+      Trello.organizations.get('ibm249/boards',{'filter':'open'}, function(res) {
         res.map(b => {
           let board = {};
           board.id = b.id
@@ -52,10 +60,28 @@ export default {
           that.boards.push(board)
         })
       })
+    },
+    closeboard: function(id) {
+      let that = this
+      Trello.put('boards/' + id ,{'closed':true},function(res) {
+        that.$router.push('/')
+      })
     }
   },
   created: function() {
     this.getboards()
+  },
+  watch: {
+    search: function() {
+      console.log(this.search)
+    }
+  },
+  computed: {
+    filteredList() {
+      return this.boards.filter(board => {
+        return board.title.toLowerCase().includes(this.search.toLowerCase())
+      })
+    }
   }
 }
 </script>

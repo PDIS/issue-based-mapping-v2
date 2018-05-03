@@ -1,13 +1,30 @@
 <template>
 <v-container grid-list-md>
-     <v-layout row>
-    <v-flex xs2 sm6  v-for="list in lists" :key="list.id">
-      <v-card>
-        <v-toolbar color="teal" dark>
+     <v-layout row wrap>
+    <v-flex xs3 v-for="list in lists" :key="list.id">
+      <v-toolbar :color="list.color" dark text-center>
           <v-toolbar-title>{{list.name}}</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
-        <v-list>
+      <v-card>
+          <v-container
+        fluid
+        grid-list-lg
+      >
+       <v-layout row wrap>
+          <v-flex xs12 v-for="card in list.cards" :key="card.id">
+            <v-card :color="list.color">
+              <v-card-title primary-title>
+                <div class="headline">{{card.name}}</div>
+              </v-card-title>
+              <!-- <v-card-actions>
+                <v-btn flat dark>Listen now</v-btn>
+              </v-card-actions> -->
+            </v-card>
+          </v-flex>
+         
+                </v-layout>
+        <!-- <v-list>
           <v-list-group
             v-for="card in list.cards"
             :key="card.id"
@@ -22,12 +39,10 @@
               <v-list-tile-content>
                 <v-list-tile-title>{{ card.name }}</v-list-tile-title>
               </v-list-tile-content>
-             <!--  <v-list-tile-action>
-                <v-icon>{{ subItem.action }}</v-icon>
-              </v-list-tile-action> -->
             </v-list-tile>
           </v-list-group>
-        </v-list>
+        </v-list> -->
+          </v-container>
       </v-card>
     </v-flex>
   </v-layout>
@@ -58,6 +73,33 @@ export default {
         list.id = l.id
         list.name = l.name
         list.cards = l.cards
+        switch (list.name)
+        {
+          case '資料/文件/連結':
+          list.color = 'blue'
+          break
+          case '問題面向':
+          list.color = 'yellow'
+          break
+          case '問題細節':
+          list.color = 'yellow lighten-3'
+          break
+          case '解法':
+          list.color = 'green'
+          break
+          case '回應':
+          list.color = 'orange'
+          break
+          case '困難':
+          list.color = 'pink'
+          break
+          case '利害關係人':
+          list.color = 'blue darken-4'
+          break
+          default:
+          list.color = 'teal'
+          break
+        }
         that.lists.push(list)
       })
       console.log(that.lists)
