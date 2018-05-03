@@ -23,7 +23,8 @@
         </v-card-text>
           <v-card-actions>
           <v-btn flat color="orange" :to="{name:'editboard',params:{id:board.id}}">修改</v-btn>
-          <v-btn flat color="purple" @click.native="closeboard(board.id)" >刪除</v-btn>
+          <v-btn flat color="purple" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id">刪除</v-btn>
+          <!-- <v-btn flat color="purple" @click.native="closeboard(board.id)" >刪除</v-btn> -->
         </v-card-actions>
         </v-card>
        </v-flex>
@@ -35,6 +36,17 @@
         </v-card>
       </v-flex>
     </v-layout>
+     <v-dialog v-model="dialog" max-width="290">
+      <v-card>
+        <v-card-title class="headline">確定刪除?</v-card-title>
+        <v-card-text></v-card-text>
+        <v-card-actions>
+          <!-- <v-spacer></v-spacer> -->
+          <v-btn color="green darken-1" flat="flat" @click.native="dialog=false;closeboard(selectedid)" :to="{name:'index'}" active-class>確定</v-btn>
+          <v-btn color="green darken-1" flat="flat" @click.native="dialog=false" :to="{name:'index'}" active-class>取消</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -43,7 +55,9 @@ export default {
   data () {
     return {
       boards:[],
-      search:''
+      search:'',
+      dialog:false,
+      selectedid:''
     }
   },
   methods: {
