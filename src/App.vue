@@ -24,6 +24,13 @@
   </v-app>
 </template>
 
+<style>
+.content--wrap {
+  overflow: auto
+}
+</style>
+
+
 <script>
 import header from './components/header'
 import footer from './components/footer'

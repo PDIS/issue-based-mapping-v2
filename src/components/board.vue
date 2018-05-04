@@ -1,12 +1,12 @@
 <template>
 <v-container grid-list-md>
-     <v-layout row wrap>
-    <v-flex xs3 v-for="list in lists" :key="list.id">
+     <v-layout row>
+    <v-flex v-for="list in lists" :key="list.id">
       <v-toolbar :color="list.color" dark text-center>
           <v-toolbar-title>{{list.name}}</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
-      <v-card>
+      <v-card width="20em">
           <v-container
         fluid
         grid-list-lg
