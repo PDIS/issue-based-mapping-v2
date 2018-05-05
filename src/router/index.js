@@ -5,6 +5,7 @@ import index from '@/components/index'
 import newboard from '@/components/newboard'
 import board from '@/components/board'
 import editboard from '@/components/editboard'
+import test from '@/components/test'
 
 Vue.use(Router)
 
@@ -34,6 +35,11 @@ export default new Router({
       path: '/HelloWorld',
       name: 'HelloWorld',
       component: HelloWorld
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: test
     }
   ]
 })
