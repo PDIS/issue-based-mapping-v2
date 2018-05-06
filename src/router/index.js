@@ -5,7 +5,7 @@ import index from '@/components/index'
 import newboard from '@/components/newboard'
 import board from '@/components/board'
 import editboard from '@/components/editboard'
-import test from '@/components/test'
+import test from '@/components/test2'
 
 Vue.use(Router)
 

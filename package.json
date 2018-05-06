@@ -11,9 +11,11 @@
     "deploy": "node ./node_modules/vue-gh-pages/index.js"
   },
   "dependencies": {
+    "dragula": "^3.7.2",
     "vue": "^2.5.2",
     "vue-kanban": "^1.2.0",
     "vue-router": "^3.0.1",
+    "vuedraggable": "^2.16.0",
     "vuetify": "^1.0.0"
   },
   "devDependencies": {

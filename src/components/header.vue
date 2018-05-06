@@ -70,7 +70,7 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: '議題分析表v2',
+      title: '議題分析表',
       me: {
         'name':'',
         'avatar': ''

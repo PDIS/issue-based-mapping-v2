@@ -2,30 +2,29 @@
 <v-container grid-list-md>
      <v-layout row>
     <v-flex v-for="list in lists" :key="list.id">
-      <v-toolbar text-center>
+      <v-toolbar color="white" flat text-center>
           <v-toolbar-title>{{list.name}}</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
-      <v-card width="20em">
-          <v-container
-        fluid
-        grid-list-lg
-      >
-       <v-layout row wrap>
-          <v-flex xs12 v-for="card in list.cards" :key="card.id">
-              <draggable v-model="list.cards" :options="{group:'people'}" @start="drag=true" @end="drag=false" >
+
+     <v-list >
+          <draggable v-model="list.cards" :options="{group:'people'}" @start="drag=true" @end="drag=false" >
+            <v-layout row>
+          <v-flex xs2 v-for="card in list.cards" :key="card.id">
+          
             <v-card :color="list.color" width="15em" height="10em" hover>
-              <v-card-title primary-title>
+              <v-card-title primary-title >
                 <div class="title">{{card.name}}</div>
               </v-card-title>
               <!-- <v-card-actions>
                 <v-btn flat dark>Listen now</v-btn>
               </v-card-actions> -->
             </v-card>
-              </draggable>
+
           </v-flex>
-         
-                </v-layout>
+            </v-layout>
+            </draggable>         
+</v-list> 
         <!-- <v-list>
           <v-list-group
             v-for="card in list.cards"
@@ -44,8 +43,7 @@
             </v-list-tile>
           </v-list-group>
         </v-list> -->
-          </v-container>
-      </v-card>
+
     </v-flex>
   </v-layout>
   </v-container>
@@ -55,8 +53,8 @@
 import draggable from 'vuedraggable'
 export default {
   components: {
-    draggable,
-  },
+            draggable,
+        },
   data () {
     return {
       board:{},
@@ -66,7 +64,7 @@ export default {
   },
   created: function() {
     let that = this;
-    this.board.id = this.$route.params.id
+    this.board.id = '5ae1a0112d6448380e98e341'
     Trello.boards.get(this.board.id, function(res) {
       that.board.name = res.name
       if (res.desc != '') {

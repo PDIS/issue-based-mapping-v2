@@ -25,6 +25,7 @@
 </template>
 
 <style>
+@import url(https://fonts.googleapis.com/earlyaccess/cwtexhei.css);
 .content--wrap {
   overflow: auto
 }
