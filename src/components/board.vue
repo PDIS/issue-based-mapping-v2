@@ -16,7 +16,7 @@
               <draggable v-model="list.cards" :options="{group:'people'}" @start="drag=true" @end="drag=false" >
             <v-card :color="list.color" hover>
               <v-card-title primary-title>
-                <div class="title">{{card.name}}</div>
+                <div class="subheading">{{card.name}}</div>
               </v-card-title>
               <!-- <v-card-actions>
                 <v-btn flat dark>Listen now</v-btn>
@@ -94,16 +94,16 @@ export default {
         switch (list.name)
         {
           case '資料/文件/連結':
-          list.color = 'blue'
+          list.color = 'blue accent-1'
           break
           case '問題面向':
-          list.color = 'yellow'
+          list.color = 'yellow lighten-1'
           break
           case '問題細節':
           list.color = 'yellow lighten-3'
           break
           case '解法':
-          list.color = 'green'
+          list.color = 'light green accent-3'
           break
           case '回應':
           list.color = 'orange'
@@ -112,7 +112,7 @@ export default {
           list.color = 'pink'
           break
           case '利害關係人':
-          list.color = 'blue darken-4'
+          list.color = 'indigo'
           break
           default:
           list.color = 'teal'

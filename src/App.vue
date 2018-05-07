@@ -26,6 +26,9 @@
 
 <style>
 @import url(https://fonts.googleapis.com/earlyaccess/cwtexhei.css);
+.application {
+  font-family: "cwTeXHei"!important
+}
 .content--wrap {
   overflow: auto
 }
