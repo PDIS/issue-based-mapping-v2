@@ -1,12 +1,12 @@
 <template>
 <v-container grid-list-md>
      <v-layout row>
-    <v-flex v-for="list in lists" :key="list.id">
+    <v-flex xs12 md4 lg3 v-for="list in lists" :key="list.id">
       <v-toolbar text-center>
           <v-toolbar-title>{{list.name}}</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
-      <v-card width="20em">
+      <v-card >
           <v-container
         fluid
         grid-list-lg
@@ -14,7 +14,7 @@
        <v-layout row wrap>
           <v-flex xs12 v-for="card in list.cards" :key="card.id">
               <draggable v-model="list.cards" :options="{group:'people'}" @start="drag=true" @end="drag=false" >
-            <v-card :color="list.color" width="15em" height="10em" hover>
+            <v-card :color="list.color" hover>
               <v-card-title primary-title>
                 <div class="title">{{card.name}}</div>
               </v-card-title>
@@ -24,7 +24,19 @@
             </v-card>
               </draggable>
           </v-flex>
-         
+          <!-- <v-flex xs12>
+            <v-card  hover>
+              <v-container fill-height>
+               <v-layout align-center justify-center>
+          <v-card-text>
+              <v-btn fab dark large color="purple" :to="{name:'newcard'}">
+      <v-icon dark>add</v-icon>
+    </v-btn>
+          </v-card-text>
+               </v-layout>
+          </v-container>
+            </v-card>
+          </v-flex> -->
                 </v-layout>
         <!-- <v-list>
           <v-list-group

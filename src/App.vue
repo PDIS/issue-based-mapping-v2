@@ -20,7 +20,7 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer> -->
-    <vuefooter></vuefooter>
+    <!-- <vuefooter></vuefooter> -->
   </v-app>
 </template>
 
