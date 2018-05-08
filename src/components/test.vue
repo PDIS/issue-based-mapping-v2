@@ -16,6 +16,17 @@
         </ul>
       </li>
     </ul>
+    <v-card-title primary-title style="height:5em">
+          <div>
+            <h3 class="headline mb-0"><v-icon>assignment</v-icon>{{board.title}}</h3>
+          </div>
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-card-text style="height:10em">
+            <div class="body-2"><v-icon>assignment</v-icon>提案名稱:{{board.desc.title}}</div>
+            <div class="body-2">提案人:{{board.desc.person}}</div>
+            <div class="body-2">日期:{{board.desc.date}}</div>
+        </v-card-text>
   </div>
 </template>
 

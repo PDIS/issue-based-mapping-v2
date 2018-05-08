@@ -27,16 +27,34 @@
       </v-flex>
        <v-flex xs6 md4 lg3 v-for="board in filteredList" :key="board.id" >
         <v-card color="white" :to="{name:'board', params:{id:board.id}}" hover height="20em">
-           <v-card-title primary-title style="height:5em">
-          <div>
-            <h3 class="headline mb-0">{{board.title}}</h3>
-          </div>
-        </v-card-title>
-        <v-divider></v-divider>
-        <v-card-text style="height:10em">
-            <div class="body-2">提案名稱:{{board.desc.title}}</div>
-            <div class="body-2">提案人:{{board.desc.person}}</div>
-            <div class="body-2">日期:{{board.desc.date}}</div>
+          <v-card-text style="height:15em">
+            <v-list subheader >
+               <v-subheader text-xs-center># <div class="ml-2">{{ board.title }}</div></v-subheader>
+               <v-list-tile>
+                 <v-list-tile-avatar><v-icon>announcement</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+                <v-list-tile-title>提案名稱</v-list-tile-title>
+                <v-list-tile-sub-title v-html="board.desc.title"></v-list-tile-sub-title>
+              </v-list-tile-content>
+               </v-list-tile>
+                <v-list-tile>
+                 <v-list-tile-avatar><v-icon>person</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+                <v-list-tile-title>提案人</v-list-tile-title>
+                <v-list-tile-sub-title v-html="board.desc.person"></v-list-tile-sub-title>
+              </v-list-tile-content>
+               </v-list-tile>
+                <v-list-tile>
+                 <v-list-tile-avatar><v-icon>event</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+                <v-list-tile-title>提案日期</v-list-tile-title>
+                <v-list-tile-sub-title v-html="board.desc.date"></v-list-tile-sub-title>
+              </v-list-tile-content>
+               </v-list-tile>
+            </v-list>
         </v-card-text>
           <v-card-actions style="height:5em">
           <v-container text-xs-center>

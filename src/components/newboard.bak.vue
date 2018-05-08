@@ -1,20 +1,11 @@
 <template>
-<v-container fluid>
+  <v-container fluid>
     <v-layout row wrap justify-center>
       <v-flex xs12 sm6>
-  <v-card>
-     <v-snackbar
-      v-model="snackbar"
-      absolute
-      top
-      right
-      color="success"
-    >
-      <span>Registration successful!</span>
-      <v-icon dark>check_circle</v-icon>
-    </v-snackbar>
-  <v-form ref="form" v-model="valid" lazy-validation>
-    <v-container>
+        <v-card>
+          <v-container fluid>
+            <v-layout row wrap>
+              <v-flex xs12>
                 <v-text-field
                   label="看版名稱"
                   prepend-icon="assignment"
@@ -23,14 +14,16 @@
                   required
                   :rules="nameRules"
                 ></v-text-field>
-
+              </v-flex>
+              <v-flex xs12>
                 <v-text-field
                   label="議題名稱"
                   prepend-icon="announcement"
                   v-model="desc.title"
                   required
                 ></v-text-field>
- 
+              </v-flex>
+              <v-flex xs12>
                 <v-text-field
                   label="提案人"
                   prepend-icon="person"
@@ -59,9 +52,12 @@
         <v-date-picker v-model="desc.date" @input="$refs.date.save(date)"  locale="zh-tw"></v-date-picker>
 
       </v-menu>
+    </v-flex>
+            </v-layout>
           </v-container>
-  </v-form>
-  </v-card>
+              <v-divider class="mt-5"></v-divider>
+              <v-btn color="primary" flat @click="submit">新增</v-btn>
+        </v-card>
       </v-flex>
     </v-layout>
   </v-container>
