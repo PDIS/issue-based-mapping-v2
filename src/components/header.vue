@@ -24,13 +24,10 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer> -->
-    <v-toolbar
+<!--     <v-toolbar
       app
       :clipped-left="clipped"
-    >
-       <v-btn flat icon to="/">
-      <v-icon>home</v-icon>
-    </v-btn>
+    > -->
       <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon> -->
      <!--  <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'"></v-icon>
@@ -41,11 +38,11 @@
       <v-btn icon @click.stop="fixed = !fixed">
         <v-icon>remove</v-icon>
       </v-btn> -->
-      <v-toolbar-title v-text="title"></v-toolbar-title>
+    <!--   <v-toolbar-title v-text="title"></v-toolbar-title>
       <v-spacer></v-spacer>
      <v-avatar>
       <img :src="me.avatar" alt="username">
-    </v-avatar> 
+    </v-avatar>  -->
 
           
       <!-- <v-btn color="primary" dark>{{me.name}}
@@ -54,7 +51,7 @@
 <!--       <v-btn icon @click.stop="login">
         <v-icon>person</v-icon>
       </v-btn> -->
-    </v-toolbar>
+    <!-- </v-toolbar> -->
 </div>
 </template>
 

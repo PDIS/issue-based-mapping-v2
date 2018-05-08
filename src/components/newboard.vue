@@ -10,6 +10,9 @@
                   label="看版名稱"
                   prepend-icon="assignment"
                   v-model="boardname"
+                  :counter="20"
+                  required
+                  :rules="nameRules"
                 ></v-text-field>
               </v-flex>
               <v-flex xs12>
@@ -17,6 +20,7 @@
                   label="議題名稱"
                   prepend-icon="announcement"
                   v-model="desc.title"
+                  required
                 ></v-text-field>
               </v-flex>
               <v-flex xs12>
@@ -24,6 +28,7 @@
                   label="提案人"
                   prepend-icon="person"
                   v-model="desc.person"
+                  required
                 ></v-text-field>
       <v-menu
         ref="date"
@@ -42,6 +47,7 @@
           label="提案日期"
           v-model="desc.date"
           prepend-icon="event"
+          required
         ></v-text-field>
         <v-date-picker v-model="desc.date" @input="$refs.date.save(date)"  locale="zh-tw"></v-date-picker>
 
@@ -73,6 +79,11 @@
           },
         date: null,
         picker: false,
+        valid:false,
+        nameRules: [
+        v => !!v || '此欄位為必填!',
+        v => v.length <= 20 || '此欄位不可超過20個字!'
+      ],
       }
     },
     methods: {

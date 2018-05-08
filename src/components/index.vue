@@ -2,6 +2,9 @@
   <v-container grid-list-md>
     <v-layout row wrap>
       <v-flex xs12>
+        <div class="text-xs-center">
+          <h1 >議題分析表</h1>
+        </div>
         <v-text-field
         prepend-icon="search"
         label="搜尋提案"
@@ -9,26 +12,7 @@
         v-model="search"
       ></v-text-field>
       </v-flex>
-       <v-flex xs6 md4 lg3 v-for="board in filteredList" :key="board.id" >
-        <v-card color="white" :to="{name:'board', params:{id:board.id}}" hover height="20em">
-           <v-card-title primary-title style="height:5em">
-          <div>
-            <h3 class="headline mb-0">{{board.title}}</h3>
-          </div>
-        </v-card-title>
-        <v-card-text style="height:10em">
-            <div>提案名稱:{{board.desc.title}}</div>
-            <div>提案人:{{board.desc.person}}</div>
-            <div>日期:{{board.desc.date}}</div>
-        </v-card-text>
-          <v-card-actions style="height:5em">
-          <v-btn flat color="orange" :to="{name:'editboard',params:{id:board.id}}">修改</v-btn>
-          <v-btn flat color="purple" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id">刪除</v-btn>
-          <!-- <v-btn flat color="purple" @click.native="closeboard(board.id)" >刪除</v-btn> -->
-        </v-card-actions>
-        </v-card>
-       </v-flex>
-       <v-flex xs6 md4 lg3 text-xs-center>
+          <v-flex xs6 md4 lg3 text-xs-center>
         <v-card height='20em' hover>
           <v-container fill-height>
                <v-layout align-center justify-center>
@@ -41,6 +25,25 @@
           </v-container>
         </v-card>
       </v-flex>
+       <v-flex xs6 md4 lg3 v-for="board in filteredList" :key="board.id" >
+        <v-card color="white" :to="{name:'board', params:{id:board.id}}" hover height="20em">
+           <v-card-title primary-title style="height:5em">
+          <div>
+            <h3 class="headline mb-0">{{board.title}}</h3>
+          </div>
+        </v-card-title>
+        <v-card-text style="height:10em">
+            <div class="body-2">提案名稱:{{board.desc.title}}</div>
+            <div class="body-2">提案人:{{board.desc.person}}</div>
+            <div class="body-2">日期:{{board.desc.date}}</div>
+        </v-card-text>
+          <v-card-actions style="height:5em">
+          <v-btn flat color="black" :to="{name:'editboard',params:{id:board.id}}">修改</v-btn>
+          <v-btn flat color="red" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id">刪除</v-btn>
+          <!-- <v-btn flat color="purple" @click.native="closeboard(board.id)" >刪除</v-btn> -->
+        </v-card-actions>
+        </v-card>
+       </v-flex>
     </v-layout>
      <v-dialog v-model="dialog" max-width="290">
       <v-card>
@@ -48,8 +51,8 @@
         <v-card-text></v-card-text>
         <v-card-actions>
           <!-- <v-spacer></v-spacer> -->
-          <v-btn color="green darken-1" flat="flat" @click.native="dialog=false;closeboard(selectedid)" :to="{name:'index'}" active-class>確定</v-btn>
-          <v-btn color="green darken-1" flat="flat" @click.native="dialog=false" :to="{name:'index'}" active-class>取消</v-btn>
+          <v-btn color="blue" flat="flat" @click.native="dialog=false; closeboard(selectedid)">確定</v-btn>
+          <v-btn color="red" flat="flat" @click.native="dialog=false" :to="{name:'index'}" active-class>取消</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

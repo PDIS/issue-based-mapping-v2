@@ -3,7 +3,7 @@
      <v-layout row>
     <v-flex xs12 md4 lg3 v-for="list in lists" :key="list.id">
       <v-toolbar text-center>
-          <v-toolbar-title>{{list.name}}</v-toolbar-title>
+          <v-toolbar-title class="subheading">{{list.name}}</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
       <v-card >
@@ -16,7 +16,7 @@
               <draggable v-model="list.cards" :options="{group:'people'}" @start="drag=true" @end="drag=false" >
             <v-card :color="list.color" hover>
               <v-card-title primary-title>
-                <div class="subheading">{{card.name}}</div>
+                <div class="body-2">{{card.name}}</div>
               </v-card-title>
               <!-- <v-card-actions>
                 <v-btn flat dark>Listen now</v-btn>
