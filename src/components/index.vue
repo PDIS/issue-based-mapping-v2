@@ -32,14 +32,23 @@
             <h3 class="headline mb-0">{{board.title}}</h3>
           </div>
         </v-card-title>
+        <v-divider></v-divider>
         <v-card-text style="height:10em">
             <div class="body-2">提案名稱:{{board.desc.title}}</div>
             <div class="body-2">提案人:{{board.desc.person}}</div>
             <div class="body-2">日期:{{board.desc.date}}</div>
         </v-card-text>
           <v-card-actions style="height:5em">
+          <v-container text-xs-center>
+            <v-layout row wrap>
+              <v-flex xs6>
           <v-btn flat color="black" :to="{name:'editboard',params:{id:board.id}}">修改</v-btn>
+            </v-flex>
+            <v-flex xs6>
           <v-btn flat color="red" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id">刪除</v-btn>
+            </v-flex>
+            </v-layout>
+          </v-container>
           <!-- <v-btn flat color="purple" @click.native="closeboard(board.id)" >刪除</v-btn> -->
         </v-card-actions>
         </v-card>
