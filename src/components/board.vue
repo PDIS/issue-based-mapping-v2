@@ -1,7 +1,7 @@
 <template>
 <v-container grid-list-md>
      <v-layout row>
-    <v-flex xs12 md4 lg3 v-for="list in lists" :key="list.id">
+    <v-flex xs12 md4 lg3 v-for="(list, index) in lists" :key="list.id">
       <v-toolbar text-center>
           <v-toolbar-title class="subheading">{{list.name}}</v-toolbar-title>
           <v-spacer></v-spacer>
@@ -12,8 +12,8 @@
         grid-list-lg
       >
        <v-layout row wrap>
-          <v-flex xs12 v-for="card in list.cards" :key="card.id">
-              <draggable v-model="list.cards" :options="{group:'people'}" @start="drag=true" @end="drag=false" >
+          <v-flex xs12 v-for="card in cards[index]" :key="card.id">
+              <draggable v-model="cards[index]" :options="{group:'people'}" @start="drag=true" @end="drag=false" >
             <v-card :color="list.color" hover>
               <v-card-title primary-title>
                 <div class="body-2">{{card.name}}</div>
@@ -76,6 +76,17 @@ export default {
       cards:[]
     }
   },
+  methods: {
+    getcards: function(id) {
+      let newcards = []
+      for (let c of this.cards) {
+        if (c.idList == id) {
+          newcards.push(c)
+        }
+      }
+      return newcards
+    }
+  },
   created: function() {
     let that = this;
     this.board.id = this.$route.params.id
@@ -86,7 +97,41 @@ export default {
       }
     })
     Trello.boards.get(this.board.id + '/lists',{cards: 'open'}, function(res) {
-      res.map( l => {
+      for (let i in res) {
+        let list = {}
+        list.id = res[i].id
+        list.name = res[i].name
+        that.cards[i] = res[i].cards
+        switch (list.name)
+        {
+          case '資料/文件/連結':
+          list.color = 'blue accent-1'
+          break
+          case '問題面向':
+          list.color = 'yellow lighten-1'
+          break
+          case '問題細節':
+          list.color = 'yellow lighten-3'
+          break
+          case '解法':
+          list.color = 'light green accent-3'
+          break
+          case '回應':
+          list.color = 'orange'
+          break
+          case '困難':
+          list.color = 'pink'
+          break
+          case '利害關係人':
+          list.color = 'indigo'
+          break
+          default:
+          list.color = 'teal'
+          break
+        }
+        that.lists.push(list)
+      }
+      /* res.map( l => {
         let list = {}
         list.id = l.id
         list.name = l.name
@@ -119,9 +164,11 @@ export default {
           break
         }
         that.lists.push(list)
-      })
-      console.log(that.lists)
+      }) */
     })
+    /* Trello.boards.get(this.board.id + '/cards',{cards: 'open'}, function(res) {
+      that.cards = res
+    }) */
   }
 }
 </script>

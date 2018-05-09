@@ -7,7 +7,9 @@
         </div>
         <v-text-field prepend-icon="search" label="搜尋提案" flat v-model="search"></v-text-field>
       </v-flex>
-      <v-flex xs6 md4 lg3 text-xs-center>
+
+          <v-flex xs12 sm6 md4 lg3 text-xs-center>
+
         <v-card height='20em' hover>
           <v-container fill-height>
                <v-layout align-center justify-center>
@@ -20,7 +22,7 @@
           </v-container>
         </v-card>
       </v-flex>
-       <v-flex xs6 md4 lg3 v-for="board in filteredList" :key="board.id" >
+       <v-flex xs12 sm6 md4 lg3 v-for="board in filteredList" :key="board.id" >
         <v-card color="white" :to="{name:'board', params:{id:board.id}}" hover height="20em">
           
           <!-- <v-card-title class="white" style="height:2em">
@@ -88,8 +90,9 @@
         <v-card-text></v-card-text>
         <v-card-actions>
           <!-- <v-spacer></v-spacer> -->
-          <v-btn color="green" large @click.native="dialog=false; closeboard(selectedid)">確定</v-btn>
-          <v-btn color="red" flat @click.native="dialog=false" :to="{name:'index'}" active-class>取消</v-btn>
+          <v-btn color="blue" flat="flat" @click.native="dialog=false; closeboard(selectedid)">確定</v-btn>
+          <v-btn color="black" flat="flat" @click.native="dialog=false" :to="{name:'index'}" active-class>取消</v-btn>
+
         </v-card-actions>
       </v-card>
     </v-dialog>
