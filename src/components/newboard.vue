@@ -1,5 +1,5 @@
 <template>
-<v-container fluid>
+<v-container fluid >
     <v-layout row wrap justify-center>
       <v-flex xs12 sm6>
   <v-card>
@@ -60,6 +60,7 @@
 
       </v-menu>
           </v-container>
+          <v-divider></v-divider>
           <v-card-actions>
               <v-btn
           :disabled="!formIsValid"
@@ -85,6 +86,7 @@
   export default {
     data () {
       const defaultForm = Object.freeze({
+        id:'',
         boardname:'',
          desc:{
           'title':'',
@@ -116,12 +118,21 @@
     methods: {
       submit: function() {
         let that = this
-        Trello.post('boards',{'name':this.boardname,'idOrganization':'5ad56d6d96cb269a7a2aaa0a','idBoardSource':'5ab49c39f2917ad1cff1a3de','prefs_permissionLevel':'org','keepFromSource':'none'},function(res) {
-          Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.desc)},function() {
-            this.snackbar = true
-            that.$router.push('/')
+        if (this.$route.params.id != '') {
+          Trello.put('boards/' + this.id,{'name':this.form.boardname},function(res) {
+            Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.form.desc)},function() {
+              that.$router.push('/')
+            })
           })
-        })
+        }
+        else {
+          Trello.post('boards',{'name':this.form.boardname,'idOrganization':'5ad56d6d96cb269a7a2aaa0a','idBoardSource':'5ab49c39f2917ad1cff1a3de','prefs_permissionLevel':'org','keepFromSource':'none'},function(res) {
+            Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.form.desc)},function() {
+              this.snackbar = true
+              that.$router.push('/')
+            })
+          })
+        }
       },
       resetForm: function() {
         this.form = Object.assign({}, this.defaultForm)
@@ -138,6 +149,22 @@
         )
       }
     },
+    created: function() {
+      let that = this
+      if (this.$route.params.id != '') {
+        this.id = this.$route.params.id
+        Trello.boards.get(this.id, function(res) {
+          that.form.boardname = res.name
+          if (res.desc != '') {
+            that.form.desc = JSON.parse(res.desc)
+          }
+        })
+      }
+      else {
+        this.form = Object.assign({}, this.defaultForm)
+        this.$refs.form.reset()
+      }
+    }
   }
 </script>
 

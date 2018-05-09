@@ -29,7 +29,7 @@ export default new Router({
     {
       path: '/editboard/:id',
       name: 'editboard',
-      component: editboard
+      component: newboard
     },
     {
       path: '/HelloWorld',
