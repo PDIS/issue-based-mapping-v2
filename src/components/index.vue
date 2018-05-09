@@ -22,11 +22,27 @@
       </v-flex>
        <v-flex xs6 md4 lg3 v-for="board in filteredList" :key="board.id" >
         <v-card color="white" :to="{name:'board', params:{id:board.id}}" hover height="20em">
+          
+          <!-- <v-card-title class="white" style="height:2em">
+            <h4 class="ml-2">#{{ board.title }}</h4>
+          </v-card-title>
           <v-card-text style="height:15em; background-color:white">
+            
+            <div style="color: grey"> <v-icon color="grey lighten-1" size="16px" class="mr-1">announcement</v-icon> 提案名稱</div> 
+            <div style="height:5em" class="ml-4 body-2" v-html="board.desc.title"></div>
+            
+            <div style="color: grey"><v-icon color="grey lighten-1" size="16px" class="mr-1">person</v-icon> 提案人 <br></div>
+            <div class="ml-4 body-2">{{board.desc.person}}</div>
+
+            <div style="color: grey"><v-icon color="grey lighten-1" size="16px" class="mr-1">event</v-icon> 提案日期 <br></div>
+            <div class="ml-4 body-2">{{board.desc.date}}</div> -->
+           
             <v-list subheader style="background-color:white">
-               <v-subheader text-xs-center># <div class="ml-2" color="b">{{ board.title }}</div></v-subheader>
+               <v-subheader># <div class="ml-2">{{ board.title }}</div></v-subheader>
+               <v-divider></v-divider> 
+               <br>
                <v-list-tile>
-                 <v-list-tile-avatar><v-icon>announcement</v-icon>
+                 <v-list-tile-avatar><v-icon color="grey lighten-1">announcement</v-icon>
               </v-list-tile-avatar>
               <v-list-tile-content>
                 <v-list-tile-sub-title>提案名稱</v-list-tile-sub-title>
@@ -35,35 +51,32 @@
               </v-list-tile-content>
                </v-list-tile>
                 <v-list-tile>
-                 <v-list-tile-avatar><v-icon>person</v-icon>
+                 <v-list-tile-avatar><v-icon color="grey lighten-1">person</v-icon>
               </v-list-tile-avatar>
               <v-list-tile-content>
                 <v-list-tile-sub-title>提案人</v-list-tile-sub-title>
                 <v-list-tile-title v-html="board.desc.person"></v-list-tile-title>
               </v-list-tile-content>
                </v-list-tile>
+               
                 <v-list-tile>
-                 <v-list-tile-avatar><v-icon>event</v-icon>
+                 <v-list-tile-avatar><v-icon color="grey lighten-1">event</v-icon>
               </v-list-tile-avatar>
               <v-list-tile-content>
-                <v-list-tile-title>提案日期</v-list-tile-title>
-                <v-list-tile-sub-title v-html="board.desc.date"></v-list-tile-sub-title>
+                <v-list-tile-sub-title>提案日期</v-list-tile-sub-title>
+                <v-list-tile-title v-html="board.desc.date"></v-list-tile-title>
               </v-list-tile-content>
                </v-list-tile>
             </v-list>
-        </v-card-text>
-          <v-card-actions style="height:5em">
-          <v-container text-xs-center>
-            <v-layout row wrap>
-              <v-flex xs6>
-          <v-btn round outline color="purple darken-2" :to="{name:'editboard',params:{id:board.id}}">修改</v-btn>
-            </v-flex>
-            <v-flex xs6>
-          <v-btn round outline color="pink lighten-2" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id">刪除</v-btn>
-            </v-flex>
-            </v-layout>
-          </v-container>
-          <!-- <v-btn flat color="purple" @click.native="closeboard(board.id)" >刪除</v-btn> -->
+        
+        
+        <v-divider></v-divider> 
+          <v-card-actions style=" background-color:white">  
+                   
+          <v-btn round outline flat color="purple lighten-2" :to="{name:'board', params:{id:board.id}}">進入議題</v-btn>
+          <v-spacer></v-spacer> 
+          <v-btn icon flat color="grey" :to="{name:'editboard',params:{id:board.id}}"><v-icon>edit</v-icon></v-btn>
+          <v-btn icon flat color="grey" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id"><v-icon>delete</v-icon></v-btn>
         </v-card-actions>
         </v-card>
        </v-flex>
