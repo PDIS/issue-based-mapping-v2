@@ -1,20 +1,31 @@
 <template>
-  <v-container grid-list-md>
+
+  <v-container grid-list-md >
     <v-layout row wrap>
       <v-flex xs12>
-        <div class="text-xs-center">
-          <h1 class="mt-3 mb-4"> 議題分析表 </h1>
+        <div class="text-xs-center white">
+          <h1 class="pt-4"> 議題分析表 </h1>
+          <div class="pb-4">分析議題的好幫手</div>
+          
         </div>
-        <v-text-field prepend-icon="search" label="搜尋提案" flat v-model="search"></v-text-field>
+        <v-text-field class="mt-4 mb-2" prepend-icon="search" label="搜尋提案" value="Input text" v-model="search"></v-text-field>
       </v-flex>
+       <v-flex xs12 text-xs-right>
+         
+        <span class="group pa-2">
+          <v-btn outline btn><v-icon>subject</v-icon></v-btn>
+          <v-btn outline btn><v-icon>apps</v-icon></v-btn>
+        </span>
+      </v-flex>
+    </v-layout>  
+    <v-layout row wrap>
+      <v-flex xs12 sm6 md4 lg3 text-xs-center>
 
-          <v-flex xs12 sm6 md4 lg3 text-xs-center>
-
-        <v-card height='20em' hover>
+        <v-card height='20em' hover color="yellow">
           <v-container fill-height>
                <v-layout align-center justify-center>
                   <v-card-text>
-                      <v-btn fab dark large color="purple" :to="{name:'newboard'}">
+                      <v-btn fab dark large color="indigo darken-4" :to="{name:'newboard'}">
                           <v-icon dark>add</v-icon>
                       </v-btn>
                   </v-card-text>
@@ -41,7 +52,7 @@
             </v-card-text>   -->
            
             <v-list subheader style="background-color:white">
-               <v-subheader style="color: grey darken-3"># <div class="ml-2">{{ board.title }}</div></v-subheader>
+               <v-subheader class="light-blue accent-1" style="color:black"># <div class="ml-2">{{ board.title }}</div></v-subheader>
                <v-divider></v-divider> 
                <br>
                <v-list-tile>
@@ -70,13 +81,14 @@
                 <v-list-tile-title v-html="board.desc.date"></v-list-tile-title>
               </v-list-tile-content>
                </v-list-tile>
+               
             </v-list>
-        
+            
         
         <v-divider></v-divider> 
           <v-card-actions style=" background-color:white">  
                    
-          <v-btn round outline flat color="purple lighten-2" :to="{name:'board', params:{id:board.id}}">進入議題</v-btn>
+          <v-btn round outline flat color="blue darken-3" :to="{name:'board', params:{id:board.id}}">進入議題</v-btn>
           <v-spacer></v-spacer> 
           <v-btn icon flat color="grey" :to="{name:'editboard',params:{id:board.id}}"><v-icon>edit</v-icon></v-btn>
           <v-btn icon flat color="grey" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id"><v-icon>delete</v-icon></v-btn>

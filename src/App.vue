@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app style="background-color:white">
     <vueheader></vueheader>
     <v-content>
       <router-view/>
