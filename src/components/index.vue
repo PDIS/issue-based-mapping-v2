@@ -35,10 +35,11 @@
             <div class="ml-4 body-2">{{board.desc.person}}</div>
 
             <div style="color: grey"><v-icon color="grey lighten-1" size="16px" class="mr-1">event</v-icon> 提案日期 <br></div>
-            <div class="ml-4 body-2">{{board.desc.date}}</div> -->
+            <div class="ml-4 body-2">{{board.desc.date}}</div> 
+            </v-card-text>   -->
            
             <v-list subheader style="background-color:white">
-               <v-subheader># <div class="ml-2">{{ board.title }}</div></v-subheader>
+               <v-subheader style="color: grey darken-3"># <div class="ml-2">{{ board.title }}</div></v-subheader>
                <v-divider></v-divider> 
                <br>
                <v-list-tile>
