@@ -1,14 +1,25 @@
 <template>
 
   <v-container grid-list-md >
+    
+    
+      
     <v-layout row wrap>
+      
       <v-flex xs12>
-        <div class="text-xs-center white">
-          <h1 class="pt-4"> 議題分析表 </h1>
+        
+        <div class="white">
+          <div class="text-xs-left">
+            <v-btn color="grey lighten-1" outline small fab btn><v-icon>reorder</v-icon></v-btn>    
+            <v-btn color="grey lighten-1" outline small fab btn><v-icon>work</v-icon></v-btn>    
+            <v-btn color="grey lighten-1" outline small fab btn><v-icon>pan_tool</v-icon></v-btn>    
+          </div>
+          <div class="text-xs-center">
+          <h1> 議題分析表 </h1>
           <div class="pb-4">分析議題的好幫手</div>
-          
+          </div>
         </div>
-        <v-text-field class="mt-4 mb-2" prepend-icon="search" label="搜尋提案" value="Input text" v-model="search"></v-text-field>
+        <v-text-field class="mt-4 mb-2" prepend-icon="search" label="搜尋議題" value="Input text" v-model="search"></v-text-field>
       </v-flex>
        <v-flex xs12 text-xs-right>
          
