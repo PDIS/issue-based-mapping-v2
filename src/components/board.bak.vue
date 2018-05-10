@@ -1,20 +1,20 @@
 <template>
-  <v-container grid-list-md>
+<v-container grid-list-md>
      <v-layout row>
     <v-flex xs12 md4 lg3 v-for="(list, index) in lists" :key="list.id">
       <v-toolbar text-center>
           <v-toolbar-title class="subheading">{{list.name}}</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
-      <v-card>
+      <v-card >
           <v-container
         fluid
         grid-list-lg
       >
-
-                       <draggable v-model="list.cards" :options="{group:'cards',animation:200}" @start="drag=true" @end="drag=false" @add="newcard" style="min-height:2px" >
-
-            <v-card :color="list.color" hover  v-for="card in list.cards" :key="card.id" class="ma-2">
+       <v-layout row wrap>
+          <v-flex xs12 v-for="card in cards[index]" :key="card.id">
+              <draggable v-model="cards[index]" :options="{group:'people'}" @start="drag=true" @end="drag=false" >
+            <v-card :color="list.color" hover>
               <v-card-title primary-title>
                 <div class="body-2">{{card.name}}</div>
               </v-card-title>
@@ -22,15 +22,41 @@
                 <v-btn flat dark>Listen now</v-btn>
               </v-card-actions> -->
             </v-card>
-  
-                    </draggable>
+              </draggable>
+          </v-flex>
+          <!-- <v-flex xs12>
+            <v-card  hover>
+              <v-container fill-height>
+               <v-layout align-center justify-center>
+          <v-card-text>
+              <v-btn fab dark large color="purple" :to="{name:'newcard'}">
+      <v-icon dark>add</v-icon>
+    </v-btn>
+          </v-card-text>
+               </v-layout>
           </v-container>
-    
-      <v-footer><v-btn color="red" dark style="margin:0;width:100%" class="subheading">新增卡片
-              <v-icon dark right>add</v-icon>
-            </v-btn></v-footer>
-
-
+            </v-card>
+          </v-flex> -->
+                </v-layout>
+        <!-- <v-list>
+          <v-list-group
+            v-for="card in list.cards"
+            :key="card.id"
+            no-action
+          >
+            <v-list-tile slot="activator">
+              <v-list-tile-content>
+                <v-list-tile-title>{{ card.name }}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile v-for="card in list.cards" :key="card.id" @click="">
+              <v-list-tile-content>
+                <v-list-tile-title>{{ card.name }}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list-group>
+        </v-list> -->
+          </v-container>
       </v-card>
     </v-flex>
   </v-layout>
@@ -59,9 +85,6 @@ export default {
         }
       }
       return newcards
-    },
-    newcard: function() {
-      console.log('FUCK')
     }
   },
   created: function() {
@@ -74,11 +97,11 @@ export default {
       }
     })
     Trello.boards.get(this.board.id + '/lists',{cards: 'open'}, function(res) {
-      /* for (let i in res) {
+      for (let i in res) {
         let list = {}
         list.id = res[i].id
         list.name = res[i].name
-        list.cards = res[i].cards
+        that.cards[i] = res[i].cards
         switch (list.name)
         {
           case '資料/文件/連結':
@@ -107,8 +130,8 @@ export default {
           break
         }
         that.lists.push(list)
-      } */
-      res.map( l => {
+      }
+      /* res.map( l => {
         let list = {}
         list.id = l.id
         list.name = l.name
@@ -141,7 +164,7 @@ export default {
           break
         }
         that.lists.push(list)
-      })
+      }) */
     })
     /* Trello.boards.get(this.board.id + '/cards',{cards: 'open'}, function(res) {
       that.cards = res
