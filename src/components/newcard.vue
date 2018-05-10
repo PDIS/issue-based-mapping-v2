@@ -8,22 +8,22 @@
           <v-icon dark>check_circle</v-icon>
           </v-snackbar>
           <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
-            <v-container>
+            <v-container fluid>
               <v-layout row wrap>
-                <v-card-title>
-                <v-flex xs12>
+                                <v-flex xs12>
+
                   <v-text-field label="標題" prepend-icon="assignment" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
-                </v-flex>
-                </v-card-title>
-                <v-card-text>
+
+                                </v-flex>
                 <v-divider></v-divider>
-                <v-flex sm8>
+                <v-flex xs8>
                   <v-text-field label="標題" prepend-icon="assignment" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
+
                 </v-flex>
-                <v-flex sm4>
+                <v-flex>
                    <v-text-field label="標題" prepend-icon="assignment" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
+   
                 </v-flex>
-                </v-card-text>
               </v-layout>
             </v-container>
           </v-form>
