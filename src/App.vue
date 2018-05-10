@@ -29,9 +29,13 @@
 .application {
   font-family: "cwTeXHei"!important
 }
-.content--wrap {
+/* @import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css);
+.application {
+    font-family: 'Noto Sans TC';
+} */
+/* .content--wrap {
   overflow: auto
-}
+} */
 </style>
 
 

@@ -12,9 +12,9 @@
         grid-list-lg
       >
 
-                       <draggable v-model="list.cards" :options="{group:'cards',animation:200}" @start="drag=true" @end="drag=false" @add="newcard" style="min-height:2px" >
+                       <draggable v-model="list.cards" :options="{group:'cards',animation:200}" @start="drag=true" @end="drag=false" @add="newcard" style="min-height:1em" >
 
-            <v-card :color="list.color" hover  v-for="card in list.cards" :key="card.id" class="ma-2">
+            <v-card :color="list.color" hover  v-for="card in list.cards" :key="card.id" class="ma-2" :id="card.id">
               <v-card-title primary-title>
                 <div class="body-2">{{card.name}}</div>
               </v-card-title>
@@ -26,7 +26,7 @@
                     </draggable>
           </v-container>
     
-      <v-footer><v-btn color="red" dark style="margin:0;width:100%" class="subheading">新增卡片
+      <v-footer><v-btn color="red" dark style="margin:0;width:100%" class="subheading" :to="{ name:'newcard' }">新增卡片
               <v-icon dark right>add</v-icon>
             </v-btn></v-footer>
 
@@ -60,8 +60,8 @@ export default {
       }
       return newcards
     },
-    newcard: function() {
-      console.log('FUCK')
+    newcard: function(e) {
+      console.log(e)
     }
   },
   created: function() {

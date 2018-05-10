@@ -66,10 +66,10 @@
           :disabled="!formIsValid"
           flat
           color="primary"
-          type="submit"
+          type="submit" class="subheading"
         >確認</v-btn>
                 <v-spacer></v-spacer>
-        <v-btn flat @click="resetForm">清除</v-btn>
+        <v-btn flat @click="resetForm" class="subheading">清除</v-btn>
       </v-card-actions>
   </v-form>
   </v-card>
@@ -151,7 +151,7 @@
     },
     created: function() {
       let that = this
-      if (this.$route.params.id != '') {
+      if (this.$route.params.id != undefined) {
         this.id = this.$route.params.id
         Trello.boards.get(this.id, function(res) {
           that.form.boardname = res.name
@@ -161,8 +161,8 @@
         })
       }
       else {
-        this.form = Object.assign({}, this.defaultForm)
-        this.$refs.form.reset()
+        /* this.form = Object.assign({}, this.defaultForm)
+        this.$refs.form.reset() */
       }
     }
   }

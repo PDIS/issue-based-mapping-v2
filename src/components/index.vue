@@ -63,7 +63,11 @@
             </v-card-text>   -->
            
             <v-list subheader style="background-color:white">
-               <v-subheader class="light-blue accent-1" style="color:black"># <div class="ml-2">{{ board.title }}</div></v-subheader>
+               <v-subheader class="light-blue accent-1" style="color:black"># <div class="ml-2">{{ board.title }}</div>
+               <v-spacer></v-spacer>
+               <v-chip color="pink lighten-1" text-color="white" >
+      教育部
+    </v-chip></v-subheader>
                <v-divider></v-divider> 
                <br>
                <v-list-tile>
