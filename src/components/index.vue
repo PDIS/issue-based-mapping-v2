@@ -80,7 +80,7 @@
               </v-list-tile-content>
                </v-list-tile>
                 <v-list-tile>
-                 <v-list-tile-avatar><v-icon color="grey lighten-1">person</v-icon>
+                 <v-list-tile-avatar><v-icon color="grey lighten-1">face</v-icon>
               </v-list-tile-avatar>
               <v-list-tile-content>
                 <v-list-tile-sub-title>提案人</v-list-tile-sub-title>
@@ -154,7 +154,7 @@ export default {
     closeboard: function(id) {
       let that = this
       Trello.put('boards/' + id ,{'closed':true},function(res) {
-        that.$router.push('/')
+        window.location.reload(true);
       })
     }
   },

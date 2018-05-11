@@ -118,7 +118,7 @@
     methods: {
       submit: function() {
         let that = this
-        if (this.$route.params.id != '') {
+        if (this.$route.params.id != undefined) {
           Trello.put('boards/' + this.id,{'name':this.form.boardname},function(res) {
             Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.form.desc)},function() {
               that.$router.push('/')

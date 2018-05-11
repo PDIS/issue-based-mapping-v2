@@ -6,7 +6,7 @@ import newboard from '@/components/newboard'
 import board from '@/components/board'
 import editboard from '@/components/editboard'
 import newcard from '@/components/newcard'
-import test from '@/components/test2'
+import test from '@/components/test'
 
 Vue.use(Router)
 
