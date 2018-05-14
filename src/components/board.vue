@@ -26,7 +26,7 @@
                     </draggable>
           </v-container>
     
-      <v-footer><v-btn color="red" dark style="margin:0;width:100%" class="subheading" :to="{ name:'newcard' }">新增卡片
+      <v-footer><v-btn color="black" dark style="margin:0;width:100%" class="subheading" @click.native.stop="dialog = true">新增卡片
               <v-icon dark right>add</v-icon>
             </v-btn></v-footer>
 
@@ -34,20 +34,24 @@
       </v-card>
     </v-flex>
   </v-layout>
+     <newcard :dialog='dialog'></newcard>
   </v-container>
 </template>
 
 <script>
 import draggable from 'vuedraggable'
+import newcard from './newcard'
 export default {
   components: {
     draggable,
+    newcard
   },
   data () {
     return {
-      board:{},
-      lists:[],
-      cards:[]
+      board: {},
+      lists: [],
+      cards: [],
+      dialog: false
     }
   },
   methods: {

@@ -1,12 +1,12 @@
 <template>
   <v-container fluid >
     <v-layout row wrap justify-center>
-      <v-flex xs12 sm6>
+      <v-dialog v-model="dialog" persistent max-width="50em">
         <v-card>
-          <v-snackbar v-model="snackbar" absolute top right color="success">
+          <!-- <v-snackbar v-model="snackbar" absolute top right color="success">
             <span>新增成功!</span>
           <v-icon dark>check_circle</v-icon>
-          </v-snackbar>
+          </v-snackbar> -->
           <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
             <v-container fluid>
               <v-layout row wrap>
@@ -48,7 +48,7 @@
                    <v-text-field label="問題細節" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                      <v-flex d-flex xs12>
-                   <v-text-field label="補充說明" prepend-icon="people" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field label="補充說明" prepend-icon="people" v-model="form.card.title" ></v-text-field>
                     </v-flex>
                   </v-layout>
                       <v-layout row wrap>
@@ -61,7 +61,7 @@
                    <v-text-field label="回應" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       <v-flex d-flex xs12>
-                   <v-text-field label="補充說明" prepend-icon="people" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field label="補充說明" prepend-icon="people" v-model="form.card.title"  ></v-text-field>
                     </v-flex>
                         </v-layout>
                       <v-layout row wrap>
@@ -69,7 +69,7 @@
                    <v-text-field label="困雖" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       <v-flex d-flex xs12>
-                   <v-text-field label="補充說明" prepend-icon="people" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field label="補充說明" prepend-icon="people" v-model="form.card.title"  ></v-text-field>
                     </v-flex>
                         </v-layout>
                       <v-layout row wrap>
@@ -77,10 +77,10 @@
                    <v-text-field label="利害關係人" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                      <v-flex d-flex xs12>
-                   <v-text-field label="單位" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field label="單位" prepend-icon="announcement" v-model="form.card.title" ></v-text-field>
                     </v-flex>
                      <v-flex d-flex xs12>
-                   <v-text-field label="背景" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field label="背景" prepend-icon="announcement" v-model="form.card.title"  ></v-text-field>
                     </v-flex>
                         </v-layout>
                       <v-layout row wrap>
@@ -88,10 +88,10 @@
                    <v-text-field label="資料/文件/連結" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       <v-flex d-flex xs12>
-                   <v-text-field label="摘要" prepend-icon="people" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field label="摘要" prepend-icon="people" v-model="form.card.title"></v-text-field>
                     </v-flex>
                     <v-flex d-flex xs12>
-                   <v-text-field label="歸納" prepend-icon="people" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field label="歸納" prepend-icon="people" v-model="form.card.title" ></v-text-field>
                     </v-flex>
                         </v-layout>
                       <v-layout row wrap>
@@ -130,23 +130,20 @@
             </v-container>
           </v-form>
           <v-card-actions>
-                <v-btn
-          :disabled="!formIsValid"
-          flat
-          color="primary"
-          type="submit" class="subheading"
-        >確認</v-btn>
+               <!--  <v-btn :disabled="!formIsValid" flat color="primary" type="submit" class="subheading">確認</v-btn> -->
+               <v-btn flat color="primary" type="submit" class="subheading">確認</v-btn>
                 <v-spacer></v-spacer>
-        <v-btn flat @click="resetForm" class="subheading">清除</v-btn>
+        <v-btn flat class="subheading">清除</v-btn>
           </v-card-actions>
         </v-card>
-      </v-flex>
+      </v-dialog>
     </v-layout>
   </v-container>
 </template>
 
 <script>
 export default {
+  props: ['dialog','listid','type'],
   data() {
     const defaultForm = Object.freeze({
       card: {
