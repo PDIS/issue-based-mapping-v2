@@ -18,7 +18,7 @@
                 <v-text-field
                   label="看版名稱"
                   prepend-icon="assignment"
-                  v-model="form.boardname"
+                  v-model="boardname"
                   :counter="20"
                   :rules="nameRules"
                 ></v-text-field>
@@ -26,14 +26,14 @@
                 <v-text-field
                   label="議題名稱"
                   prepend-icon="announcement"
-                  v-model="form.desc.title"
+                  v-model="desc.title"
                   :rules="requiredRules"
                 ></v-text-field>
  
                 <v-text-field
                   label="提案人"
                   prepend-icon="person"
-                  v-model="form.desc.person"
+                  v-model="desc.person"
                   :rules="requiredRules"
                 ></v-text-field>
       <v-menu
@@ -51,18 +51,18 @@
         <v-text-field
           slot="activator"
           label="提案日期"
-          v-model="form.desc.date"
+          v-model="desc.date"
           prepend-icon="event"
           :rules="requiredRules"
           readonly
         ></v-text-field>
-        <v-date-picker v-model="form.desc.date" @input="$refs.date.save(date)"  locale="zh-tw"></v-date-picker>
+        <v-date-picker v-model="desc.date" @input="$refs.date.save(date)"  locale="zh-tw"></v-date-picker>
 
       </v-menu>
       <v-text-field
                   label="部會名稱"
                   prepend-icon="announcement"
-                  v-model="form.desc.department"
+                  v-model="desc.department"
                   :rules="requiredRules"
                 ></v-text-field>
  
@@ -92,7 +92,7 @@
 <script>
   export default {
     data () {
-      const defaultForm = Object.freeze({
+      /* const defaultForm = Object.freeze({
         id:'',
         boardname:'',
          desc:{
@@ -101,7 +101,7 @@
           'date': null,
           'departmrnt': ''
           },
-      })
+      }) */
       return {
         /* boardname:'',
         desc:{
@@ -120,22 +120,30 @@
           v => !!v || '此欄位為必填!',
         ],
         snackbar: false,
-        form: Object.assign({}, defaultForm)
+        /* form: Object.assign({}, defaultForm) */
+                id:'',
+        boardname:'',
+         desc:{
+          'title': '',
+          'person': '',
+          'date': null,
+          'departmrnt': ''
+          },
       }
     },
     methods: {
       submit: function() {
         let that = this
         if (this.$route.params.id != undefined) {
-          Trello.put('boards/' + this.id,{'name':this.form.boardname},function(res) {
-            Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.form.desc)},function() {
+          Trello.put('boards/' + this.id,{'name':this.boardname},function(res) {
+            Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.desc)},function() {
               that.$router.push('/')
             })
           })
         }
         else {
-          Trello.post('boards',{'name':this.form.boardname,'idOrganization':'5ad56d6d96cb269a7a2aaa0a','idBoardSource':'5ab49c39f2917ad1cff1a3de','prefs_permissionLevel':'org','keepFromSource':'none'},function(res) {
-            Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.form.desc)},function() {
+          Trello.post('boards',{'name':this.boardname,'idOrganization':'5ad56d6d96cb269a7a2aaa0a','idBoardSource':'5ab49c39f2917ad1cff1a3de','prefs_permissionLevel':'org','keepFromSource':'none'},function(res) {
+            Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.desc)},function() {
               this.snackbar = true
               that.$router.push('/')
             })
@@ -143,17 +151,18 @@
         }
       },
       resetForm: function() {
-        this.form = Object.assign({}, this.defaultForm)
+        /* this.form = Object.assign({}, this.defaultForm) */
         this.$refs.form.reset()
       },
     },
     computed: {
       formIsValid () {
         return (
-          this.form.boardname &&
-          this.form.desc.title &&
-          this.form.desc.person &&
-          this.form.desc.date
+          this.boardname &&
+          this.desc.title &&
+          this.desc.person &&
+          this.desc.date &&
+          this.desc.department
         )
       }
     },
@@ -162,9 +171,9 @@
       if (this.$route.params.id != undefined) {
         this.id = this.$route.params.id
         Trello.boards.get(this.id, function(res) {
-          that.form.boardname = res.name
+          that.boardname = res.name
           if (res.desc != '') {
-            that.form.desc = JSON.parse(res.desc)
+            that.desc = JSON.parse(res.desc)
           }
         })
       }
