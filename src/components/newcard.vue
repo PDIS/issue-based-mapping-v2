@@ -13,23 +13,23 @@
                 <v-flex d-flex md6>
                   <v-card color="orange" dark>
                     <v-card-text>
-                    一定要有字才會出來
+                    <!-- 一定要有字才會出來 -->
                     </v-card-text>
                   </v-card>
                 </v-flex>
                 <v-flex d-flex md6>
                   <v-layout row wrap>
                     <v-flex d-flex xs12>
-                      <v-card color="blue">
+                      <v-card color="white">
                          <v-card-text>
-                    一定要有字才會出來
+                    <!-- 一定要有字才會出來 -->
                     </v-card-text>
                       </v-card>
                     </v-flex>
                      <v-flex d-flex xs12>
-                      <v-card color="blue">
+                      <v-card color="white">
                          <v-card-text>
-                    一定要有字才會出來
+                    <!-- 一定要有字才會出來 -->
                     </v-card-text>
                       </v-card>
                     </v-flex>
@@ -38,12 +38,12 @@
                 <v-divider></v-divider>
   
                 <v-flex d-flex md12>
-                  <v-layout row wrap>
+                  <v-layout row wrap v-if="listname =='問題面向'">
                     <v-flex d-flex xs12>
                    <v-text-field label="問題面向" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                   </v-layout>
-                  <v-layout row wrap>
+                  <v-layout row wrap v-if="listname == '問題細節'">
                          <v-flex d-flex xs12>
                    <v-text-field label="問題細節" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
@@ -51,12 +51,12 @@
                    <v-text-field label="補充說明" prepend-icon="people" v-model="form.card.title" ></v-text-field>
                     </v-flex>
                   </v-layout>
-                      <v-layout row wrap>
+                      <v-layout row wrap  v-if="listname == '解法'">
                          <v-flex d-flex xs12>
                    <v-text-field label="解法" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       </v-layout>
-                      <v-layout row wrap>
+                      <v-layout row wrap  v-if="listname == '回應'">
                         <v-flex d-flex xs12>
                    <v-text-field label="回應" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
@@ -64,7 +64,7 @@
                    <v-text-field label="補充說明" prepend-icon="people" v-model="form.card.title"  ></v-text-field>
                     </v-flex>
                         </v-layout>
-                      <v-layout row wrap>
+                      <v-layout row wrap v-if="listname == '困雖'">
                      <v-flex d-flex xs12>
                    <v-text-field label="困雖" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
@@ -72,7 +72,7 @@
                    <v-text-field label="補充說明" prepend-icon="people" v-model="form.card.title"  ></v-text-field>
                     </v-flex>
                         </v-layout>
-                      <v-layout row wrap>
+                      <v-layout row wrap v-if="listname == '利害關係人'">
                       <v-flex d-flex xs12>
                    <v-text-field label="利害關係人" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
@@ -83,7 +83,7 @@
                    <v-text-field label="背景" prepend-icon="announcement" v-model="form.card.title"  ></v-text-field>
                     </v-flex>
                         </v-layout>
-                      <v-layout row wrap>
+                      <v-layout row wrap v-if="listname == '資料/文件/連結'">
                       <v-flex d-flex xs12>
                    <v-text-field label="資料/文件/連結" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
@@ -134,6 +134,8 @@
                <v-btn flat color="primary" type="submit" class="subheading">確認</v-btn>
                 <v-spacer></v-spacer>
         <v-btn flat class="subheading">清除</v-btn>
+        <v-spacer></v-spacer>
+         <v-btn flat @click.native="closeDialog"  class="subheading">關閉</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -143,7 +145,7 @@
 
 <script>
 export default {
-  props: ['dialog','listid','type'],
+  props: ['dialog','listname'],
   data() {
     const defaultForm = Object.freeze({
       card: {
@@ -169,7 +171,13 @@ export default {
         'Vue',
         'Vuetify',
       ],
-      form: Object.assign({}, defaultForm)
+      form: Object.assign({}, defaultForm),
+    }
+  },
+  methods: {
+    closeDialog() {
+
+      console.log('fuck')
     }
   }
 }

@@ -26,7 +26,7 @@
                     </draggable>
           </v-container>
     
-      <v-footer><v-btn color="black" dark style="margin:0;width:100%" class="subheading" @click.native.stop="dialog = true">新增卡片
+      <v-footer><v-btn color="black" dark style="margin:0;width:100%" class="subheading" @click.native.stop="dialog = true; listname = list.name">新增卡片
               <v-icon dark right>add</v-icon>
             </v-btn></v-footer>
 
@@ -34,7 +34,7 @@
       </v-card>
     </v-flex>
   </v-layout>
-     <newcard :dialog='dialog'></newcard>
+     <newcard :dialog='dialog' :listname='listname'></newcard>
   </v-container>
 </template>
 
@@ -51,7 +51,8 @@ export default {
       board: {},
       lists: [],
       cards: [],
-      dialog: false
+      dialog: false,
+      listname: '',
     }
   },
   methods: {
@@ -150,7 +151,7 @@ export default {
     /* Trello.boards.get(this.board.id + '/cards',{cards: 'open'}, function(res) {
       that.cards = res
     }) */
-  }
+  },
 }
 </script>
 
