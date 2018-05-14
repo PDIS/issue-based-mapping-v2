@@ -9,11 +9,11 @@
       <v-flex xs12>
         
         <div class="white">
-          <div class="text-xs-left">
+<!--           <div class="text-xs-left">
             <v-btn color="grey lighten-1" outline small fab btn><v-icon>reorder</v-icon></v-btn>    
             <v-btn color="grey lighten-1" outline small fab btn><v-icon>work</v-icon></v-btn>    
             <v-btn color="grey lighten-1" outline small fab btn><v-icon>pan_tool</v-icon></v-btn>    
-          </div>
+          </div> -->
           <div class="text-xs-center">
           <h1> 議題分析表 </h1>
           <div class="pb-4">分析議題的好幫手</div>
@@ -66,7 +66,7 @@
                <v-subheader class="light-blue accent-1" style="color:black"># <div class="ml-2">{{ board.title }}</div>
                <v-spacer></v-spacer>
                <v-chip color="pink lighten-1" text-color="white" >
-      教育部
+      {{board.desc.department}}
     </v-chip></v-subheader>
                <v-divider></v-divider> 
                <br>

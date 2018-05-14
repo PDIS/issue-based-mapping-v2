@@ -12,7 +12,7 @@
         grid-list-lg
       >
 
-                       <draggable v-model="list.cards" :options="{group:'cards',animation:200}" @start="drag=true" @end="drag=false" @add="newcard" style="min-height:1em" >
+                       <draggable :id="list.id" v-model="list.cards" :options="{group:'cards',animation:200}" @add="movecard" style="min-height:1em" >
 
             <v-card :color="list.color" hover  v-for="card in list.cards" :key="card.id" class="ma-2" :id="card.id">
               <v-card-title primary-title>
@@ -26,7 +26,7 @@
                     </draggable>
           </v-container>
     
-      <v-footer><v-btn color="black" dark style="margin:0;width:100%" class="subheading" @click.native.stop="dialog = true; listname = list.name">新增卡片
+      <v-footer><v-btn color="black" dark style="margin:0;width:100%" class="subheading" @click.native.stop="dialog = true; listname = list.name" listid = list.id>新增卡片
               <v-icon dark right>add</v-icon>
             </v-btn></v-footer>
 
@@ -34,7 +34,7 @@
       </v-card>
     </v-flex>
   </v-layout>
-     <newcard :dialog='dialog' :listname='listname'></newcard>
+     <newcard :dialog='dialog' :listname='listname' :listid='listid'></newcard>
   </v-container>
 </template>
 
@@ -53,6 +53,7 @@ export default {
       cards: [],
       dialog: false,
       listname: '',
+      listid: ''
     }
   },
   methods: {
@@ -65,8 +66,10 @@ export default {
       }
       return newcards
     },
-    newcard: function(e) {
-      console.log(e)
+    movecard: function(event) {
+      let that = this
+      Trello.put('cards/' + event.item.id,{'idList':event.to.id},function(res) {
+      })
     }
   },
   created: function() {

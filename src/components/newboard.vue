@@ -59,6 +59,13 @@
         <v-date-picker v-model="form.desc.date" @input="$refs.date.save(date)"  locale="zh-tw"></v-date-picker>
 
       </v-menu>
+      <v-text-field
+                  label="部會名稱"
+                  prepend-icon="announcement"
+                  v-model="form.desc.department"
+                  :rules="requiredRules"
+                ></v-text-field>
+ 
           </v-container>
           <v-divider></v-divider>
           <v-card-actions>
@@ -89,9 +96,10 @@
         id:'',
         boardname:'',
          desc:{
-          'title':'',
-          'person':'',
-          'date':null
+          'title': '',
+          'person': '',
+          'date': null,
+          'departmrnt': ''
           },
       })
       return {

@@ -48,7 +48,7 @@
                    <v-text-field label="問題細節" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                      <v-flex d-flex xs12>
-                   <v-text-field label="補充說明" prepend-icon="people" v-model="form.card.title" ></v-text-field>
+                   <v-text-field label="補充說明" prepend-icon="people" v-model="form.card.desc" ></v-text-field>
                     </v-flex>
                   </v-layout>
                       <v-layout row wrap  v-if="listname == '解法'">
@@ -61,7 +61,7 @@
                    <v-text-field label="回應" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       <v-flex d-flex xs12>
-                   <v-text-field label="補充說明" prepend-icon="people" v-model="form.card.title"  ></v-text-field>
+                   <v-text-field label="補充說明" prepend-icon="people" v-model="form.card.desc"  ></v-text-field>
                     </v-flex>
                         </v-layout>
                       <v-layout row wrap v-if="listname == '困雖'">
@@ -69,7 +69,7 @@
                    <v-text-field label="困雖" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       <v-flex d-flex xs12>
-                   <v-text-field label="補充說明" prepend-icon="people" v-model="form.card.title"  ></v-text-field>
+                   <v-text-field label="補充說明" prepend-icon="people" v-model="form.card.desc"  ></v-text-field>
                     </v-flex>
                         </v-layout>
                       <v-layout row wrap v-if="listname == '利害關係人'">
@@ -77,10 +77,10 @@
                    <v-text-field label="利害關係人" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                      <v-flex d-flex xs12>
-                   <v-text-field label="單位" prepend-icon="announcement" v-model="form.card.title" ></v-text-field>
+                   <v-text-field label="單位" prepend-icon="announcement" v-model="form.card.department" ></v-text-field>
                     </v-flex>
                      <v-flex d-flex xs12>
-                   <v-text-field label="背景" prepend-icon="announcement" v-model="form.card.title"  ></v-text-field>
+                   <v-text-field label="背景" prepend-icon="announcement" v-model="form.card.background"  ></v-text-field>
                     </v-flex>
                         </v-layout>
                       <v-layout row wrap v-if="listname == '資料/文件/連結'">
@@ -88,10 +88,10 @@
                    <v-text-field label="資料/文件/連結" prepend-icon="announcement" v-model="form.card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       <v-flex d-flex xs12>
-                   <v-text-field label="摘要" prepend-icon="people" v-model="form.card.title"></v-text-field>
+                   <v-text-field label="摘要" prepend-icon="people" v-model="form.card.summary"></v-text-field>
                     </v-flex>
                     <v-flex d-flex xs12>
-                   <v-text-field label="歸納" prepend-icon="people" v-model="form.card.title" ></v-text-field>
+                   <v-text-field label="歸納" prepend-icon="people" v-model="form.card.induction" ></v-text-field>
                     </v-flex>
                         </v-layout>
                       <v-layout row wrap>
@@ -135,7 +135,7 @@
                 <v-spacer></v-spacer>
         <v-btn flat class="subheading">清除</v-btn>
         <v-spacer></v-spacer>
-         <v-btn flat @click.native="closeDialog"  class="subheading">關閉</v-btn>
+         <v-btn flat @click.native="closeDialog" class="subheading">關閉</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -145,16 +145,16 @@
 
 <script>
 export default {
-  props: ['dialog','listname'],
+  props: ['dialog','listname','listid'],
   data() {
     const defaultForm = Object.freeze({
       card: {
         title: '',
-        desc:{
-          'title':'',
-          'person':'',
-          'date':null
-        },
+        desc: '',
+        department: '',
+        background: '',
+        summary: '',
+        induction: ''
       }
     })
     return {
@@ -175,9 +175,14 @@ export default {
     }
   },
   methods: {
-    closeDialog() {
+    submit: function() {
+      let that = this
+      Trello.post('cards', {'name': this.form.card.title, 'idList': this.form.card.list } , function() {
+        
+      })
+    },
+    closeDialog: function() {
 
-      console.log('fuck')
     }
   }
 }
