@@ -52,16 +52,40 @@
       >
         <v-icon>edit</v-icon>
       </v-btn> -->
-
             <v-card :color="list.color" hover  v-for="card in list.cards" :key="card.id" class="ma-2" :id="card.id">
-              <v-card-title primary-title>
+              <v-tooltip right>
+              <v-card-title primary-title slot="activator">
                 <div class="body-2">{{card.name}}</div>
               </v-card-title>
-              <v-card-text>
+              <div v-for="desc in card.desc">
+                <div v-if=" typeof(desc) != 'object' && desc != ''">
+                  <span>{{desc}}</span>
+                </div>
+              </div>
+              <div>
+                <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
+                  {{person.name}}
+                </v-chip>
+              </div>
+              <div>
+                <v-chip small color="pink lighten-1" text-color="white" v-for="data in card.desc.data" :key="data.id" >
+                  {{data.name}}
+                </v-chip>
+              </div>
+              <!-- <v-card>
+        <v-list>
+          <v-list-tile v-for="desc in card.desc">
+            <v-list-tile-content v-if=" typeof(desc) != 'object' && desc != ''">
+               <v-list-tile-title>
+                 {{desc}}
+               </v-list-tile-title>
                  <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
       {{person.name}}
     </v-chip>
-              </v-card-text>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+              </v-card> -->
               <!-- <v-card-actions style=" background-color:white">  
                 <v-btn icon flat color="grey" :to="{name:'editboard',params:{id:board.id}}"><v-icon>edit</v-icon></v-btn>
                 <v-btn icon flat color="grey" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id"><v-icon>delete</v-icon></v-btn>
@@ -85,6 +109,7 @@
               <v-icon>add</v-icon>
             </v-btn>
               </v-speed-dial> -->
+              </v-tooltip>
             </v-card>
     <!-- </v-speed-dial> -->
                     </draggable>
@@ -105,38 +130,39 @@
           <v-icon dark>check_circle</v-icon>
           </v-snackbar> -->
           <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
-            <v-container fluid>
+            <v-container>
               <v-layout row wrap>
                 <v-flex d-flex md6>
                   <v-card :color='selectedlist.color'>
                    <v-card-title primary-title>
                 <div class="body-2">{{card.title}}</div>
               </v-card-title>
-              <v-card-text>
+            <!--   <v-card-text>
                  <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
                   {{person.name}}
                 </v-chip>
-              </v-card-text>
+              </v-card-text> -->
                   </v-card>
                 </v-flex>
-                <!-- <v-flex d-flex md6>
+                <v-flex d-flex md6>
                   <v-layout row wrap>
                     <v-flex d-flex xs12>
-                      <v-card color="white">
-                         <v-card-text>
-
-                    </v-card-text>
-                      </v-card>
+   <div>
+                   
+       <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
+                  {{person.name}}
+                </v-chip>
+   </div>
                     </v-flex>
                      <v-flex d-flex xs12>
-                      <v-card color="white">
-                         <v-card-text>
-     
-                    </v-card-text>
-                      </v-card>
+           <div>
+       <v-chip small color="pink lighten-1" text-color="white" v-for="data in card.desc.data" :key="data.id" >
+                  {{data.name}}
+                </v-chip>
+           </div>
                     </v-flex>
                   </v-layout>
-                </v-flex> -->
+                </v-flex>
                 <v-flex d-flex md12 class="mt-3">
                   <v-layout row wrap v-if="selectedlist.name =='問題面向'">
                     <v-flex d-flex xs12>
