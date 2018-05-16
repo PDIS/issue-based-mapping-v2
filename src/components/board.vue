@@ -6,6 +6,30 @@
           <v-toolbar-title class="subheading">{{list.name}}</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
+     <!--     <v-speed-dial
+      v-model="fab"
+      :open-on-hover="true"
+    >
+      <v-btn
+        slot="activator"
+        v-model="fab"
+        color="blue darken-2"
+        dark
+        fab
+        hover
+      >
+        <v-icon>account_circle</v-icon>
+        <v-icon>close</v-icon>
+      </v-btn>
+      <v-btn
+        fab
+        dark
+        small
+        color="green"
+      >
+        <v-icon>edit</v-icon>
+      </v-btn>
+    </v-speed-dial> -->
       <v-card>
           <v-container
         fluid
@@ -13,16 +37,56 @@
       >
 
                        <draggable :id="list.id" v-model="list.cards" :options="{group:'cards',animation:200}" @add="movecard" style="min-height:1em" >
+<!-- <v-speed-dial
+      v-model="fab"
+      :open-on-hover="true"
+      :bottom="true"
+      :right="true"
+      :direction="'right'"
+    >
+      <v-btn
+        fab
+        dark
+        small
+        color="green"
+      >
+        <v-icon>edit</v-icon>
+      </v-btn> -->
 
             <v-card :color="list.color" hover  v-for="card in list.cards" :key="card.id" class="ma-2" :id="card.id">
               <v-card-title primary-title>
                 <div class="body-2">{{card.name}}</div>
               </v-card-title>
-              <!-- <v-card-actions>
-                <v-btn flat dark>Listen now</v-btn>
+              <v-card-text>
+                 <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
+      {{person.name}}
+    </v-chip>
+              </v-card-text>
+              <!-- <v-card-actions style=" background-color:white">  
+                <v-btn icon flat color="grey" :to="{name:'editboard',params:{id:board.id}}"><v-icon>edit</v-icon></v-btn>
+                <v-btn icon flat color="grey" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id"><v-icon>delete</v-icon></v-btn>
               </v-card-actions> -->
+     <!--          <v-speed-dial
+      v-model="fab"
+      :open-on-hover="true"
+      :direction="'right'"
+    >
+               <v-btn
+              color="dark"
+              dark
+              small
+              absolute
+              bottom
+              right
+              fab
+              slot="activator"
+              v-model="fab"
+            >
+              <v-icon>add</v-icon>
+            </v-btn>
+              </v-speed-dial> -->
             </v-card>
-  
+    <!-- </v-speed-dial> -->
                     </draggable>
           </v-container>
     
@@ -45,9 +109,14 @@
               <v-layout row wrap>
                 <v-flex d-flex md6>
                   <v-card :color='selectedlist.color'>
-                    <v-card-text>
-                    {{card.title}}
-                    </v-card-text>
+                   <v-card-title primary-title>
+                <div class="body-2">{{card.title}}</div>
+              </v-card-title>
+              <v-card-text>
+                 <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
+                  {{person.name}}
+                </v-chip>
+              </v-card-text>
                   </v-card>
                 </v-flex>
                 <!-- <v-flex d-flex md6>
@@ -132,8 +201,9 @@
                   <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '利害關係人'">
                     <v-flex d-flex xs12 >
                         <v-select
-                          v-model="select"
-                          :items="items"
+                          v-model="card.desc.people"
+                          :items="peoplelist"
+                          item-text="name"
                           label="關聯利害關係人"
                           prepend-icon="people"
                           chips
@@ -146,8 +216,9 @@
                   <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '利害關係人'">
                     <v-flex d-flex xs12 >
                         <v-select
-                          v-model="select"
-                          :items="items"
+                          v-model="card.desc.data"
+                          :items="datalist"
+                          item-text="name"
                           label="佐證文件"
                           prepend-icon="picture_as_pdf"
                           chips
@@ -203,13 +274,12 @@ export default {
         v => !!v || '此欄位為必填!',
         v => v.length <= 20 || '此欄位不可超過20個字!'
       ],
-      select: [],
-      items: [
+      /* items: [
         'Programming',
         'Design',
         'Vue',
         'Vuetify',
-      ],
+      ], */
       card: {
         title: '',
         desc:{
@@ -217,9 +287,14 @@ export default {
           department: '',
           background: '',
           summary: '',
-          induction: ''
+          induction: '',
+          people: [],
+          data: []
         }
-      }
+      },
+      peoplelist: [],
+      datalist: [],
+      fab: false
       /* form: Object.assign({}, defaultForm), */
     }
   },
@@ -251,6 +326,24 @@ export default {
         window.location.reload(true);
       })
     },
+    getpeople: function() {
+      this.lists.map(list => {
+        if (list.name == '利害關係人') {
+          list.cards.map( card => {
+            this.peoplelist.push(card)
+          })
+        }
+      })
+    },
+    getdata: function() {
+      this.lists.map(list => {
+        if (list.name == '資料/文件/連結') {
+           list.cards.map( data => {
+            this.datalist.push(data)
+          })
+        }
+      })
+    }
   },
   created: function() {
     let that = this;
@@ -328,9 +421,22 @@ export default {
           list.color = 'teal'
           break
         }
+        /* console.log(list) */
+        list.cards.map(card => {
+          if (card.desc != '') {
+            let desc = JSON.parse(card.desc)
+            card.desc = desc
+            console.log(desc)
+          }
+        })
         that.lists.push(list)
       })
+      that.getpeople()
+      that.getdata()
     })
+    /* Trello.cards.get("Uta5z7Fr/attachments", function(res) {
+      console.log(res)
+    }) */
   },
 }
 </script>
