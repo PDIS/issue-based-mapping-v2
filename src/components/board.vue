@@ -164,9 +164,9 @@
                    <v-text-field label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
                     </v-flex>
                         </v-layout>
-                      <v-layout row wrap v-if="selectedlist.name == '困雖'">
+                      <v-layout row wrap v-if="selectedlist.name == '困難'">
                      <v-flex d-flex xs12>
-                   <v-text-field label="困雖" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field label="困難" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       <v-flex d-flex xs12>
                    <v-text-field label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
