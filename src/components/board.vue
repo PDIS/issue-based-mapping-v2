@@ -1,20 +1,35 @@
 <template>
   <v-container grid-list-md>
      <v-layout row>
+        <v-flex xs3 >
+        <v-card flat color="black mt-2" class="white--text">
+              <v-card-text primary-title color="indigo darken-4">
+                <div class="headline"># {{board.name}} </div>
+              </v-card-text>
+        </v-card>
+        </v-flex>
+        <v-flex xs3 offset-xs6>
+        <v-text-field color="grey darken-4" class="mt-3 mb-0" prepend-icon="search" label="搜尋卡片關鍵字" value="Input text" v-model="search"></v-text-field>
+        </v-flex>
+
+
+      </v-layout>
+     <v-layout row>
     <v-flex xs12 md4 lg3 v-for="(list) in lists" :key="list.id">
-      <v-toolbar text-center>
+      <v-toolbar dense dark flat text-ms-center color="grey darken-3">
           <v-toolbar-title class="subheading">{{list.name}}</v-toolbar-title>
-          <v-spacer></v-spacer>
-        </v-toolbar>
+      </v-toolbar>
   
-      <v-card>
-          <v-container
+      <v-card >
+      <v-container
         fluid
         grid-list-lg
+        align-center
+        wrap
       >
 
-                       <draggable :id="list.id" v-model="list.cards" :options="{group:'cards',animation:200}" @add="movecard" style="min-height:1em" >
-            <v-card :color="list.color" hover  v-for="card in list.cards" :key="card.id" class="ma-2" :id="card.id" @mousedown="editcard(card,list)">
+        <draggable ml-0 :id="list.id" v-model="list.cards" :options="{group:'cards',animation:200}" @add="movecard" style="min-height:1em" >
+            <v-card :color="list.color" hover  v-for="card in list.cards" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mousedown="editcard(card,list)">
               <v-tooltip right>
               <v-card-title primary-title slot="activator">
                 <div class="body-2">{{card.name}}</div>
@@ -26,14 +41,13 @@
               </div>
               </v-tooltip>
             </v-card>
-                    </draggable>
-          </v-container>
+        </draggable>
+      </v-container>
     
-      <v-footer>
-        <v-btn color="black" dark style="margin:0;width:100%" class="subheading" @click.native.stop="newcard(list)">新增卡片
-              <v-icon dark right>add</v-icon>
-            </v-btn>
-            </v-footer>
+      <v-footer >
+        <v-btn text-md-left color="grey lighten-3" style="margin:0;width:100%" @click.native.stop="newcard(list)" > 
+          <v-icon small>add</v-icon>新增卡片<v-spacer></v-spacer> </v-btn>
+      </v-footer>
 
 
       </v-card>
@@ -388,25 +402,25 @@ export default {
         switch (list.name)
         {
           case '資料/文件/連結':
-          list.color = 'blue accent-1'
+          list.color = 'blue lighten-4'
           break
           case '問題面向':
-          list.color = 'yellow lighten-1'
+          list.color = 'yellow darken-1'
           break
           case '問題細節':
-          list.color = 'yellow lighten-3'
+          list.color = 'yellow lighten-4'
           break
           case '解法':
-          list.color = 'light green accent-3'
+          list.color = 'light-green accent-2'
           break
           case '回應':
-          list.color = 'orange'
+          list.color = 'amber accent-4'
           break
           case '困難':
           list.color = 'pink'
           break
           case '利害關係人':
-          list.color = 'indigo'
+          list.color = 'cyan accent-4'
           break
           default:
           list.color = 'teal'

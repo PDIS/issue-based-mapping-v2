@@ -92,7 +92,7 @@
             
         
         <v-divider></v-divider> 
-          <v-card-actions style=" background-color:white">  
+          <v-card-actions style="background-color:white">  
                    
           <v-btn color="cyan accent-4" :to="{name:'board', params:{id:board.id}}"><v-icon>arrow_right</v-icon> 進入議題</v-btn>
           <v-spacer></v-spacer> 
