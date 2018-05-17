@@ -8,22 +8,24 @@
       enable-resize-watcher
       fixed
       app
+      dark class="grey darken-4 d-inline-block pa-5"
       
     >
-      <v-list >
-        <v-list-tile
-          value="true"
+      <v-list 
+        color="grey lighten-4"
         >
-          <v-list-tile-action>
+        <v-list-tile
+        >
+          <v-list-tile-action >
             <v-icon >home</v-icon>
           </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>回到首頁</v-list-tile-title>
+          <v-list-tile-content >
+            <v-list-tile-title >回到首頁</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
 
         <v-list-tile
-          value="true"
+          
         >
           <v-list-tile-action>
             <v-icon >work</v-icon>
@@ -33,7 +35,7 @@
           </v-list-tile-content>
         </v-list-tile>
          <v-list-tile
-          value="true"
+          
         >
           <v-list-tile-action>
             <v-icon >pan_tool</v-icon>
