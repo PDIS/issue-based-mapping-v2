@@ -8,8 +8,9 @@
       enable-resize-watcher
       fixed
       app
+      
     >
-      <v-list>
+      <v-list >
         <v-list-tile
           value="true"
         >
@@ -42,30 +43,42 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
+   
     </v-navigation-drawer>
+    
+    
     <v-toolbar
       app
       :clipped-left="clipped"
+      prominent
+      scroll-off-screen
+      tabs
+      flat
+      light color="grey lighten-3"
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-btn icon outline small fab btn>
+      
+      <!-- <v-btn icon @click.stop="fixed = !fixed">
+        <v-icon>remove</v-icon>
+      </v-btn> -->
+     <v-toolbar-title v-text="title">議題分析表</v-toolbar-title>
+      
+      <v-spacer></v-spacer>
+      
+      <!-- <v-btn icon outline small fab btn>
         <v-icon>home</v-icon>
       </v-btn>
-      <!-- <v-btn icon outline small fab btn>
+      <v-btn icon outline small fab btn>
         <v-icon>work</v-icon>
-      </v-btn> -->
+      </v-btn>
       <v-btn icon outline small fab btn>
         <v-icon>pan_tool</v-icon>
+      </v-btn> -->
+      <v-btn icon outline small fab btn >
+        <v-avatar>
+          <img :src="me.avatar" alt="username">
+        </v-avatar> 
       </v-btn>
- <!--      <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>remove</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title"></v-toolbar-title> -->
-      <v-spacer></v-spacer>
-     <v-avatar>
-      <img :src="me.avatar" alt="username">
-    </v-avatar> 
-
           
       <!-- <v-btn color="primary" dark>{{me.name}}
         <v-icon dark right>person</v-icon>
@@ -74,6 +87,7 @@
         <v-icon>person</v-icon>
       </v-btn> -->
     </v-toolbar>
+    
 </div>
 </template>
 
