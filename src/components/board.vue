@@ -361,40 +361,6 @@ export default {
       }
     })
     Trello.boards.get(this.board.id + '/lists',{cards: 'open'}, function(res) {
-      /* for (let i in res) {
-        let list = {}
-        list.id = res[i].id
-        list.name = res[i].name
-        list.cards = res[i].cards
-        switch (list.name)
-        {
-          case '資料/文件/連結':
-          list.color = 'blue accent-1'
-          break
-          case '問題面向':
-          list.color = 'yellow lighten-1'
-          break
-          case '問題細節':
-          list.color = 'yellow lighten-3'
-          break
-          case '解法':
-          list.color = 'light green accent-3'
-          break
-          case '回應':
-          list.color = 'orange'
-          break
-          case '困難':
-          list.color = 'pink'
-          break
-          case '利害關係人':
-          list.color = 'indigo'
-          break
-          default:
-          list.color = 'teal'
-          break
-        }
-        that.lists.push(list)
-      } */
       res.map( l => {
         let list = {}
         list.id = l.id
@@ -432,7 +398,6 @@ export default {
           if (card.desc != '') {
             let desc = JSON.parse(card.desc)
             card.desc = desc
-            console.log(desc)
           }
         })
         that.lists.push(list)
@@ -444,6 +409,15 @@ export default {
       console.log(res)
     }) */
   },
+  computed: {
+    filteredList() {
+      this.lists.map( list => {
+        return list.cards.filter(card => {
+          return card.name.toLowerCase().includes(this.search.toLowerCase())
+        })
+      })
+    }
+  }
 }
 </script>
 
