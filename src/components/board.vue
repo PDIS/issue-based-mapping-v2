@@ -6,6 +6,30 @@
           <v-toolbar-title class="subheading">{{list.name}}</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
+     <!--     <v-speed-dial
+      v-model="fab"
+      :open-on-hover="true"
+    >
+      <v-btn
+        slot="activator"
+        v-model="fab"
+        color="blue darken-2"
+        dark
+        fab
+        hover
+      >
+        <v-icon>account_circle</v-icon>
+        <v-icon>close</v-icon>
+      </v-btn>
+      <v-btn
+        fab
+        dark
+        small
+        color="green"
+      >
+        <v-icon>edit</v-icon>
+      </v-btn>
+    </v-speed-dial> -->
       <v-card>
           <v-container
         fluid
@@ -13,16 +37,81 @@
       >
 
                        <draggable :id="list.id" v-model="list.cards" :options="{group:'cards',animation:200}" @add="movecard" style="min-height:1em" >
-
+<!-- <v-speed-dial
+      v-model="fab"
+      :open-on-hover="true"
+      :bottom="true"
+      :right="true"
+      :direction="'right'"
+    >
+      <v-btn
+        fab
+        dark
+        small
+        color="green"
+      >
+        <v-icon>edit</v-icon>
+      </v-btn> -->
             <v-card :color="list.color" hover  v-for="card in list.cards" :key="card.id" class="ma-2" :id="card.id">
-              <v-card-title primary-title>
+              <v-tooltip right>
+              <v-card-title primary-title slot="activator">
                 <div class="body-2">{{card.name}}</div>
               </v-card-title>
-              <!-- <v-card-actions>
-                <v-btn flat dark>Listen now</v-btn>
+              <div v-for="desc in card.desc">
+                <div v-if=" typeof(desc) != 'object' && desc != ''">
+                  <span>{{desc}}</span>
+                </div>
+              </div>
+              <div>
+                <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
+                  {{person.name}}
+                </v-chip>
+              </div>
+              <div>
+                <v-chip small color="pink lighten-1" text-color="white" v-for="data in card.desc.data" :key="data.id" >
+                  {{data.name}}
+                </v-chip>
+              </div>
+              <!-- <v-card>
+        <v-list>
+          <v-list-tile v-for="desc in card.desc">
+            <v-list-tile-content v-if=" typeof(desc) != 'object' && desc != ''">
+               <v-list-tile-title>
+                 {{desc}}
+               </v-list-tile-title>
+                 <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
+      {{person.name}}
+    </v-chip>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+              </v-card> -->
+              <!-- <v-card-actions style=" background-color:white">  
+                <v-btn icon flat color="grey" :to="{name:'editboard',params:{id:board.id}}"><v-icon>edit</v-icon></v-btn>
+                <v-btn icon flat color="grey" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id"><v-icon>delete</v-icon></v-btn>
               </v-card-actions> -->
+     <!--          <v-speed-dial
+      v-model="fab"
+      :open-on-hover="true"
+      :direction="'right'"
+    >
+               <v-btn
+              color="dark"
+              dark
+              small
+              absolute
+              bottom
+              right
+              fab
+              slot="activator"
+              v-model="fab"
+            >
+              <v-icon>add</v-icon>
+            </v-btn>
+              </v-speed-dial> -->
+              </v-tooltip>
             </v-card>
-  
+    <!-- </v-speed-dial> -->
                     </draggable>
           </v-container>
     
@@ -41,33 +130,39 @@
           <v-icon dark>check_circle</v-icon>
           </v-snackbar> -->
           <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
-            <v-container fluid>
+            <v-container>
               <v-layout row wrap>
                 <v-flex d-flex md6>
                   <v-card :color='selectedlist.color'>
-                    <v-card-text>
-                    {{card.title}}
-                    </v-card-text>
+                   <v-card-title primary-title>
+                <div class="body-2">{{card.title}}</div>
+              </v-card-title>
+            <!--   <v-card-text>
+                 <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
+                  {{person.name}}
+                </v-chip>
+              </v-card-text> -->
                   </v-card>
                 </v-flex>
-                <!-- <v-flex d-flex md6>
+                <v-flex d-flex md6>
                   <v-layout row wrap>
                     <v-flex d-flex xs12>
-                      <v-card color="white">
-                         <v-card-text>
-
-                    </v-card-text>
-                      </v-card>
+   <div>
+                   
+       <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
+                  {{person.name}}
+                </v-chip>
+   </div>
                     </v-flex>
                      <v-flex d-flex xs12>
-                      <v-card color="white">
-                         <v-card-text>
-     
-                    </v-card-text>
-                      </v-card>
+           <div>
+       <v-chip small color="pink lighten-1" text-color="white" v-for="data in card.desc.data" :key="data.id" >
+                  {{data.name}}
+                </v-chip>
+           </div>
                     </v-flex>
                   </v-layout>
-                </v-flex> -->
+                </v-flex>
                 <v-flex d-flex md12 class="mt-3">
                   <v-layout row wrap v-if="selectedlist.name =='問題面向'">
                     <v-flex d-flex xs12>
@@ -95,9 +190,9 @@
                    <v-text-field label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
                     </v-flex>
                         </v-layout>
-                      <v-layout row wrap v-if="selectedlist.name == '困雖'">
+                      <v-layout row wrap v-if="selectedlist.name == '困難'">
                      <v-flex d-flex xs12>
-                   <v-text-field label="困雖" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field label="困難" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       <v-flex d-flex xs12>
                    <v-text-field label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
@@ -132,8 +227,9 @@
                   <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '利害關係人'">
                     <v-flex d-flex xs12 >
                         <v-select
-                          v-model="select"
-                          :items="items"
+                          v-model="card.desc.people"
+                          :items="peoplelist"
+                          item-text="name"
                           label="關聯利害關係人"
                           prepend-icon="people"
                           chips
@@ -146,8 +242,9 @@
                   <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '利害關係人'">
                     <v-flex d-flex xs12 >
                         <v-select
-                          v-model="select"
-                          :items="items"
+                          v-model="card.desc.data"
+                          :items="datalist"
+                          item-text="name"
                           label="佐證文件"
                           prepend-icon="picture_as_pdf"
                           chips
@@ -203,13 +300,12 @@ export default {
         v => !!v || '此欄位為必填!',
         v => v.length <= 20 || '此欄位不可超過20個字!'
       ],
-      select: [],
-      items: [
+      /* items: [
         'Programming',
         'Design',
         'Vue',
         'Vuetify',
-      ],
+      ], */
       card: {
         title: '',
         desc:{
@@ -217,9 +313,14 @@ export default {
           department: '',
           background: '',
           summary: '',
-          induction: ''
+          induction: '',
+          people: [],
+          data: []
         }
-      }
+      },
+      peoplelist: [],
+      datalist: [],
+      fab: false
       /* form: Object.assign({}, defaultForm), */
     }
   },
@@ -251,6 +352,24 @@ export default {
         window.location.reload(true);
       })
     },
+    getpeople: function() {
+      this.lists.map(list => {
+        if (list.name == '利害關係人') {
+          list.cards.map( card => {
+            this.peoplelist.push(card)
+          })
+        }
+      })
+    },
+    getdata: function() {
+      this.lists.map(list => {
+        if (list.name == '資料/文件/連結') {
+           list.cards.map( data => {
+            this.datalist.push(data)
+          })
+        }
+      })
+    }
   },
   created: function() {
     let that = this;
@@ -328,9 +447,22 @@ export default {
           list.color = 'teal'
           break
         }
+        /* console.log(list) */
+        list.cards.map(card => {
+          if (card.desc != '') {
+            let desc = JSON.parse(card.desc)
+            card.desc = desc
+            console.log(desc)
+          }
+        })
         that.lists.push(list)
       })
+      that.getpeople()
+      that.getdata()
     })
+    /* Trello.cards.get("Uta5z7Fr/attachments", function(res) {
+      console.log(res)
+    }) */
   },
 }
 </script>
