@@ -417,7 +417,7 @@ export default {
           list.color = 'amber accent-4'
           break
           case '困難':
-          list.color = 'pink'
+          list.color = 'pink lighten-2'
           break
           case '利害關係人':
           list.color = 'cyan accent-4'
