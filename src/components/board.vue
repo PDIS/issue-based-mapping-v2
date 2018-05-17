@@ -6,30 +6,7 @@
           <v-toolbar-title class="subheading">{{list.name}}</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
-     <!--     <v-speed-dial
-      v-model="fab"
-      :open-on-hover="true"
-    >
-      <v-btn
-        slot="activator"
-        v-model="fab"
-        color="blue darken-2"
-        dark
-        fab
-        hover
-      >
-        <v-icon>account_circle</v-icon>
-        <v-icon>close</v-icon>
-      </v-btn>
-      <v-btn
-        fab
-        dark
-        small
-        color="green"
-      >
-        <v-icon>edit</v-icon>
-      </v-btn>
-    </v-speed-dial> -->
+  
       <v-card>
           <v-container
         fluid
@@ -37,22 +14,7 @@
       >
 
                        <draggable :id="list.id" v-model="list.cards" :options="{group:'cards',animation:200}" @add="movecard" style="min-height:1em" >
-<!-- <v-speed-dial
-      v-model="fab"
-      :open-on-hover="true"
-      :bottom="true"
-      :right="true"
-      :direction="'right'"
-    >
-      <v-btn
-        fab
-        dark
-        small
-        color="green"
-      >
-        <v-icon>edit</v-icon>
-      </v-btn> -->
-            <v-card :color="list.color" hover  v-for="card in list.cards" :key="card.id" class="ma-2" :id="card.id" @mousedown="editcard(card);selectedlist.name = list.name;selectedlist.id = list.id;selectedlist.color = list.color">
+            <v-card :color="list.color" hover  v-for="card in list.cards" :key="card.id" class="ma-2" :id="card.id" @mousedown="editcard(card,list)">
               <v-tooltip right>
               <v-card-title primary-title slot="activator">
                 <div class="body-2">{{card.name}}</div>
@@ -62,62 +24,16 @@
                   <span class="body-2">{{desc}}</span>
                 </div>
               </div>
-              <!-- <div>
-                <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
-                  {{person.name}}
-                </v-chip>
-              </div>
-              <div>
-                <v-chip small color="pink lighten-1" text-color="white" v-for="data in card.desc.data" :key="data.id" >
-                  {{data.name}}
-                </v-chip>
-              </div> -->
-              <!-- <v-card>
-        <v-list>
-          <v-list-tile v-for="desc in card.desc">
-            <v-list-tile-content v-if=" typeof(desc) != 'object' && desc != ''">
-               <v-list-tile-title>
-                 {{desc}}
-               </v-list-tile-title>
-                 <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
-      {{person.name}}
-    </v-chip>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-              </v-card> -->
-              <!-- <v-card-actions style=" background-color:white">  
-                <v-btn icon flat color="grey" :to="{name:'editboard',params:{id:board.id}}"><v-icon>edit</v-icon></v-btn>
-                <v-btn icon flat color="grey" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id"><v-icon>delete</v-icon></v-btn>
-              </v-card-actions> -->
-     <!--          <v-speed-dial
-      v-model="fab"
-      :open-on-hover="true"
-      :direction="'right'"
-    >
-               <v-btn
-              color="dark"
-              dark
-              small
-              absolute
-              bottom
-              right
-              fab
-              slot="activator"
-              v-model="fab"
-            >
-              <v-icon>add</v-icon>
-            </v-btn>
-              </v-speed-dial> -->
               </v-tooltip>
             </v-card>
-    <!-- </v-speed-dial> -->
                     </draggable>
           </v-container>
     
-      <v-footer><v-btn color="black" dark style="margin:0;width:100%" class="subheading" @click.native.stop="dialog = true; selectedlist.name = list.name;selectedlist.id = list.id;selectedlist.color = list.color">新增卡片
+      <v-footer>
+        <v-btn color="black" dark style="margin:0;width:100%" class="subheading" @click.native.stop="newcard(list)">新增卡片
               <v-icon dark right>add</v-icon>
-            </v-btn></v-footer>
+            </v-btn>
+            </v-footer>
 
 
       </v-card>
@@ -125,10 +41,6 @@
   </v-layout>
   <v-dialog v-model="dialog" persistent max-width="50em">
         <v-card>
-          <!-- <v-snackbar v-model="snackbar" absolute top right color="success">
-            <span>新增成功!</span>
-          <v-icon dark>check_circle</v-icon>
-          </v-snackbar> -->
           <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
             <v-container>
               <v-layout row wrap>
@@ -137,11 +49,6 @@
                    <v-card-title primary-title>
                 {{card.title}}
               </v-card-title>
-            <!--   <v-card-text>
-                 <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
-                  {{person.name}}
-                </v-chip>
-              </v-card-text> -->
                   </v-card>
                 </v-flex>
                 <v-flex d-flex md6>
@@ -234,7 +141,19 @@
                           prepend-icon="people"
                           chips
                           tags
-                        ></v-select>
+                          multiple
+                        ><template slot="selection" slot-scope="data">
+            <v-chip
+              :selected="data.selected"
+              :disabled="data.disabled"
+              :key="JSON.stringify(data.item)"
+              class="chip--select-multi"
+              @input="data.parent.selectItem(data.item)"
+              
+            >
+              {{ data.item.name }}
+            </v-chip>
+          </template></v-select>
                     </v-flex>
                   </v-layout>
                 </v-flex>
@@ -244,12 +163,25 @@
                         <v-select
                           v-model="card.desc.data"
                           :items="datalist"
-                          item-text="name"
                           label="佐證文件"
                           prepend-icon="picture_as_pdf"
                           chips
                           tags
-                        ></v-select>
+                          item-text="name"
+                          multiple
+                        >
+                        <template slot="selection" slot-scope="data">
+            <v-chip
+              :selected="data.selected"
+              :disabled="data.disabled"
+              :key="JSON.stringify(data.item)"
+              class="chip--select-multi"
+              @input="data.parent.selectItem(data.item)"
+              
+            >
+              {{ data.item.name }}
+            </v-chip>
+          </template></v-select>
                     </v-flex>
                   </v-layout>
                 </v-flex>
@@ -295,7 +227,7 @@ export default {
       dialog: false,
       selectedlist: {},
       snackbar: false,
-      valid:false,
+      valid: false,
       titleRules: [
         v => !!v || '此欄位為必填!',
         v => v.length <= 20 || '此欄位不可超過20個字!'
@@ -346,11 +278,14 @@ export default {
     },
     resetForm: function() {
       /* this.form = Object.assign({}, this.defaultForm) */
-      this.$refs.form.reset()
+      //this.$refs.form.reset()
+      this.card.desc.people = []
+      this.card.desc.data = []
+      this.card.title = ''
     },
     submit: function() {
       let that = this
-      if (this.editable = false) 
+      if (this.editable == false) 
       {
         Trello.post('cards', {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function() {
           window.location.reload(true);
@@ -380,11 +315,24 @@ export default {
         }
       })
     },
-    editcard: function(card) {
+    newcard: function (list) {
+      this.dialog = true; 
+      this.selectedlist.name = list.name;
+      this.selectedlist.id = list.id;
+      this.selectedlist.color = list.color
+      this.editable = false
+      this.resetForm()
+    },
+    editcard: function(card,list) {
       this.dialog = true
+      this.selectedlist.name = list.name;
+      this.selectedlist.id = list.id;
+      this.selectedlist.color = list.color
       this.card.id = card.id
       this.card.title = card.name
-      this.card.desc = card.desc
+      //this.card.desc = card.desc
+      this.card.desc.people = card.desc.people
+      this.card.desc.data = card.desc.data
       this.editable = true
     }
   },
