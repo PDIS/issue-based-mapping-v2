@@ -94,7 +94,7 @@
         <v-divider></v-divider> 
           <v-card-actions style=" background-color:white">  
                    
-          <v-btn round color="light-blue accent-2" :to="{name:'board', params:{id:board.id}}">進入議題</v-btn>
+          <v-btn color="light-blue darken-2" :to="{name:'board', params:{id:board.id}}"><v-icon>arrow_right</v-icon> 進入議題</v-btn>
           <v-spacer></v-spacer> 
           <v-btn icon flat color="grey" :to="{name:'editboard',params:{id:board.id}}"><v-icon>edit</v-icon></v-btn>
           <v-btn icon flat color="grey" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id"><v-icon>delete</v-icon></v-btn>
