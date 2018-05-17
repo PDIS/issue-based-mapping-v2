@@ -17,7 +17,7 @@
         <v-list-tile
         >
           <v-list-tile-action >
-            <v-icon >home</v-icon>
+            <v-icon medium >home</v-icon>
           </v-list-tile-action>
           <v-list-tile-content >
             <v-list-tile-title >回到首頁</v-list-tile-title>

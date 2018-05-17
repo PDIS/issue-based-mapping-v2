@@ -268,7 +268,8 @@ export default {
       peoplelist: [],
       datalist: [],
       fab: false,
-      editable: false
+      editable: false,
+      search: ''
       /* form: Object.assign({}, defaultForm), */
     }
   },
