@@ -52,17 +52,17 @@
       >
         <v-icon>edit</v-icon>
       </v-btn> -->
-            <v-card :color="list.color" hover  v-for="card in list.cards" :key="card.id" class="ma-2" :id="card.id">
+            <v-card :color="list.color" hover  v-for="card in list.cards" :key="card.id" class="ma-2" :id="card.id" @mousedown="editcard(card);selectedlist.name = list.name;selectedlist.id = list.id;selectedlist.color = list.color">
               <v-tooltip right>
               <v-card-title primary-title slot="activator">
                 <div class="body-2">{{card.name}}</div>
               </v-card-title>
               <div v-for="desc in card.desc">
                 <div v-if=" typeof(desc) != 'object' && desc != ''">
-                  <span>{{desc}}</span>
+                  <span class="body-2">{{desc}}</span>
                 </div>
               </div>
-              <div>
+              <!-- <div>
                 <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
                   {{person.name}}
                 </v-chip>
@@ -71,7 +71,7 @@
                 <v-chip small color="pink lighten-1" text-color="white" v-for="data in card.desc.data" :key="data.id" >
                   {{data.name}}
                 </v-chip>
-              </div>
+              </div> -->
               <!-- <v-card>
         <v-list>
           <v-list-tile v-for="desc in card.desc">
@@ -135,7 +135,7 @@
                 <v-flex d-flex md6>
                   <v-card :color='selectedlist.color'>
                    <v-card-title primary-title>
-                <div class="body-2">{{card.title}}</div>
+                {{card.title}}
               </v-card-title>
             <!--   <v-card-text>
                  <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
@@ -307,6 +307,7 @@ export default {
         'Vuetify',
       ], */
       card: {
+        id: '',
         title: '',
         desc:{
           explain:'',
@@ -320,7 +321,8 @@ export default {
       },
       peoplelist: [],
       datalist: [],
-      fab: false
+      fab: false,
+      editable: false
       /* form: Object.assign({}, defaultForm), */
     }
   },
@@ -348,9 +350,17 @@ export default {
     },
     submit: function() {
       let that = this
-      Trello.post('cards', {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function() {
-        window.location.reload(true);
-      })
+      if (this.editable = false) 
+      {
+        Trello.post('cards', {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function() {
+          window.location.reload(true);
+        })
+      }
+      else {
+        Trello.put('cards/' + this.card.id, {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function() {
+          window.location.reload(true);
+        })
+      }
     },
     getpeople: function() {
       this.lists.map(list => {
@@ -369,6 +379,13 @@ export default {
           })
         }
       })
+    },
+    editcard: function(card) {
+      this.dialog = true
+      this.card.id = card.id
+      this.card.title = card.name
+      this.card.desc = card.desc
+      this.editable = true
     }
   },
   created: function() {
