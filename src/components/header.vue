@@ -14,6 +14,17 @@
           value="true"
         >
           <v-list-tile-action>
+            <v-icon >home</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>回到首頁</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
+        <v-list-tile
+          value="true"
+        >
+          <v-list-tile-action>
             <v-icon >work</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
@@ -27,7 +38,7 @@
             <v-icon >pan_tool</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title>說明文件</v-list-tile-title>
+            <v-list-tile-title>常見問題</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -38,8 +49,11 @@
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-btn icon outline small fab btn>
-        <v-icon>work</v-icon>
+        <v-icon>home</v-icon>
       </v-btn>
+      <!-- <v-btn icon outline small fab btn>
+        <v-icon>work</v-icon>
+      </v-btn> -->
       <v-btn icon outline small fab btn>
         <v-icon>pan_tool</v-icon>
       </v-btn>
