@@ -25,14 +25,14 @@
 </template>
 
 <style>
-@import url(https://fonts.googleapis.com/earlyaccess/cwtexhei.css);
+/* @import url(https://fonts.googleapis.com/earlyaccess/cwtexhei.css);
 .application {
   font-family: "cwTeXHei"!important
-}
-/* @import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css);
-.application {
-    font-family: 'Noto Sans TC';
 } */
+@import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css);
+.application {
+    font-family: Roboto, 'Noto Sans TC';
+}
 /* .content--wrap {
   overflow: auto
 } */
