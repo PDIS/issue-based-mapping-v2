@@ -167,12 +167,21 @@ export default {
       that.me.name = res.username,
       that.me.avatar = res.avatarUrl + '/50.png'
     },this.login())
-    Trello.boards.get(this.board.id, function(res) {
-      that.board.name = res.name
-      if (res.desc != '') {
-        that.board.desc = JSON.parse(res.desc)
+  },
+  watch: {
+    $route: function() {
+      let that = this
+      if (this.$route.params.id != undefined) {
+        this.board.id = this.$route.params.id
+        Trello.boards.get(this.board.id, function(res) {
+          console.log(res)
+          that.board.name = res.name
+          if (res.desc != '') {
+            that.board.desc = JSON.parse(res.desc)
+          }
+        })
       }
-    })
+    }
   }
 }
 </script>
