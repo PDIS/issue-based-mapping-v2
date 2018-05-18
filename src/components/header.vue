@@ -8,9 +8,12 @@
       enable-resize-watcher
       fixed
       app
-      dark class="grey darken-4 d-inline-block pa-5"
+      dark 
+      style="background-color:#032e3d;"
+      class="d-inline-block pa-5"
       
     >
+    <!-- class="grey darken-4 d-inline-block pa-5" -->
       <v-list 
         color="grey lighten-4"
         >
@@ -56,8 +59,11 @@
       scroll-off-screen
       tabs
       flat
-      light color="grey lighten-3"
+      dark 
+      
+      style="background-color:#10768D;"
     >
+    <!-- color="grey lighten-3" -->
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       
       <!-- <v-btn icon @click.stop="fixed = !fixed">

@@ -2,8 +2,9 @@
   <v-container grid-list-md>
      <v-layout row>
         <v-flex xs3 >
-        <v-card flat color="black mt-2" class="white--text">
-              <v-card-text primary-title color="indigo darken-4">
+        <v-card flat style="background-color:#032E3D;"  class="mt-2 white--text">
+          <!-- color="black " -->
+              <v-card-text color="indigo darken-4">
                 <div class="headline"># {{board.name}} </div>
               </v-card-text>
         </v-card>
@@ -16,7 +17,7 @@
       </v-layout>
      <v-layout row>
     <v-flex xs12 md4 lg3 v-for="(list) in lists" :key="list.id">
-      <v-toolbar dense dark flat text-ms-center color="grey darken-3">
+      <v-toolbar dense dark flat text-ms-center color="grey darken-3" >
           <v-toolbar-title class="subheading">{{list.name}}</v-toolbar-title>
       </v-toolbar>
   

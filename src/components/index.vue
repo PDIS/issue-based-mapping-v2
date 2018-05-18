@@ -5,7 +5,7 @@
     <v-layout row wrap>
       
       <v-flex xs12 >
-        <v-text-field color="indigo darken-4" class="mt-3 mb-0" prepend-icon="search" label="搜尋議題" value="Input text" v-model="search"></v-text-field>
+        <v-text-field color="blue-grey darken-4" class="mt-3 mb-0" prepend-icon="search" label="搜尋議題" value="Input text" v-model="search"></v-text-field>
       </v-flex>
 
       <v-flex xs4 text-xs-left pt-5>          
@@ -23,11 +23,11 @@
     <v-layout row wrap>
       <v-flex xs12 sm6 md4 lg3 text-xs-center>
 
-        <v-card height='20em' hover color="yellow">
+        <v-card height='20em' hover style="background-color:#f0c808">
           <v-container fill-height>
                <v-layout align-center justify-center>
                   <v-card-text>
-                      <v-btn fab dark large color="indigo darken-4" :to="{name:'newboard'}">
+                      <v-btn style="background-color:#10768D" fab dark large :to="{name:'newboard'}">
                           <v-icon dark>add</v-icon>
                       </v-btn>
                   </v-card-text>
@@ -94,7 +94,7 @@
         <v-divider></v-divider> 
           <v-card-actions style="background-color:white">  
                    
-          <v-btn color="cyan accent-4" :to="{name:'board', params:{id:board.id}}"><v-icon>arrow_right</v-icon> 進入議題</v-btn>
+          <v-btn  style="background-color:#032e3d; color:white;" :to="{name:'board', params:{id:board.id}}"><v-icon>arrow_right</v-icon> 進入議題</v-btn>
           <v-spacer></v-spacer> 
           <v-btn icon flat color="grey" :to="{name:'editboard',params:{id:board.id}}"><v-icon>edit</v-icon></v-btn>
           <v-btn icon flat color="grey" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id"><v-icon>delete</v-icon></v-btn>
