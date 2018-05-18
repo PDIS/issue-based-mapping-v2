@@ -17,7 +17,7 @@
       <v-list 
         color="grey lighten-4"
         >
-        <v-list-tile to="/"
+        <v-list-tile to="/" active-class
         >
           <v-list-tile-action >
             <v-icon medium >home</v-icon>
