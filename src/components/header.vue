@@ -116,6 +116,7 @@ export default {
       rightDrawer: false,
       title: '議題分析表',
       me: {
+        'id':'',
         'name':'',
         'avatar': ''
       },
@@ -152,6 +153,7 @@ export default {
       })
     })
     Trello.members.get('me', function (res) {
+      that.me.id = res.id
       that.me.name = res.username,
       that.me.avatar = res.avatarUrl + '/50.png'
       //console.log(that.me)
