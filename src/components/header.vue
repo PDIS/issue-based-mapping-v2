@@ -156,7 +156,7 @@ export default {
       that.me.id = res.id
       that.me.name = res.username,
       that.me.avatar = res.avatarUrl + '/50.png'
-      //console.log(that.me)
+      console.log(that.me)
     },this.login())
   }
 }
