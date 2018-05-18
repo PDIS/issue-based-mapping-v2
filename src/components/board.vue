@@ -61,7 +61,7 @@
       </v-card>
     </v-flex>
   </v-layout>
-  <v-dialog v-model="dialog" persistent max-width="50em">
+  <v-dialog v-model="dialog"  max-width="50em">
         <v-card>
           <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
             <v-container>
