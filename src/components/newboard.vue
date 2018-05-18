@@ -127,7 +127,7 @@
           'title': '',
           'person': '',
           'date': null,
-          'departmrnt': ''
+          'department': ''
           },
       }
     },

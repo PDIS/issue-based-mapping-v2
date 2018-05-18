@@ -17,13 +17,13 @@
       <v-list 
         color="grey lighten-4"
         >
-        <v-list-tile
+        <v-list-tile to="/"
         >
           <v-list-tile-action >
             <v-icon medium >home</v-icon>
           </v-list-tile-action>
           <v-list-tile-content >
-            <v-list-tile-title >回到首頁</v-list-tile-title>
+            <v-list-tile-title>回到首頁</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
 
@@ -49,13 +49,13 @@
         </v-list-tile>
       </v-list>
       <v-list>
-        <v-list-tile>
+<!--         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>
               {{board.name}}
             </v-list-tile-title>
           </v-list-tile-content>
-        </v-list-tile>
+        </v-list-tile> -->
         <v-list-tile v-for="desc in board.desc" :key="desc">
           <v-list-tile-content>
             <v-list-tile-title>
