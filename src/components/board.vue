@@ -29,7 +29,7 @@
       >
 
         <draggable ml-0 :id="list.id" v-model="list.cards" :options="{group:'cards',animation:200}" @add="movecard" style="min-height:1em" >
-            <v-card :color="list.color" hover  v-for="card in list.cards" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mouseup="editcard(card,list)">
+            <v-card :color="list.color" hover  v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mouseup="editcard(card,list)">
               <v-tooltip right>
               <v-card-title primary-title slot="activator">
                 <div class="body-2">{{card.name}}</div>
@@ -349,6 +349,11 @@ export default {
       this.card.desc.people = card.desc.people
       this.card.desc.data = card.desc.data
       this.editable = true
+    },
+    searchcards: function(list) {
+      return list.cards.filter(card => {
+        return card.name.toLowerCase().includes(this.search.toLowerCase())
+      })
     }
   },
   created: function() {
@@ -409,15 +414,6 @@ export default {
       console.log(res)
     }) */
   },
-  computed: {
-    filteredList() {
-      this.lists.map( list => {
-        return list.cards.filter(card => {
-          return card.name.toLowerCase().includes(this.search.toLowerCase())
-        })
-      })
-    }
-  }
 }
 </script>
 
