@@ -1,5 +1,12 @@
 <template>
   <v-container grid-list-md>
+    <v-layout row wrap v-if="admin == me">
+            <v-flex xs11>
+        <v-text-field color="grey darken-4" class="mt-3 mb-0" prepend-icon="people" label="新增議題成員" value="Input text" v-model="search"></v-text-field> 
+            </v-flex><v-flex xs1>
+         <v-btn>新增</v-btn>
+       </v-flex>
+    </v-layout>
      <v-layout row>
         <v-flex xs3 >
         <v-card flat style="background-color:#032E3D;"  class="mt-2 white--text">
@@ -270,7 +277,9 @@ export default {
       datalist: [],
       fab: false,
       editable: false,
-      search: ''
+      search: '',
+      admin:'',
+      me:''
       /* form: Object.assign({}, defaultForm), */
     }
   },
@@ -365,6 +374,18 @@ export default {
       if (res.desc != '') {
         that.board.desc = JSON.parse(res.desc)
       }
+    })
+    Trello.boards.get(this.board.id +'/memberships', function(res) {
+      res.map( m => {
+        if (m.memberType == 'admin') {
+          that.admin = m.idMember
+          console.log(that.admin)
+        }
+      })
+    })
+    Trello.members.get('me', function (res) {
+      that.me = res.id
+      console.log(that.me)
     })
     Trello.boards.get(this.board.id + '/lists',{cards: 'open'}, function(res) {
       res.map( l => {

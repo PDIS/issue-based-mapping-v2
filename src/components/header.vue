@@ -48,6 +48,22 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
+      <v-list>
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>
+              {{board.name}}
+            </v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile v-for="desc in board.desc" :key="desc">
+          <v-list-tile-content>
+            <v-list-tile-title>
+              {{desc}}
+            </v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
    
     </v-navigation-drawer>
     
@@ -120,14 +136,7 @@ export default {
         'name':'',
         'avatar': ''
       },
-      message: 
-        {
-          avatar: 'https://avatars0.githubusercontent.com/u/9064066?v=4&s=460',
-          name: 'John Leider',
-          title: 'Welcome to Vuetify.js!',
-          excerpt: 'Thank you for joining our community...'
-        },
-      
+      board:{}
     }
   },
   methods: {
@@ -143,6 +152,7 @@ export default {
   },
   created: function() {
     let that = this
+    this.board.id = this.$route.params.id
     let a = Trello.organizations.get('ibm249/boards',{'filter':'all'}, function(res) {
       this.items = []
       res.map(b => {
@@ -156,8 +166,13 @@ export default {
       that.me.id = res.id
       that.me.name = res.username,
       that.me.avatar = res.avatarUrl + '/50.png'
-      console.log(that.me)
     },this.login())
+    Trello.boards.get(this.board.id, function(res) {
+      that.board.name = res.name
+      if (res.desc != '') {
+        that.board.desc = JSON.parse(res.desc)
+      }
+    })
   }
 }
 </script>
