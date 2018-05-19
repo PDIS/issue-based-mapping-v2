@@ -9,9 +9,9 @@
     </v-layout>
      <v-layout row>
         <v-flex xs3 >
-        <v-card flat style="background-color:#032E3D;"  class="mt-2 white--text">
-          <!-- color="black " -->
-              <v-card-text color="indigo darken-4">
+        <v-card flat  class="mt-2">
+          <!-- color="black " style="background-color:#032E3D;" -->
+              <v-card-text >
                 <div class="headline"># {{board.name}} </div>
               </v-card-text>
         </v-card>
@@ -24,7 +24,7 @@
       </v-layout>
      <v-layout row>
     <v-flex xs12 md4 lg3 v-for="(list) in lists" :key="list.id">
-      <v-toolbar dense dark flat text-ms-center color="grey darken-3" >
+      <v-toolbar dense dark flat text-ms-center color="blue-grey darken-4" >
           <v-toolbar-title class="subheading">{{list.name}}</v-toolbar-title>
       </v-toolbar>
   
@@ -65,7 +65,7 @@
         <v-card>
           <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
             <v-container>
-              <v-layout row wrap>
+              <v-layout row wrap class="ma-5">
                 <v-flex d-flex md6>
                   <v-card :color='selectedlist.color'>
                    <v-card-title primary-title>
@@ -90,68 +90,68 @@
                 </v-chip>
            </div>
                     </v-flex>
-                  </v-layout>
+                  </v-layout >
                 </v-flex>
-                <v-flex d-flex md12 class="mt-3">
+                <v-flex d-flex md12 class="pt-5">
                   <v-layout row wrap v-if="selectedlist.name =='問題面向'">
                     <v-flex d-flex xs12>
-                   <v-text-field label="問題面向" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="問題面向" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap v-if="selectedlist.name == '問題細節'">
                          <v-flex d-flex xs12>
-                   <v-text-field label="問題細節" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="問題細節" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                      <v-flex d-flex xs12>
-                   <v-text-field label="補充說明" prepend-icon="people" v-model="card.desc.explain" ></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain" ></v-text-field>
                     </v-flex>
-                  </v-layout>
+                  </v-layout >
                       <v-layout row wrap  v-if="selectedlist.name == '解法'">
                          <v-flex d-flex xs12>
-                   <v-text-field label="解法" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="解法" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       </v-layout>
                       <v-layout row wrap  v-if="selectedlist.name == '回應'">
                         <v-flex d-flex xs12>
-                   <v-text-field label="回應" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="回應" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       <v-flex d-flex xs12>
-                   <v-text-field label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
                     </v-flex>
                         </v-layout>
                       <v-layout row wrap v-if="selectedlist.name == '困難'">
                      <v-flex d-flex xs12>
-                   <v-text-field label="困難" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="困難" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       <v-flex d-flex xs12>
-                   <v-text-field label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
                     </v-flex>
                         </v-layout>
                       <v-layout row wrap v-if="selectedlist.name == '利害關係人'">
                       <v-flex d-flex xs12>
-                   <v-text-field label="利害關係人" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field  color="blue-grey darken-2" label="利害關係人" prepend-icon="person" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                      <v-flex d-flex xs12>
-                   <v-text-field label="單位" prepend-icon="announcement" v-model="card.desc.department" ></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="單位" prepend-icon="work" v-model="card.desc.department" ></v-text-field>
                     </v-flex>
                      <v-flex d-flex xs12>
-                   <v-text-field label="背景" prepend-icon="announcement" v-model="card.desc.background"  ></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="背景" prepend-icon="folder" v-model="card.desc.background"  ></v-text-field>
                     </v-flex>
                         </v-layout>
                       <v-layout row wrap v-if="selectedlist.name == '資料/文件/連結'">
                       <v-flex d-flex xs12>
-                   <v-text-field label="資料/文件/連結" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="資料/文件/連結" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       <v-flex d-flex xs12>
-                   <v-text-field label="摘要" prepend-icon="people" v-model="card.desc.summary"></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="關聯利害關係人" prepend-icon="people" v-model="card.desc.summary"></v-text-field>
                     </v-flex>
                     <v-flex d-flex xs12>
-                   <v-text-field label="歸納" prepend-icon="people" v-model="card.desc.induction" ></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="歸納" prepend-icon="people" v-model="card.desc.induction" ></v-text-field>
                     </v-flex>
                         </v-layout>
                 
                 </v-flex>
-
+                <v-divider></v-divider>
                 <v-flex d-flex md12>
                   <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '利害關係人'">
                     <v-flex d-flex xs12 >
@@ -161,6 +161,7 @@
                           item-text="name"
                           label="關聯利害關係人"
                           prepend-icon="people"
+                          color="blue-grey darken-2" 
                           chips
                           tags
                           multiple
@@ -187,10 +188,12 @@
                           :items="datalist"
                           label="佐證文件"
                           prepend-icon="picture_as_pdf"
+                          color="blue-grey darken-2" 
                           chips
                           tags
                           item-text="name"
                           multiple
+                          
                         >
                         <template slot="selection" slot-scope="data">
             <v-chip
@@ -208,15 +211,18 @@
                   </v-layout>
                 </v-flex>
               </v-layout>
-            </v-container>
-               <v-card-actions>
-               <!--  <v-btn :disabled="!formIsValid" flat color="primary" type="submit" class="subheading">確認</v-btn> -->
-               <v-btn flat color="primary" type="submit" class="subheading">確認</v-btn>
-                <v-spacer></v-spacer>
-        <v-btn flat class="subheading" @click="resetForm">清除</v-btn>
-        <v-spacer></v-spacer>
-         <v-btn flat @click.native="closeDialog" class="subheading">關閉</v-btn>
+            
+          <v-card-actions class="pa-3">
+              <!--  <v-btn :disabled="!formIsValid" flat color="primary" type="submit" class="subheading">確認</v-btn> -->
+              
+              <v-btn flat color="grey lighten-1" class="subheading">刪除便利貼</v-btn>
+              <v-btn flat color="grey lighten-1" class="subheading" @click="resetForm">重新填寫</v-btn>
+              <v-spacer></v-spacer>
+              
+              <v-btn flat @click.native="closeDialog" class="subheading">取消</v-btn>
+              <v-btn flat color="cyan" type="submit" class="subheading">確認</v-btn>
           </v-card-actions>
+          </v-container>
           </v-form>
         </v-card>
       </v-dialog>
@@ -404,26 +410,27 @@ export default {
         list.cards = l.cards
         switch (list.name)
         {
-          case '資料/文件/連結':
-          list.color = 'blue lighten-4'
-          break
+          
           case '問題面向':
-          list.color = 'yellow darken-1'
+          list.color = 'yellow darken-2'
           break
           case '問題細節':
-          list.color = 'yellow lighten-4'
+          list.color = 'amber lighten-3'
           break
           case '解法':
-          list.color = 'light-green accent-2'
+          list.color = 'light-green darken-2'
           break
           case '回應':
-          list.color = 'amber accent-4'
+          list.color = 'deep-orange lighten-1'
           break
           case '困難':
-          list.color = 'pink lighten-2'
+          list.color = 'red accent-1'
           break
           case '利害關係人':
-          list.color = 'cyan accent-4'
+          list.color = 'cyan darken-2'
+          break
+          case '資料/文件/連結':
+          list.color = 'blue-grey lighten-4'
           break
           default:
           list.color = 'teal'

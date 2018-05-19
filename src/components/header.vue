@@ -9,11 +9,17 @@
       fixed
       app
       dark 
-      style="background-color:#032e3d;"
-      class="d-inline-block pa-5"
+      
+      class="cyan darken-4 d-inline-block pa-5"
       
     >
-    <!-- class="grey darken-4 d-inline-block pa-5" -->
+    <!-- style="background-color:#032e3d;" class="grey darken-4 d-inline-block pa-5" -->
+
+      <img src="../assets/pdis-logo-03.png" style="width:190px; margin-top:-50px; margin-bottom:-30px;" alt="">
+  <v-divider></v-divider>
+
+   <v-text-field color="white" label="全站搜尋" value="Input text" v-model="search"></v-text-field>
+
       <v-list 
         color="grey lighten-4"
         >
@@ -75,11 +81,11 @@
       scroll-off-screen
       tabs
       flat
-      dark 
+      light 
       
-      style="background-color:#10768D;"
+      color="grey lighten-3" 
     >
-    <!-- color="grey lighten-3" -->
+    <!-- style="background-color:#10768D;"-->
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       
       <!-- <v-btn icon @click.stop="fixed = !fixed">

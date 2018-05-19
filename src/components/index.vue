@@ -23,11 +23,13 @@
     <v-layout row wrap>
       <v-flex xs12 sm6 md4 lg3 text-xs-center>
 
-        <v-card height='20em' hover style="background-color:#f0c808">
+        <v-card height='20em' hover class="yellow darken-2" :to="{name:'newboard'}">
+          <!--  style="background-color:#f0c808" -->
           <v-container fill-height>
                <v-layout align-center justify-center>
-                  <v-card-text>
-                      <v-btn style="background-color:#10768D" fab dark large :to="{name:'newboard'}">
+                  <v-card-text >
+                      <v-btn class="cyan darken-4" fab dark large :to="{name:'newboard'}">
+                        <!-- style="background-color:#10768D" -->
                           <v-icon dark>add</v-icon>
                       </v-btn>
                   </v-card-text>
@@ -56,7 +58,7 @@
             <v-list subheader style="background-color:white">
                <v-subheader class="grey lighten-3" style="color:black"># <div class="ml-2">{{ board.title }}</div>
                <v-spacer></v-spacer>
-               <v-chip outline color="black" text-color="black" >
+               <v-chip outline color="black" text-color="black">
       {{board.desc.department}}
     </v-chip></v-subheader>
                <v-divider></v-divider> 
@@ -94,7 +96,8 @@
         <v-divider></v-divider> 
           <v-card-actions style="background-color:white">  
                    
-          <v-btn  style="background-color:#032e3d; color:white;" :to="{name:'board', params:{id:board.id}}"><v-icon>arrow_right</v-icon> 進入議題</v-btn>
+          <v-btn class="blue-grey darken-4 white--text" :to="{name:'board', params:{id:board.id}}"><v-icon>arrow_right</v-icon> 進入議題</v-btn>
+<!--  background-color:#032e3d; -->
           <v-spacer></v-spacer> 
           <v-btn icon flat color="grey" :to="{name:'editboard',params:{id:board.id}}"><v-icon>edit</v-icon></v-btn>
           <v-btn icon flat color="grey" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id"><v-icon>delete</v-icon></v-btn>

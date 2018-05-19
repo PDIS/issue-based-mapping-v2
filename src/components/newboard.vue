@@ -2,17 +2,21 @@
 <v-container fluid >
     <v-layout row wrap justify-center>
       <v-flex xs12 sm6>
-  <v-card>
+        <v-flex xs6 text-xs-left pt-5 pb-5>          
+            <span class="title">新增看板</span>
+      </v-flex>
+  <v-flex>
      <v-snackbar
       v-model="snackbar"
       absolute
       top
       right
-      color="success"
+      color="cyan"
     >
       <span>新增成功!</span>
       <v-icon dark>check_circle</v-icon>
     </v-snackbar>
+
   <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
     <v-container>
                 <v-text-field
@@ -21,6 +25,7 @@
                   v-model="boardname"
                   :counter="20"
                   :rules="nameRules"
+                  color="grey-blue darken-2"
                 ></v-text-field>
 
                 <v-text-field
@@ -28,6 +33,7 @@
                   prepend-icon="announcement"
                   v-model="desc.title"
                   :rules="requiredRules"
+                  color="grey-blue darken-2"
                 ></v-text-field>
  
                 <v-text-field
@@ -35,6 +41,7 @@
                   prepend-icon="person"
                   v-model="desc.person"
                   :rules="requiredRules"
+                  color="grey-blue darken-2"
                 ></v-text-field>
       <v-menu
         ref="date"
@@ -55,31 +62,30 @@
           prepend-icon="event"
           :rules="requiredRules"
           readonly
+          color="grey-blue darken-2"
         ></v-text-field>
-        <v-date-picker v-model="desc.date" @input="$refs.date.save(date)"  locale="zh-tw"></v-date-picker>
+        <v-date-picker color="cyan darken-4" v-model="desc.date" @input="$refs.date.save(date)"  locale="zh-tw"></v-date-picker>
 
       </v-menu>
-      <v-text-field
-                  label="部會名稱"
-                  prepend-icon="announcement"
-                  v-model="desc.department"
-                  :rules="requiredRules"
-                ></v-text-field>
+        <v-text-field
+          label="部會名稱"
+          prepend-icon="announcement"
+          v-model="desc.department"
+          :rules="requiredRules"
+          color="grey-blue darken-2"
+        ></v-text-field>
  
           </v-container>
           <v-divider></v-divider>
           <v-card-actions>
-              <v-btn
-          :disabled="!formIsValid"
-          flat
-          color="primary"
-          type="submit" class="subheading"
-        >確認</v-btn>
-                <v-spacer></v-spacer>
-        <v-btn flat @click="resetForm" class="subheading">清除</v-btn>
-      </v-card-actions>
+              
+              <v-btn flat color="grey lighten-1" @click="resetForm" class="subheading">重新填寫</v-btn>
+              <v-spacer></v-spacer>
+              <v-btn to="/" flat class="subheading">取消</v-btn>
+              <v-btn :disabled="!formIsValid" flat color="cyan" type="submit" class="subheading">確認</v-btn>
+          </v-card-actions>
   </v-form>
-  </v-card>
+  </v-flex>
       </v-flex>
     </v-layout>
   </v-container>
