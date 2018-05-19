@@ -23,11 +23,11 @@
     <v-layout row wrap>
       <v-flex xs12 sm6 md4 lg3 text-xs-center>
 
-        <v-card height='20em' hover class="yellow darken-2">
+        <v-card height='20em' hover class="yellow darken-2" :to="{name:'newboard'}">
           <!--  style="background-color:#f0c808" -->
           <v-container fill-height>
                <v-layout align-center justify-center>
-                  <v-card-text>
+                  <v-card-text >
                       <v-btn class="cyan darken-4" fab dark large :to="{name:'newboard'}">
                         <!-- style="background-color:#10768D" -->
                           <v-icon dark>add</v-icon>
