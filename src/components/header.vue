@@ -147,6 +147,7 @@ export default {
         name: '',
         desc: {}
       },
+      search: ''
     }
   },
   methods: {
