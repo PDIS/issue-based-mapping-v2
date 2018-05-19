@@ -9,9 +9,9 @@
     </v-layout>
      <v-layout row>
         <v-flex xs3 >
-        <v-card flat style="background-color:#032E3D;"  class="mt-2 white--text">
-          <!-- color="black " -->
-              <v-card-text color="indigo darken-4">
+        <v-card flat  class="mt-2">
+          <!-- color="black " style="background-color:#032E3D;" -->
+              <v-card-text >
                 <div class="headline"># {{board.name}} </div>
               </v-card-text>
         </v-card>
@@ -24,7 +24,7 @@
       </v-layout>
      <v-layout row>
     <v-flex xs12 md4 lg3 v-for="(list) in lists" :key="list.id">
-      <v-toolbar dense dark flat text-ms-center color="grey darken-3" >
+      <v-toolbar dense dark flat text-ms-center color="blue-grey darken-4" >
           <v-toolbar-title class="subheading">{{list.name}}</v-toolbar-title>
       </v-toolbar>
   
@@ -395,26 +395,27 @@ export default {
         list.cards = l.cards
         switch (list.name)
         {
-          case '資料/文件/連結':
-          list.color = 'blue lighten-4'
-          break
+          
           case '問題面向':
-          list.color = 'yellow darken-1'
+          list.color = 'yellow darken-2'
           break
           case '問題細節':
-          list.color = 'yellow lighten-4'
+          list.color = 'amber lighten-3'
           break
           case '解法':
-          list.color = 'light-green accent-2'
+          list.color = 'light-green darken-2'
           break
           case '回應':
-          list.color = 'amber accent-4'
+          list.color = 'deep-orange lighten-1'
           break
           case '困難':
-          list.color = 'pink lighten-2'
+          list.color = 'red accent-1'
           break
           case '利害關係人':
-          list.color = 'cyan accent-4'
+          list.color = 'cyan darken-2'
+          break
+          case '資料/文件/連結':
+          list.color = 'blue-grey lighten-4'
           break
           default:
           list.color = 'teal'
