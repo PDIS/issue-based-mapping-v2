@@ -14,6 +14,12 @@
       
     >
     <!-- class="grey darken-4 d-inline-block pa-5" -->
+
+      <img src="../assets/pdis-logo-03.png" style="width:190px; margin-top:-50px; margin-bottom:-30px;" alt="">
+  <v-divider></v-divider>
+
+   <v-text-field color="white" label="全站搜尋" value="Input text" v-model="search"></v-text-field>
+
       <v-list 
         color="grey lighten-4"
         >
