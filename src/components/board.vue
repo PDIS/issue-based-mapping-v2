@@ -215,10 +215,9 @@
           <v-card-actions class="pa-3">
               <!--  <v-btn :disabled="!formIsValid" flat color="primary" type="submit" class="subheading">確認</v-btn> -->
               
-              <v-btn flat color="grey lighten-1" class="subheading">刪除便利貼</v-btn>
+              <v-btn flat color="red lighten-1" class="subheading"  @click.native.stop="deletedialog=true;selectedid=card.id">刪除便利貼</v-btn>
               <v-btn flat color="grey lighten-1" class="subheading" @click="resetForm">重新填寫</v-btn>
               <v-spacer></v-spacer>
-              
               <v-btn flat @click.native="closeDialog" class="subheading">取消</v-btn>
               <v-btn flat color="cyan" type="submit" class="subheading">確認</v-btn>
           </v-card-actions>
@@ -226,6 +225,16 @@
           </v-form>
         </v-card>
       </v-dialog>
+    <v-dialog v-model="deletedialog" max-width="290">
+      <v-card>
+        <v-card-title class="headline">確定刪除?</v-card-title>
+        <v-card-text></v-card-text>
+        <v-card-actions>
+          <v-btn color="blue" flat="flat" @click.native="deletedialog=false; cloasecard(card.id)">確定</v-btn>
+          <v-btn color="black" flat="flat" @click.native="deletedialog=false" >取消</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -238,16 +247,6 @@ export default {
     newcard
   },
   data () {
-    /* const defaultForm = Object.freeze({
-      card: {
-        title: '',
-        desc: '',
-        department: '',
-        background: '',
-        summary: '',
-        induction: ''
-      }
-    }) */
     return {
       board: {
         id: '',
@@ -269,12 +268,6 @@ export default {
         v => !!v || '此欄位為必填!',
         v => v.length <= 20 || '此欄位不可超過20個字!'
       ],
-      /* items: [
-        'Programming',
-        'Design',
-        'Vue',
-        'Vuetify',
-      ], */
       card: {
         id: '',
         title: '',
@@ -294,8 +287,8 @@ export default {
       editable: false,
       search: '',
       admin:'',
-      me:''
-      /* form: Object.assign({}, defaultForm), */
+      me:'',
+      deletedialog: false
     }
   },
   methods: {
@@ -378,6 +371,12 @@ export default {
     searchcards: function(list) {
       return list.cards.filter(card => {
         return card.name.toLowerCase().includes(this.search.toLowerCase())
+      })
+    },
+    cloasecard: function(id) {
+      let that = this
+      Trello.put('cards/' + id ,{'closed':true},function(res) {
+        window.location.reload(true);
       })
     }
   },

@@ -1,6 +1,6 @@
 <template>
-<div>
-<v-navigation-drawer
+  <div>
+    <v-navigation-drawer
       persistent
       :mini-variant="miniVariant"
       :clipped="clipped"
@@ -9,22 +9,13 @@
       fixed
       app
       dark 
-      
       class="cyan darken-4 d-inline-block pa-5"
-      
     >
-    <!-- style="background-color:#032e3d;" class="grey darken-4 d-inline-block pa-5" -->
-
       <img src="../assets/pdis-logo-03.png" style="width:190px; margin-top:-50px; margin-bottom:-30px;" alt="">
-  <v-divider></v-divider>
-
-   <v-text-field color="white" label="全站搜尋" value="Input text" v-model="search"></v-text-field>
-
-      <v-list 
-        color="grey lighten-4"
-        >
-        <v-list-tile to="/" active-class
-        >
+      <v-divider></v-divider>
+      <!-- <v-text-field color="white" label="全站搜尋" value="Input text" v-model="search"></v-text-field> -->
+      <v-list color="grey lighten-4">
+        <v-list-tile to="/" active-class>
           <v-list-tile-action >
             <v-icon medium >home</v-icon>
           </v-list-tile-action>
@@ -32,10 +23,7 @@
             <v-list-tile-title>回到首頁</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-
-        <v-list-tile
-          
-        >
+        <v-list-tile>
           <v-list-tile-action>
             <v-icon >work</v-icon>
           </v-list-tile-action>
@@ -43,9 +31,7 @@
             <v-list-tile-title>說明文件</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-         <v-list-tile
-          
-        >
+        <v-list-tile>
           <v-list-tile-action>
             <v-icon >pan_tool</v-icon>
           </v-list-tile-action>
@@ -55,13 +41,6 @@
         </v-list-tile>
       </v-list>
       <v-list>
-<!--         <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>
-              {{board.name}}
-            </v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile> -->
         <v-list-tile v-for="desc in board.desc" :key="desc">
           <v-list-tile-content>
             <v-list-tile-title>
@@ -70,10 +49,7 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
-   
     </v-navigation-drawer>
-    
-    
     <v-toolbar
       app
       :clipped-left="clipped"
@@ -82,43 +58,19 @@
       tabs
       flat
       light 
-      
       color="grey lighten-3" 
     >
-    <!-- style="background-color:#10768D;"-->
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      
-      <!-- <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>remove</v-icon>
-      </v-btn> -->
-     <v-toolbar-title v-text="title">議題分析表</v-toolbar-title>
-      
+      <v-toolbar-title v-text="title"></v-toolbar-title>
       <v-spacer></v-spacer>
-      
-      <!-- <v-btn icon outline small fab btn>
-        <v-icon>home</v-icon>
-      </v-btn>
-      <v-btn icon outline small fab btn>
-        <v-icon>work</v-icon>
-      </v-btn>
-      <v-btn icon outline small fab btn>
-        <v-icon>pan_tool</v-icon>
-      </v-btn> -->
-      <v-btn icon outline small fab btn >
+      <strong class="mr-3 title">Hi, {{me.name}}</strong>
+      <v-btn icon outline small fab btn disabled class="mr-3" v-if="me.avatar != ''">
         <v-avatar>
           <img :src="me.avatar" alt="username">
         </v-avatar> 
       </v-btn>
-          
-      <!-- <v-btn color="primary" dark>{{me.name}}
-        <v-icon dark right>person</v-icon>
-      </v-btn> -->
-<!--       <v-btn icon @click.stop="login">
-        <v-icon>person</v-icon>
-      </v-btn> -->
-    </v-toolbar>
-    
-</div>
+    </v-toolbar> 
+  </div>
 </template>
 
 <script>
@@ -128,14 +80,7 @@ export default {
       clipped: false,
       drawer: false,
       fixed: false,
- /*      items: [{
-        icon: '',
-        title: ''
-      }], */
-      items: [],
       miniVariant: false,
-      right: true,
-      rightDrawer: false,
       title: '議題分析表',
       me: {
         'id':'',
@@ -154,30 +99,20 @@ export default {
     login: function () {
       Trello.authorize({name: '議題分析表' ,expiration:'never',scope: { read: true, write: true },})
     },
-    menu: function () {
-      console.log(this.items)
-    },
-    getsuccessed: function(res) {
-      console.log(res)
+    getuser: function() {
+      let that = this
+      Trello.members.get('me', function (res) {
+        that.me.id = res.id
+        that.me.name = res.fullName
+        if (res.avatarSource != 'none')
+        {
+          that.me.avatar = res.avatarUrl + '/50.png'
+        }
+      },this.login())
     }
   },
   created: function() {
-    let that = this
-    this.board.id = this.$route.params.id
-    let a = Trello.organizations.get('ibm249/boards',{'filter':'all'}, function(res) {
-      this.items = []
-      res.map(b => {
-        let item = {};
-        item.icon = 'bubble_chart'
-        item.title = b.name
-        this.items.push(item)
-      })
-    })
-    Trello.members.get('me', function (res) {
-      that.me.id = res.id
-      that.me.name = res.username,
-      that.me.avatar = res.avatarUrl + '/50.png'
-    },this.login())
+    this.getuser()
   },
   watch: {
     $route: function() {
@@ -185,7 +120,6 @@ export default {
       if (this.$route.params.id != undefined) {
         this.board.id = this.$route.params.id
         Trello.boards.get(this.board.id, function(res) {
-          console.log(res)
           that.board.name = res.name
           if (res.desc != '') {
             that.board.desc = JSON.parse(res.desc)

@@ -1,10 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
 import index from '@/components/index'
 import newboard from '@/components/newboard'
 import board from '@/components/board'
-import editboard from '@/components/editboard'
 import newcard from '@/components/newcard'
 import test from '@/components/test'
 
@@ -36,11 +34,6 @@ export default new Router({
       path: '/newcard',
       name: 'newcard',
       component: newcard
-    },
-    {
-      path: '/HelloWorld',
-      name: 'HelloWorld',
-      component: HelloWorld
     },
     {
       path: '/test',
