@@ -81,7 +81,7 @@
               
               <v-btn flat color="grey lighten-1" @click="resetForm" class="subheading">重新填寫</v-btn>
               <v-spacer></v-spacer>
-              <v-btn flat class="subheading">取消</v-btn>
+              <v-btn to="/" flat class="subheading">取消</v-btn>
               <v-btn :disabled="!formIsValid" flat color="cyan" type="submit" class="subheading">確認</v-btn>
           </v-card-actions>
   </v-form>
