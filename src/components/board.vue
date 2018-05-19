@@ -65,7 +65,7 @@
         <v-card>
           <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
             <v-container>
-              <v-layout row wrap>
+              <v-layout row wrap class="ma-5">
                 <v-flex d-flex md6>
                   <v-card :color='selectedlist.color'>
                    <v-card-title primary-title>
@@ -90,9 +90,9 @@
                 </v-chip>
            </div>
                     </v-flex>
-                  </v-layout>
+                  </v-layout >
                 </v-flex>
-                <v-flex d-flex md12 class="mt-3">
+                <v-flex d-flex md12 class="pt-5">
                   <v-layout row wrap v-if="selectedlist.name =='問題面向'">
                     <v-flex d-flex xs12>
                    <v-text-field label="問題面向" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
@@ -129,13 +129,13 @@
                         </v-layout>
                       <v-layout row wrap v-if="selectedlist.name == '利害關係人'">
                       <v-flex d-flex xs12>
-                   <v-text-field label="利害關係人" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field  color="blue-grey darken-2" label="利害關係人" prepend-icon="person" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                      <v-flex d-flex xs12>
-                   <v-text-field label="單位" prepend-icon="announcement" v-model="card.desc.department" ></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="單位" prepend-icon="work" v-model="card.desc.department" ></v-text-field>
                     </v-flex>
                      <v-flex d-flex xs12>
-                   <v-text-field label="背景" prepend-icon="announcement" v-model="card.desc.background"  ></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="背景" prepend-icon="folder" v-model="card.desc.background"  ></v-text-field>
                     </v-flex>
                         </v-layout>
                       <v-layout row wrap v-if="selectedlist.name == '資料/文件/連結'">
@@ -143,7 +143,7 @@
                    <v-text-field label="資料/文件/連結" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       <v-flex d-flex xs12>
-                   <v-text-field label="摘要" prepend-icon="people" v-model="card.desc.summary"></v-text-field>
+                   <v-text-field label="關聯利害關係人" prepend-icon="people" v-model="card.desc.summary"></v-text-field>
                     </v-flex>
                     <v-flex d-flex xs12>
                    <v-text-field label="歸納" prepend-icon="people" v-model="card.desc.induction" ></v-text-field>
@@ -151,7 +151,7 @@
                         </v-layout>
                 
                 </v-flex>
-
+                <v-divider></v-divider>
                 <v-flex d-flex md12>
                   <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '利害關係人'">
                     <v-flex d-flex xs12 >
@@ -208,15 +208,18 @@
                   </v-layout>
                 </v-flex>
               </v-layout>
-            </v-container>
-               <v-card-actions>
-               <!--  <v-btn :disabled="!formIsValid" flat color="primary" type="submit" class="subheading">確認</v-btn> -->
-               <v-btn flat color="primary" type="submit" class="subheading">確認</v-btn>
-                <v-spacer></v-spacer>
-        <v-btn flat class="subheading" @click="resetForm">清除</v-btn>
-        <v-spacer></v-spacer>
-         <v-btn flat @click.native="closeDialog" class="subheading">關閉</v-btn>
+            
+          <v-card-actions class="pa-3">
+              <!--  <v-btn :disabled="!formIsValid" flat color="primary" type="submit" class="subheading">確認</v-btn> -->
+              
+              <v-btn flat color="grey lighten-1" class="subheading">刪除便利貼</v-btn>
+              <v-btn flat color="grey lighten-1" class="subheading" @click="resetForm">重新填寫</v-btn>
+              <v-spacer></v-spacer>
+              
+              <v-btn flat @click.native="closeDialog" class="subheading">取消</v-btn>
+              <v-btn flat color="primary" type="submit" class="subheading">確認</v-btn>
           </v-card-actions>
+          </v-container>
           </v-form>
         </v-card>
       </v-dialog>
