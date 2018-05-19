@@ -243,7 +243,16 @@ export default {
       }
     }) */
     return {
-      board: {},
+      board: {
+        id: '',
+        name: '',
+        desc: {
+          'title': '',
+          'person': '',
+          'date': null,
+          'department': ''
+        }
+      },
       lists: [],
       cards: [],
       dialog: false,

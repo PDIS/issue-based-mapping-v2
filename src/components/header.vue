@@ -136,7 +136,11 @@ export default {
         'name':'',
         'avatar': ''
       },
-      board:{}
+      board: {
+        id: '',
+        name: '',
+        desc: {}
+      },
     }
   },
   methods: {
@@ -180,6 +184,9 @@ export default {
             that.board.desc = JSON.parse(res.desc)
           }
         })
+      }
+      else {
+        this.board.desc = {}
       }
     }
   }
