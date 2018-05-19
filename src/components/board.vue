@@ -95,36 +95,36 @@
                 <v-flex d-flex md12 class="pt-5">
                   <v-layout row wrap v-if="selectedlist.name =='問題面向'">
                     <v-flex d-flex xs12>
-                   <v-text-field label="問題面向" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="問題面向" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap v-if="selectedlist.name == '問題細節'">
                          <v-flex d-flex xs12>
-                   <v-text-field label="問題細節" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="問題細節" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                      <v-flex d-flex xs12>
-                   <v-text-field label="補充說明" prepend-icon="people" v-model="card.desc.explain" ></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain" ></v-text-field>
                     </v-flex>
-                  </v-layout>
+                  </v-layout >
                       <v-layout row wrap  v-if="selectedlist.name == '解法'">
                          <v-flex d-flex xs12>
-                   <v-text-field label="解法" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="解法" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       </v-layout>
                       <v-layout row wrap  v-if="selectedlist.name == '回應'">
                         <v-flex d-flex xs12>
-                   <v-text-field label="回應" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="回應" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       <v-flex d-flex xs12>
-                   <v-text-field label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
                     </v-flex>
                         </v-layout>
                       <v-layout row wrap v-if="selectedlist.name == '困難'">
                      <v-flex d-flex xs12>
-                   <v-text-field label="困難" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="困難" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       <v-flex d-flex xs12>
-                   <v-text-field label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
                     </v-flex>
                         </v-layout>
                       <v-layout row wrap v-if="selectedlist.name == '利害關係人'">
@@ -140,13 +140,13 @@
                         </v-layout>
                       <v-layout row wrap v-if="selectedlist.name == '資料/文件/連結'">
                       <v-flex d-flex xs12>
-                   <v-text-field label="資料/文件/連結" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="資料/文件/連結" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                     </v-flex>
                       <v-flex d-flex xs12>
-                   <v-text-field label="關聯利害關係人" prepend-icon="people" v-model="card.desc.summary"></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="關聯利害關係人" prepend-icon="people" v-model="card.desc.summary"></v-text-field>
                     </v-flex>
                     <v-flex d-flex xs12>
-                   <v-text-field label="歸納" prepend-icon="people" v-model="card.desc.induction" ></v-text-field>
+                   <v-text-field color="blue-grey darken-2" label="歸納" prepend-icon="people" v-model="card.desc.induction" ></v-text-field>
                     </v-flex>
                         </v-layout>
                 
@@ -161,6 +161,7 @@
                           item-text="name"
                           label="關聯利害關係人"
                           prepend-icon="people"
+                          color="blue-grey darken-2" 
                           chips
                           tags
                           multiple
@@ -187,10 +188,12 @@
                           :items="datalist"
                           label="佐證文件"
                           prepend-icon="picture_as_pdf"
+                          color="blue-grey darken-2" 
                           chips
                           tags
                           item-text="name"
                           multiple
+                          
                         >
                         <template slot="selection" slot-scope="data">
             <v-chip
@@ -217,7 +220,7 @@
               <v-spacer></v-spacer>
               
               <v-btn flat @click.native="closeDialog" class="subheading">取消</v-btn>
-              <v-btn flat color="primary" type="submit" class="subheading">確認</v-btn>
+              <v-btn flat color="cyan" type="submit" class="subheading">確認</v-btn>
           </v-card-actions>
           </v-container>
           </v-form>
