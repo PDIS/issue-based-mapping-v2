@@ -28,7 +28,7 @@
         <v-card >
           <v-container fluid grid-list-lg align-center wrap>
             <draggable ml-0 :id="list.id" :options="{group:'cards',animation:200}" @add="movecard" style="min-height:1em" >
-              <v-card :color="list.color" hover  v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mouseup="editcard(card,list)">
+              <v-card :color="card.color" :dark="card.hover" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mouseup="editcard(card,list)" @mouseover="hover = true;changecolor(card)" @mouseout="hover = false;changecolor(card,list)">
                 <v-card-title primary-title>
                   <div class="body-2">{{card.name}}</div>
                 </v-card-title> 
@@ -267,7 +267,8 @@ export default {
       admin:'',
       me:'',
       deletedialog: false,
-      email:''
+      email:'',
+      hover:false
     }
   },
   methods: {
@@ -428,6 +429,8 @@ export default {
               let desc = JSON.parse(card.desc)
               card.desc = desc
             }
+            card.color = list.color
+            card.hover = false
           })
           that.lists.push(list)
         })
@@ -439,6 +442,50 @@ export default {
       Trello.put('boards/' + this.board.id +'/members' ,{'email':this.email ,'type':'normal'},function(res) {
         window.location.reload(true);
       })
+    },
+    getcolor: function() {
+      if (this.hover == true) {
+        return 'black'
+      }
+      else {
+        switch (list.name)
+        {
+          case '問題面向':
+          return 'yellow darken-2'
+          break
+          case '問題細節':
+          return  'amber lighten-3'
+          break
+          case '解法':
+          return  'light-green darken-2'
+          break
+          case '回應':
+          return  'deep-orange lighten-1'
+          break
+          case '困難':
+          return  'red accent-1'
+          break
+          case '利害關係人':
+          return  'cyan darken-2'
+          break
+          case '資料/文件/連結':
+          return  'blue-grey lighten-4'
+          break
+          default:
+          return  'teal'
+          break
+        }
+      }
+    },
+    changecolor: function(card,list) {
+      if (this.hover == true) {
+        card.color = 'black'
+        card.hover = true
+      }
+      else {
+        card.color = list.color
+        card.hover = false
+      }
     }
   },
   created: function() {
