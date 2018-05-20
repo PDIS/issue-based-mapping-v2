@@ -109,13 +109,8 @@ export default {
           that.me.avatar = res.avatarUrl + '/50.png'
         }
       },this.login())
-    }
-  },
-  created: function() {
-    this.getuser()
-  },
-  watch: {
-    $route: function() {
+    },
+    getboardinfo: function() {
       let that = this
       if (this.$route.params.id != undefined) {
         this.board.id = this.$route.params.id
@@ -129,6 +124,15 @@ export default {
       else {
         this.board.desc = {}
       }
+    }
+  },
+  created: function() {
+    this.getuser()
+    this.getboardinfo()
+  },
+  watch: {
+    $route: function() {
+      this.getboardinfo()
     }
   }
 }
