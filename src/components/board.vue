@@ -1,6 +1,6 @@
 <template>
   <v-container grid-list-md>
-    <v-layout row wrap v-if="admin == me">
+    <v-layout row wrap v-if="board.admin.includes(me)">
       <v-flex xs11>
         <v-text-field color="grey darken-4" class="mt-3 mb-0" prepend-icon="people" label="新增議題成員" value="Input text" v-model="email"></v-text-field> 
       </v-flex>
@@ -234,7 +234,8 @@ export default {
           'person': '',
           'date': null,
           'department': ''
-        }
+        },
+        admin: []
       },
       lists: [],
       cards: [],
@@ -264,11 +265,11 @@ export default {
       fab: false,
       editable: false,
       search: '',
-      admin:'',
-      me:'',
+      admin: [],
+      me: '',
       deletedialog: false,
-      email:'',
-      hover:false
+      email: '',
+      hover: false
     }
   },
   methods: {
@@ -365,23 +366,29 @@ export default {
     getboard: function() {
       let that = this;
       this.board.id = this.$route.params.id
-      Trello.boards.get(this.board.id, function(res) {
+      Trello.boards.get(this.board.id,{'fields':'all'}, function(res) {
         that.board.name = res.name
         if (res.desc != '') {
           that.board.desc = JSON.parse(res.desc)
         }
-      })
-    },
-    getadmin: function() {
-      let that = this;
-      Trello.boards.get(this.board.id +'/memberships', function(res) {
-        res.map( m => {
+        that.board.admin = []
+        res.memberships.map( m => {
           if (m.memberType == 'admin') {
-            that.admin = m.idMember
+            that.board.admin.push(m.idMember)
           }
         })
       })
     },
+   /*  getadmin: function() {
+      let that = this;
+      Trello.boards.get(this.board.id +'/memberships', function(res) {
+        res.map( m => {
+          if (m.memberType == 'admin') {
+            that.admin.push(m.idMember)
+          }
+        })
+      })
+    }, */
     getme: function() {
       let that = this;
       Trello.members.get('me', function (res) {
@@ -490,7 +497,7 @@ export default {
   },
   created: function() {
     this.getboard()
-    this.getadmin()
+    /* this.getadmin() */
     this.getme()
     this.getlists()
     /* Trello.cards.get("Uta5z7Fr/attachments", function(res) {

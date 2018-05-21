@@ -70,8 +70,10 @@
           <v-card-actions class="mt-1" style="background-color:white">  
             <v-btn class="blue-grey darken-4 white--text" :to="{name:'board', params:{id:board.id}}"><v-icon>arrow_right</v-icon> 進入議題</v-btn>
             <v-spacer></v-spacer> 
-            <v-btn icon flat color="grey" :to="{name:'editboard',params:{id:board.id}}"><v-icon>edit</v-icon></v-btn>
-            <v-btn icon flat color="grey" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id"><v-icon>delete</v-icon></v-btn>
+            <div v-if="board.admin.includes(me)">
+              <v-btn icon flat color="grey" :to="{name:'editboard',params:{id:board.id}}"><v-icon>edit</v-icon></v-btn>
+              <v-btn icon flat color="grey" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id"><v-icon>delete</v-icon></v-btn>
+            </div>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -96,7 +98,9 @@ export default {
       boards:[],
       search:'',
       dialog:false,
-      selectedid:''
+      selectedid:'',
+      me: '',
+      canedit: true
     }
   },
   methods: {
@@ -110,6 +114,12 @@ export default {
           if (b.desc != '') {
             board.desc = JSON.parse(b.desc)
           }
+          board.admin = []
+          b.memberships.map( m => {
+            if (m.memberType == 'admin') {
+              board.admin.push(m.idMember)
+            }
+          })
           that.boards.push(board)
         })
       })
@@ -119,18 +129,37 @@ export default {
       Trello.put('boards/' + id ,{'closed':true},function(res) {
         window.location.reload(true);
       })
-    }
+    },
+    getme: function() {
+      let that = this;
+      Trello.members.get('me', function (res) {
+        that.me = res.id
+      })
+    },
+    /* getadmin: function(board) {
+      let that = this;
+      Trello.boards.get(board.id +'/memberships', function(res) {
+        res.map( m => {
+          if (m.memberType == 'admin') {
+            if (m.idMember == that.me) {
+              return true
+            }
+          }
+        })
+      })
+    }, */
   },
   created: function() {
     this.getboards()
+    this.getme()
   },
   computed: {
     filteredList() {
       return this.boards.filter(board => {
         return board.title.toLowerCase().includes(this.search.toLowerCase())
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
