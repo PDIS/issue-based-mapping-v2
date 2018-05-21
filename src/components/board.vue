@@ -35,7 +35,7 @@
               </v-card>
             </draggable>
           </v-container>
-          <v-footer >
+          <v-footer v-if="board.admin.includes(me) || board.members.includes(me)">
             <v-btn text-md-left color="grey lighten-3" style="margin:0;width:100%" @click.native.stop="newcard(list)" > 
               <v-icon small>add</v-icon>新增卡片<v-spacer></v-spacer> 
             </v-btn>
@@ -235,7 +235,8 @@ export default {
           'date': null,
           'department': ''
         },
-        admin: []
+        admin: [],
+        members: []
       },
       lists: [],
       cards: [],
@@ -372,9 +373,13 @@ export default {
           that.board.desc = JSON.parse(res.desc)
         }
         that.board.admin = []
+        that.board.members = []
         res.memberships.map( m => {
           if (m.memberType == 'admin') {
             that.board.admin.push(m.idMember)
+          }
+          else {
+            that.board.members.push(m.adMember)
           }
         })
       })
@@ -405,7 +410,6 @@ export default {
           list.cards = l.cards
           switch (list.name)
           {
-            
             case '問題面向':
             list.color = 'yellow darken-2'
             break
