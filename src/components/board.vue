@@ -342,16 +342,18 @@ export default {
       this.resetForm()
     },
     editcard: function(card,list) {
-      this.dialog = true
-      this.selectedlist.name = list.name;
-      this.selectedlist.id = list.id;
-      this.selectedlist.color = list.color
-      this.card.id = card.id
-      this.card.title = card.name
-      //this.card.desc = card.desc
-      this.card.desc.people = card.desc.people
-      this.card.desc.data = card.desc.data
-      this.editable = true
+      if (this.board.admin.includes(this.me) || this.board.members.includes(this.me)) {
+        this.dialog = true
+        this.selectedlist.name = list.name;
+        this.selectedlist.id = list.id;
+        this.selectedlist.color = list.color
+        this.card.id = card.id
+        this.card.title = card.name
+        //this.card.desc = card.desc
+        this.card.desc.people = card.desc.people
+        this.card.desc.data = card.desc.data
+        this.editable = true
+      }
     },
     searchcards: function(list) {
       return list.cards.filter(card => {
