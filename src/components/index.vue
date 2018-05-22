@@ -16,7 +16,7 @@
     </v-layout>  
     <v-divider></v-divider>
     <v-layout row wrap>
-      <v-flex xs12 sm6 md4 lg3 text-xs-center>
+      <v-flex xs12 sm6 md4 lg3 text-xs-center v-if="orgadmin.includes(me)">
         <v-card height='20em' hover class="yellow darken-2" :to="{name:'newboard'}">
           <v-container fill-height>
             <v-layout align-center justify-center>
@@ -95,12 +95,13 @@
 export default {
   data () {
     return {
-      boards:[],
-      search:'',
-      dialog:false,
-      selectedid:'',
+      boards: [],
+      search: '',
+      dialog: false,
+      selectedid: '',
       me: '',
-      canedit: true
+      canedit: true,
+      orgadmin: []
     }
   },
   methods: {
@@ -136,22 +137,22 @@ export default {
         that.me = res.id
       })
     },
-    /* getadmin: function(board) {
+    getorgadmin: function() {
       let that = this;
-      Trello.boards.get(board.id +'/memberships', function(res) {
-        res.map( m => {
-          if (m.memberType == 'admin') {
-            if (m.idMember == that.me) {
-              return true
-            }
-          }
+      Trello.organizations.get('ibm249',{'fields':'all'}, function(res) {
+        res.memberships.map(m => {
+          /* if (m.memberType == 'admin') {
+            that.orgadmin.push(m.idMember)
+          } */
+          that.orgadmin.push(m.idMember)
         })
       })
-    }, */
+    }
   },
   created: function() {
     this.getboards()
     this.getme()
+    this.getorgadmin()
   },
   computed: {
     filteredList() {
