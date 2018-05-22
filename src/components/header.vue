@@ -40,12 +40,41 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
-      <v-list>
-        <v-list-tile v-for="desc in board.desc" :key="desc">
+      <v-divider></v-divider>
+      <v-list v-if="this.$route.params.id != undefined">
+        <v-list-tile>
+          <v-list-tile-action>
+            <v-icon>announcement</v-icon>
+          </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title>
-              {{desc}}
-            </v-list-tile-title>
+            <v-list-tile-title v-html="board.desc.title"></v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile>
+          <v-list-tile-action>
+            <v-icon>face</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <!-- <v-list-tile-sub-title>提案人</v-list-tile-sub-title> -->
+            <v-list-tile-title v-html="board.desc.person"></v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile>
+          <v-list-tile-action>
+            <v-icon >event</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <!-- <v-list-tile-sub-title>提案日期</v-list-tile-sub-title> -->
+            <v-list-tile-title v-html="board.desc.date"></v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile>
+          <v-list-tile-action>
+            <v-icon >supervised_user_circle</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <!-- <v-list-tile-sub-title>提案日期</v-list-tile-sub-title> -->
+            <v-list-tile-title v-html="board.desc.department"></v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>

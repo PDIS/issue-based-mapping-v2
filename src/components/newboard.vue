@@ -25,7 +25,7 @@
                 <v-text-field slot="activator" label="提案日期" v-model="board.desc.date" prepend-icon="event" :rules="requiredRules" readonly color="grey-blue darken-2"></v-text-field>
                 <v-date-picker color="cyan darken-4" v-model="board.desc.date" @input="$refs.date.save(date)" locale="zh-tw"></v-date-picker>
               </v-menu>
-              <v-text-field label="部會名稱" prepend-icon="announcement" v-model="board.desc.department" :rules="requiredRules" color="grey-blue darken-2"></v-text-field>
+              <v-text-field label="部會名稱" prepend-icon="supervised_user_circle" v-model="board.desc.department" :rules="requiredRules" color="grey-blue darken-2"></v-text-field>
             </v-container>
             <v-divider></v-divider>
             <v-card-actions>
