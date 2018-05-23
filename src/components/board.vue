@@ -494,11 +494,66 @@ export default {
       if (this.hover == true) {
         card.color = 'black'
         card.hover = true
+        if (card.desc.people != undefined) {
+          for (let p of card.desc.people) {
+            for (let l of this.lists) {
+              for (let c of l.cards) {
+                if (c.id == p.id) {
+                  c.color = 'blue-grey darken-2'
+                  c.hover = true
+                }
+              }
+            }
+          }
+        }
+        if (card.desc.data != undefined) {
+          for (let p of card.desc.data) {
+            for (let l of this.lists) {
+              for (let c of l.cards) {
+                if (c.id == p.id) {
+                  c.color = 'blue-grey darken-2'
+                  c.hover = true
+                }
+              }
+            }
+          }
+        }
       }
       else {
         card.color = list.color
         card.hover = false
+        if (card.desc.people != undefined) {
+          for (let p of card.desc.people) {
+            for (let l of this.lists) {
+              for (let c of l.cards) {
+                if (c.id == p.id) {
+                  c.color = l.color
+                  c.hover = false
+                }
+              }
+            }
+          }
+        }
+        if (card.desc.data != undefined) {
+          for (let p of card.desc.data) {
+            for (let l of this.lists) {
+              for (let c of l.cards) {
+                if (c.id == p.id) {
+                  c.color = l.color
+                  c.hover = false
+                }
+              }
+            }
+          }
+        }
       }
+    },
+    getcards: function() {
+      let that = this;
+      this.board.id = this.$route.params.id
+      Trello.boards.get(this.board.id + '/cards',{'fields':'all'}, function(res) {
+        that.cards = res
+      })
     }
   },
   created: function() {
@@ -506,6 +561,7 @@ export default {
     /* this.getadmin() */
     this.getme()
     this.getlists()
+    this.getcards()
     /* Trello.cards.get("Uta5z7Fr/attachments", function(res) {
       console.log(res)
     }) */
