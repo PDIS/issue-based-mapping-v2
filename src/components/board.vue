@@ -381,7 +381,7 @@ export default {
             that.board.admin.push(m.idMember)
           }
           else {
-            that.board.members.push(m.adMember)
+            that.board.members.push(m.idMember)
           }
         })
       })
