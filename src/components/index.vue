@@ -9,13 +9,13 @@
       </v-flex>
        <v-flex xs4 text-xs-right offset-xs4 pt-4>   
           <span class="group">
-            <v-btn outline btn><v-icon>subject</v-icon></v-btn>
-            <v-btn outline btn><v-icon>apps</v-icon></v-btn>
+            <v-btn outline btn @click="showtable = true"><v-icon>subject</v-icon></v-btn>
+            <v-btn outline btn @click="showtable = false"><v-icon>apps</v-icon></v-btn>
           </span>
       </v-flex > 
     </v-layout>  
     <v-divider></v-divider>
-    <v-layout row wrap>
+    <v-layout row wrap v-if="!showtable">
       <v-flex xs12 sm6 md4 lg3 text-xs-center v-if="orgadmin.includes(me)">
         <v-card height='20em' hover class="yellow darken-2" :to="{name:'newboard'}">
           <v-container fill-height>
@@ -78,6 +78,22 @@
         </v-card>
       </v-flex>
     </v-layout>
+    <template v-if="showtable">
+      <v-data-table
+        :headers="headers"
+        :items="boards"
+        hide-actions
+        class="elevation-1"
+      >
+        <template slot="items" slot-scope="props">
+          <td>{{ props.item.title }}</td>
+          <td class="text-xs-left">{{ props.item.desc.title }}</td>
+          <td class="text-xs-left">{{ props.item.desc.person }}</td>
+          <td class="text-xs-left">{{ props.item.desc.date }}</td>
+          <td class="text-xs-left">{{ props.item.desc.department }}</td>
+        </template>
+      </v-data-table>
+    </template>
     <v-dialog v-model="dialog" max-width="290">
       <v-card>
         <v-card-title class="headline">確定刪除?</v-card-title>
@@ -101,7 +117,20 @@ export default {
       selectedid: '',
       me: '',
       canedit: true,
-      orgadmin: []
+      orgadmin: [],
+      showtable: false,
+      headers: [
+          {
+            text: '議題名稱',
+            align: 'left',
+            sortable: false,
+            value: 'title'
+          },
+          { text: '提案名稱', value: 'desc.title' },
+          { text: '提案人', value: 'desc.person' },
+          { text: '提案日期', value: 'desc.date' },
+          { text: '主責部會', value: 'desc.department' },
+        ],
     }
   },
   methods: {

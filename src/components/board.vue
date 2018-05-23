@@ -258,7 +258,8 @@ export default {
           summary: '',
           induction: '',
           people: [],
-          data: []
+          data: [],
+          related: []
         }
       },
       peoplelist: [],
