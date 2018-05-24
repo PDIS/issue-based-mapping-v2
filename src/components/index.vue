@@ -84,6 +84,7 @@
         :headers="headers"
         :items="boards"
         hide-actions
+        :search="search"
         class="elevation-1 mt-2"
       >
         <template slot="items" slot-scope="props" :to="{name:'board',params:{id:props.item.id}}">
@@ -101,6 +102,9 @@
           </v-btn>
         </td>
         </template>
+        <v-alert slot="no-results" :value="true" color="error" icon="warning">
+          沒有符合 "{{ search }}" 的搜尋結果
+        </v-alert>
       </v-data-table>
     </template>
     <v-dialog v-model="dialog" max-width="290">
