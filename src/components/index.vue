@@ -79,18 +79,27 @@
       </v-flex>
     </v-layout>
     <template v-if="showtable">
+      <v-btn color="primary" dark class="mb-2" :to="{name:'newboard'}">新增議題</v-btn>
       <v-data-table
         :headers="headers"
         :items="boards"
         hide-actions
-        class="elevation-1"
+        class="elevation-1 mt-2"
       >
-        <template slot="items" slot-scope="props">
-          <td>{{ props.item.title }}</td>
+        <template slot="items" slot-scope="props" :to="{name:'board',params:{id:props.item.id}}">
+          <td><router-link class="black--text" style="text-decoration: none;" :to="{ name: 'board', params: { id: props.item.id }}">{{ props.item.title }}</router-link></td>
           <td class="text-xs-left">{{ props.item.desc.title }}</td>
           <td class="text-xs-left">{{ props.item.desc.person }}</td>
           <td class="text-xs-left">{{ props.item.desc.date }}</td>
           <td class="text-xs-left">{{ props.item.desc.department }}</td>
+          <td class="text-xs-left">
+          <v-btn icon class="mx-0" :to="{name:'editboard',params:{id:props.item.id}}">
+            <v-icon color="teal">edit</v-icon>
+          </v-btn>
+          <v-btn icon class="mx-0" @click="dialog=true;selectedid=props.item.id">
+            <v-icon color="pink">delete</v-icon>
+          </v-btn>
+        </td>
         </template>
       </v-data-table>
     </template>
@@ -130,6 +139,7 @@ export default {
           { text: '提案人', value: 'desc.person' },
           { text: '提案日期', value: 'desc.date' },
           { text: '主責部會', value: 'desc.department' },
+          { text: '', value:''}
         ],
     }
   },
