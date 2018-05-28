@@ -5,8 +5,14 @@ import App from './App'
 import router from './router'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
+import VueMindmap from 'vue-mindmap'
+import 'vue-mindmap/dist/vue-mindmap.css'
+import VueKonva from 'vue-konva'
+
+Vue.use(VueKonva)
 
 Vue.use(Vuetify)
+Vue.use(VueMindmap)
 
 Vue.config.productionTip = false
 
