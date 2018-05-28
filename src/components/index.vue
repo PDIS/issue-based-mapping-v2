@@ -79,7 +79,9 @@
       </v-flex>
     </v-layout>
     <template v-if="showtable">
-      <v-btn color="primary" dark class="mb-2" :to="{name:'newboard'}">新增議題</v-btn>
+      <div v-if="orgadmin.includes(me)">
+        <v-btn color="primary" dark class="mb-2" :to="{name:'newboard'}">新增議題</v-btn>
+      </div>
       <v-data-table
         :headers="headers"
         :items="boards"
@@ -95,12 +97,14 @@
           <td class="text-xs-left">{{ props.item.desc.date }}</td>
           <td class="text-xs-left">{{ props.item.desc.department }}</td>
           <td class="text-xs-left">
+            <div v-if="props.item.admin.includes(me)">
           <v-btn icon class="mx-0" :to="{name:'editboard',params:{id:props.item.id}}">
             <v-icon color="teal">edit</v-icon>
           </v-btn>
           <v-btn icon class="mx-0" @click="dialog=true;selectedid=props.item.id">
             <v-icon color="pink">delete</v-icon>
           </v-btn>
+            </div>
         </td>
         </template>
         <v-alert slot="no-results" :value="true" color="error" icon="warning">
