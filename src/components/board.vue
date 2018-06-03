@@ -57,20 +57,18 @@
               </v-flex>
               <v-flex d-flex md6>
                 <v-layout row wrap>
-                  <v-flex d-flex xs12>
+                 <!--  <v-flex d-flex xs12>
                     <div>
                       <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
-                        {{person.name}}
                       </v-chip>
                     </div>
                   </v-flex>
                   <v-flex d-flex xs12>
                     <div>
                       <v-chip small color="pink lighten-1" text-color="white" v-for="data in card.desc.data" :key="data.id" >
-                        {{data.name}}
                       </v-chip>
                     </div>
-                  </v-flex>
+                  </v-flex> -->
                 </v-layout >
               </v-flex>
               <v-flex d-flex md12 class="pt-5">
@@ -139,6 +137,19 @@
                       v-model="card.desc.people"
                       :items="peoplelist"
                       item-text="name"
+                      item-value="id"
+                      prepend-icon="people"
+                      label="關聯利害關係人"
+                      color="blue-grey darken-2"
+                      chips
+                      multiple
+                      autocomplete
+                      deletable-chips
+                    ></v-select>
+                    <!-- <v-select
+                      v-model="card.desc.people"
+                      :items="peoplelist"
+                      item-text="name"
                       label="關聯利害關係人"
                       prepend-icon="people"
                       color="blue-grey darken-2" 
@@ -149,15 +160,15 @@
                       <template slot="selection" slot-scope="data">
                         <v-chip
                           :selected="data.selected"
-                          :disabled="data.disabled"
                           :key="JSON.stringify(data.item)"
                           class="chip--select-multi"
                           @input="data.parent.selectItem(data.item)"
+                          close
                         >
                           {{ data.item.name }}
                         </v-chip>
                       </template>
-                    </v-select>
+                    </v-select> -->
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -165,6 +176,19 @@
                 <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '利害關係人'">
                   <v-flex d-flex xs12 >
                     <v-select
+                      v-model="card.desc.data"
+                      :items="datalist"
+                      item-text="name"
+                      item-value="'id':id"
+                      prepend-icon="picture_as_pdf"
+                      label="佐證文件"
+                      color="blue-grey darken-2"
+                      chips
+                      multiple
+                      autocomplete
+                      deletable-chips
+                    ></v-select>
+                    <!-- <v-select
                       v-model="card.desc.data"
                       :items="datalist"
                       label="佐證文件"
@@ -186,7 +210,7 @@
                           {{ data.item.name }}
                         </v-chip>
                       </template>
-                    </v-select>
+                    </v-select> -->
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -319,8 +343,11 @@ export default {
     getpeople: function() {
       this.lists.map(list => {
         if (list.name == '利害關係人') {
-          list.cards.map( card => {
-            this.peoplelist.push(card)
+          list.cards.map( people => {
+            this.peoplelist.push({
+              'id': people.id,
+              'name': people.name
+            })
           })
         }
       })
@@ -329,7 +356,10 @@ export default {
       this.lists.map(list => {
         if (list.name == '資料/文件/連結') {
           list.cards.map( data => {
-            this.datalist.push(data)
+            this.datalist.push({
+              'id': data.id,
+              'name': data.name
+            })
           })
         }
       })
@@ -500,7 +530,7 @@ export default {
             l.cards.map( c => {
               if (c.desc.people != undefined) {
                 c.desc.people.map( p => {
-                  if (p.id == card.id) {
+                  if (p == card.id) {
                     c.color ='blue-grey darken-2'
                     c.hover = true
                   }
@@ -516,7 +546,7 @@ export default {
             l.cards.map( c => {
               if (c.desc.data != undefined) {
                 c.desc.data.map( p => {
-                  if (p.id == card.id) {
+                  if (p == card.id) {
                     c.color ='blue-grey darken-2'
                     c.hover = true
                   }
@@ -532,7 +562,7 @@ export default {
             for (let p of card.desc.people) {
               for (let l of this.lists) {
                 for (let c of l.cards) {
-                  if (c.id == p.id) {
+                  if (c.id == p) {
                     c.color = 'blue-grey darken-2'
                     c.hover = true
                   }
@@ -544,7 +574,7 @@ export default {
             for (let p of card.desc.data) {
               for (let l of this.lists) {
                 for (let c of l.cards) {
-                  if (c.id == p.id) {
+                  if (c.id == p) {
                     c.color = 'blue-grey darken-2'
                     c.hover = true
                   }
@@ -562,7 +592,7 @@ export default {
             l.cards.map( c => {
               if (c.desc.people != undefined) {
                 c.desc.people.map( p => {
-                  if (p.id == card.id) {
+                  if (p == card.id) {
                     c.color = l.color
                     c.hover = false
                   }
@@ -578,7 +608,7 @@ export default {
             l.cards.map( c => {
               if (c.desc.data != undefined) {
                 c.desc.data.map( p => {
-                  if (p.id == card.id) {
+                  if (p == card.id) {
                     c.color = l.color
                     c.hover = false
                   }
@@ -594,7 +624,7 @@ export default {
             for (let p of card.desc.people) {
               for (let l of this.lists) {
                 for (let c of l.cards) {
-                  if (c.id == p.id) {
+                  if (c.id == p) {
                     c.color = l.color
                     c.hover = false
                   }
@@ -606,7 +636,7 @@ export default {
             for (let p of card.desc.data) {
               for (let l of this.lists) {
                 for (let c of l.cards) {
-                  if (c.id == p.id) {
+                  if (c.id == p) {
                     c.color = l.color
                     c.hover = false
                   }
@@ -623,7 +653,7 @@ export default {
       Trello.boards.get(this.board.id + '/cards',{'fields':'all'}, function(res) {
         that.cards = res
       })
-    }
+    },
   },
   created: function() {
     this.getboard()
