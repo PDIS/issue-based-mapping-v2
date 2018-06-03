@@ -28,7 +28,7 @@
         <v-card >
           <v-container fluid grid-list-lg align-center wrap>
             <draggable ml-0 :id="list.id" :options="{group:'cards',animation:200}" @add="movecard" style="min-height:1em" >
-              <v-card :color="card.color" :dark="card.hover" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mouseup="editcard(card,list)" @mouseover="hover = true;changecolor(card)" @mouseout="hover = false;changecolor(card,list)">
+              <v-card :color="card.color" :dark="card.hover" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mouseup="editcard(card,list)" @mouseover="hover = true;changecolor(card,list)" @mouseout="hover = false;changecolor(card,list)">
                 <v-card-title primary-title>
                   <div class="body-2">{{card.name}}</div>
                 </v-card-title> 
@@ -493,27 +493,61 @@ export default {
     },
     changecolor: function(card,list) {
       if (this.hover == true) {
-        card.color = 'black'
-        card.hover = true
-        if (card.desc.people != undefined) {
-          for (let p of card.desc.people) {
-            for (let l of this.lists) {
-              for (let c of l.cards) {
-                if (c.id == p.id) {
-                  c.color = 'blue-grey darken-2'
-                  c.hover = true
+        if (list.name == '利害關係人') {
+          card.color = 'black'
+          card.hover = true
+          this.lists.map( l => {
+            l.cards.map( c => {
+              if (c.desc.people != undefined) {
+                c.desc.people.map( p => {
+                  if (p.id == card.id) {
+                    c.color ='blue-grey darken-2'
+                    c.hover = true
+                  }
+                })
+              }
+            })
+          })
+        }
+        else if (list.name == '資料/文件/連結') {
+          card.color = 'black'
+          card.hover = true
+          this.lists.map( l => {
+            l.cards.map( c => {
+              if (c.desc.data != undefined) {
+                c.desc.data.map( p => {
+                  if (p.id == card.id) {
+                    c.color ='blue-grey darken-2'
+                    c.hover = true
+                  }
+                })
+              }
+            })
+          })
+        }
+        else {
+          card.color = 'black'
+          card.hover = true
+          if (card.desc.people != undefined) {
+            for (let p of card.desc.people) {
+              for (let l of this.lists) {
+                for (let c of l.cards) {
+                  if (c.id == p.id) {
+                    c.color = 'blue-grey darken-2'
+                    c.hover = true
+                  }
                 }
               }
             }
           }
-        }
-        if (card.desc.data != undefined) {
-          for (let p of card.desc.data) {
-            for (let l of this.lists) {
-              for (let c of l.cards) {
-                if (c.id == p.id) {
-                  c.color = 'blue-grey darken-2'
-                  c.hover = true
+          if (card.desc.data != undefined) {
+            for (let p of card.desc.data) {
+              for (let l of this.lists) {
+                for (let c of l.cards) {
+                  if (c.id == p.id) {
+                    c.color = 'blue-grey darken-2'
+                    c.hover = true
+                  }
                 }
               }
             }
@@ -521,27 +555,61 @@ export default {
         }
       }
       else {
-        card.color = list.color
-        card.hover = false
-        if (card.desc.people != undefined) {
-          for (let p of card.desc.people) {
-            for (let l of this.lists) {
-              for (let c of l.cards) {
-                if (c.id == p.id) {
-                  c.color = l.color
-                  c.hover = false
+        if (list.name == '利害關係人') {
+          card.color = list.color
+          card.hover = false
+          this.lists.map( l => {
+            l.cards.map( c => {
+              if (c.desc.people != undefined) {
+                c.desc.people.map( p => {
+                  if (p.id == card.id) {
+                    c.color = l.color
+                    c.hover = false
+                  }
+                })
+              }
+            })
+          })
+        }
+        else if (list.name == '資料/文件/連結') {
+          card.color = list.color
+          card.hover = false
+          this.lists.map( l => {
+            l.cards.map( c => {
+              if (c.desc.data != undefined) {
+                c.desc.data.map( p => {
+                  if (p.id == card.id) {
+                    c.color = l.color
+                    c.hover = false
+                  }
+                })
+              }
+            })
+          })
+        }
+        else {
+          card.color = list.color
+          card.hover = false
+          if (card.desc.people != undefined) {
+            for (let p of card.desc.people) {
+              for (let l of this.lists) {
+                for (let c of l.cards) {
+                  if (c.id == p.id) {
+                    c.color = l.color
+                    c.hover = false
+                  }
                 }
               }
             }
           }
-        }
-        if (card.desc.data != undefined) {
-          for (let p of card.desc.data) {
-            for (let l of this.lists) {
-              for (let c of l.cards) {
-                if (c.id == p.id) {
-                  c.color = l.color
-                  c.hover = false
+          if (card.desc.data != undefined) {
+            for (let p of card.desc.data) {
+              for (let l of this.lists) {
+                for (let c of l.cards) {
+                  if (c.id == p.id) {
+                    c.color = l.color
+                    c.hover = false
+                  }
                 }
               }
             }
