@@ -139,13 +139,23 @@
                       item-text="name"
                       item-value="id"
                       prepend-icon="people"
-                      label="關聯利害關係人"
-                      color="blue-grey darken-2"
+                      label="關聯利害關係人"                     
                       chips
                       multiple
                       autocomplete
                       deletable-chips
-                    ></v-select>
+                    >
+                      <template slot="item" slot-scope="data">
+                        <template v-if="typeof data.item !== 'object'">                   
+                        </template>
+                        <template v-else>
+                          <v-list-tile-avatar class="mt-4">
+                            <v-checkbox v-model="card.desc.people" :value="data.item.id"></v-checkbox>
+                          </v-list-tile-avatar>
+                          <v-list-tile-content v-text="data.item.name"></v-list-tile-content> 
+                        </template>
+                      </template>                                        
+                    </v-select>
                     <!-- <v-select
                       v-model="card.desc.people"
                       :items="peoplelist"
@@ -179,7 +189,7 @@
                       v-model="card.desc.data"
                       :items="datalist"
                       item-text="name"
-                      item-value="'id':id"
+                      item-value="id"
                       prepend-icon="picture_as_pdf"
                       label="佐證文件"
                       color="blue-grey darken-2"
@@ -187,7 +197,14 @@
                       multiple
                       autocomplete
                       deletable-chips
-                    ></v-select>
+                    >
+                      <template slot="item" slot-scope="data">
+                        <v-list-tile-avatar class="mt-4">
+                          <v-checkbox v-model="card.desc.data" :value="data.item.id"></v-checkbox>
+                        </v-list-tile-avatar>
+                        <v-list-tile-content v-text="data.item.name"></v-list-tile-content>
+                      </template>
+                    </v-select>
                     <!-- <v-select
                       v-model="card.desc.data"
                       :items="datalist"
@@ -236,6 +253,9 @@
           <v-btn color="black" flat="flat" @click.native="deletedialog=false" >取消</v-btn>
         </v-card-actions>
       </v-card>
+    </v-dialog>
+    <v-dialog v-model="newpersondialog" max-width="290">
+
     </v-dialog>
   </v-container>
 </template>
@@ -295,7 +315,8 @@ export default {
       me: '',
       deletedialog: false,
       email: '',
-      hover: false
+      hover: false,
+      newpersondialog: false
     }
   },
   methods: {
@@ -351,6 +372,7 @@ export default {
           })
         }
       })
+      /* this.peoplelist.push('新增利害關係人') */
     },
     getdata: function() {
       this.lists.map(list => {
@@ -654,6 +676,9 @@ export default {
         that.cards = res
       })
     },
+    newperson: function() {
+      
+    }
   },
   created: function() {
     this.getboard()
