@@ -231,6 +231,16 @@
                   </v-flex>
                 </v-layout>
               </v-flex>
+              <v-flex d-flex md12>
+                <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '利害關係人'">
+                  <v-flex d-flex xs6>
+                    <v-btn color="blue-grey" class="white--text" @click.native="newpersondialog=true">
+                      <v-icon small>add</v-icon>
+                      新增利害關係人
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
             </v-layout>
             <v-card-actions class="pa-3">
               <!--  <v-btn :disabled="!formIsValid" flat color="primary" type="submit" class="subheading">確認</v-btn> -->
@@ -255,7 +265,22 @@
       </v-card>
     </v-dialog>
     <v-dialog v-model="newpersondialog" max-width="290">
-
+      <v-card>
+        <v-card-title class="headline">新增利害關係人</v-card-title>
+        <v-form>
+          <v-container>
+            <v-layout>
+              <v-flex>
+                <v-text-field color="blue-grey darken-2" label="姓名" prepend-icon="people" v-model="newperson" ></v-text-field>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-form>
+        <v-card-actions>
+          <v-btn color="blue" flat="flat" @click.native="newpersondialog=false;addperson()">確定</v-btn>
+          <v-btn color="black" flat="flat" @click.native="newpersondialog=false;newperson=''" >取消</v-btn>
+        </v-card-actions>
+      </v-card>
     </v-dialog>
   </v-container>
 </template>
@@ -316,7 +341,18 @@ export default {
       deletedialog: false,
       email: '',
       hover: false,
-      newpersondialog: false
+      newpersondialog: false,
+      newperson: '',
+      newpersondesc: {
+          explain:'',
+          department: '',
+          background: '',
+          summary: '',
+          induction: '',
+          people: [],
+          data: [],
+          related: []
+        },
     }
   },
   methods: {
@@ -457,6 +493,7 @@ export default {
     },
     getlists: function() {
       let that = this;
+      this.lists = []
       Trello.boards.get(this.board.id + '/lists',{cards: 'open'}, function(res) {
         res.map( l => {
           let list = {}
@@ -676,8 +713,16 @@ export default {
         that.cards = res
       })
     },
-    newperson: function() {
-      
+    addperson: function() {
+      let that = this;
+      this.lists.map( l => {
+        if (l.name == '利害關係人') {
+          Trello.post('cards', {'name': this.newperson, 'idList': l.id,'desc': JSON.stringify(this.newpersondesc) } , function() {
+            that.newperson = ''
+            that.getlists()
+          })
+        }
+      })
     }
   },
   created: function() {
