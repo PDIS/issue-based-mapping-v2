@@ -282,6 +282,14 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-snackbar
+      :timeout="5000"
+      top="top"
+      v-model="snackbar"
+    >
+      新增成功!
+      <v-btn flat color="pink" @click.native="snackbar = false">關閉</v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -720,6 +728,7 @@ export default {
           Trello.post('cards', {'name': this.newperson, 'idList': l.id,'desc': JSON.stringify(this.newpersondesc) } , function() {
             that.newperson = ''
             that.getlists()
+            that.snackbar = true
           })
         }
       })
