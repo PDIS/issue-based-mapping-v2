@@ -13,6 +13,7 @@
         <v-card flat  class="mt-2">
           <v-card-text >
             <div class="headline"># {{board.name}} </div>
+            <v-btn :to="{name:'mindmap', params:{id:board.id}}">心智圖</v-btn>
           </v-card-text>
         </v-card>
       </v-flex>

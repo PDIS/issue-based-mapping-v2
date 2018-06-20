@@ -5,6 +5,7 @@ import newboard from '@/components/newboard'
 import board from '@/components/board'
 import newcard from '@/components/newcard'
 import test from '@/components/test'
+import mindmap from '@/components/mindmap'
 
 Vue.use(Router)
 
@@ -39,6 +40,11 @@ export default new Router({
       path: '/test',
       name: 'test',
       component: test
+    },
+    {
+      path: '/mindmap/:id',
+      name: 'mindmap',
+      component: mindmap
     }
   ]
 })
