@@ -1,47 +1,39 @@
 <template>
-<v-stage :config="stageconfig">
-  <v-layer>
-    <v-group v-for="(c,i) in lists[0].cards" :key="c.id" :ref="id" @dragmove="adjustPoint()" :config="{
-        x: 100 + i*150,
-        y: 100,
-        draggable: true
-      }">
-    <v-rect :config="{
-        fill: '#fbc02d',
-        width: 120,
-        height: 70,
-        shadowColor: 'black',
-        shadowOffset: {
-          x: 5,
-          y: 5
-        },
-        shadowOpacity: 0.6
-      }"></v-rect>
-        <v-text :config="{ text: c.name, fontSize: 15, width: 120, padding: 15, fontFamily: 'Roboto,sans-serif' }"></v-text>
-    </v-group>
-        <v-group ref="rect1" @dragmove="adjustPoint()" :config="{
+  <v-stage :config="stageconfig">
+    <v-layer>
+      <v-group v-for="(list, y) in lists" :key="list.id" :ref="list.id">
+        <v-group v-for="(card, x) in list.cards" :key="card.id" :ref="card.id" @dragmove="adjustPoint()" :config="{
+            x: 100 + x*150,
+            y: 100 + y*150,
+            draggable: true
+          }">
+        <v-rect :config="getrectconfig(card)"></v-rect>
+            <v-text :config="{ text: card.name, fontSize: 15, width: 120, padding: 15, fontFamily: 'Roboto,sans-serif' }"></v-text>
+        </v-group>
+      </v-group>
+      <!-- <v-group ref="rect1" @dragmove="adjustPoint()" :config="{
         x: 500,
         y: 300,
         draggable: true
       }">
-    <v-rect :config="{
-        fill: '#ff7043',
-        width: 200,
-        height: 100,
-        shadowColor: 'black',
-        shadowOffset: {
-          x: 5,
-          y: 5
-        },
-        shadowOpacity: 0.6
-      }"></v-rect>
-        <v-text :config="{ text: '動物保護檢查員有需要可以請警察陪同', fontSize: 15, width: 200, padding: 30, fontFamily: 'Roboto,sans-serif' }"></v-text>
-    </v-group>
-    <v-arrow ref="arrow" :config="arrowconfig">
+      <v-rect :config="{
+          fill: '#ff7043',
+          width: 200,
+          height: 100,
+          shadowColor: 'black',
+          shadowOffset: {
+            x: 5,
+            y: 5
+          },
+          shadowOpacity: 0.6
+        }"></v-rect>
+          <v-text :config="{ text: '動物保護檢查員有需要可以請警察陪同', fontSize: 15, width: 200, padding: 30, fontFamily: 'Roboto,sans-serif' }"></v-text>
+      </v-group>
+      <v-arrow ref="arrow" :config="arrowconfig">
 
-    </v-arrow>
-  </v-layer>
-</v-stage>
+      </v-arrow> -->
+    </v-layer>
+  </v-stage>
 </template>
 
 <script>
@@ -60,11 +52,11 @@ export default {
     this.getcards()
   },
   mounted: function() {
-    this.arrowconfig = {fill: 'black',
+    /* this.arrowconfig = {fill: 'black',
         points: [this.$refs.rect.getStage().getX() + this.$refs.rect.getStage().children[0].getWidth()/2,this.$refs.rect.getStage().getY() + this.$refs.rect.getStage().children[0].getHeight(), this.$refs.rect1.getStage().getX() + this.$refs.rect1.getStage().children[0].getWidth()/2, this.$refs.rect1.getStage().getY()],
         stroke: 'black',
         strokeWidth: 4,
-        draggable: true}
+        draggable: true} */
   },
   methods: {
     getcards: function() {
@@ -80,25 +72,25 @@ export default {
           switch (list.name)
           {
             case '問題面向':
-            list.color = 'yellow darken-2'
+            list.color = '#FBC02D'
             break
             case '問題細節':
-            list.color = 'amber lighten-3'
+            list.color = '#FFE082'
             break
             case '解法':
-            list.color = 'light-green darken-2'
+            list.color = '#689F38'
             break
             case '回應':
-            list.color = 'deep-orange lighten-1'
+            list.color = '#F4511E'
             break
             case '困難':
-            list.color = 'red accent-1'
+            list.color = '#FF8A80'
             break
             case '利害關係人':
-            list.color = 'cyan darken-2'
+            list.color = '#0097A7'
             break
             case '資料/文件/連結':
-            list.color = 'blue-grey lighten-4'
+            list.color = '#CFD8DC'
             break
             default:
             list.color = 'teal'
@@ -112,28 +104,44 @@ export default {
             card.color = list.color
             card.hover = false
           })
+          console.log(list)
           that.lists.push(list)
         })
       })
     },
     getstageconfig: function() {
-      let stagewidth = 2000
-      let stageheight = 1000
+      let stagewidth = window.innerWidth
+      let stageheight = window.innerHeight
       this.stageconfig = {
         width: stagewidth,
-        height: stageheight
+        height: stageheight,
+        draggable: true
       }
     },
+    getrectconfig: function(card) {
+return {
+            fill: card.color,
+            width: 120,
+            height: 70,
+            shadowColor: 'black',
+            shadowOffset: {
+              x: 5,
+              y: 5
+            },
+              shadowOpacity: 0.6
+          }
+    },
     adjustPoint: function(e){
-      let p=[this.$refs.rect.getStage().getX() + this.$refs.rect.getStage().children[0].getWidth()/2, this.$refs.rect.getStage().getY() + this.$refs.rect.getStage().children[0].getHeight(), this.$refs.rect1.getStage().getX() + this.$refs.rect1.getStage().children[0].getWidth()/2, this.$refs.rect1.getStage().getY()];
-      this.$refs.arrow.getStage().setPoints(p);
+      /* let p=[this.$refs.rect.getStage().getX() + this.$refs.rect.getStage().children[0].getWidth()/2, this.$refs.rect.getStage().getY() + this.$refs.rect.getStage().children[0].getHeight(), this.$refs.rect1.getStage().getX() + this.$refs.rect1.getStage().children[0].getWidth()/2, this.$refs.rect1.getStage().getY()];
+      this.$refs.arrow.getStage().setPoints(p); */
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
 body {
-  overflow: auto
+  overflow: hidden;
 }
+
 </style>
