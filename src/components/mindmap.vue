@@ -1,14 +1,10 @@
 <template>
-  <v-stage :config="stageconfig">
+  <v-stage :config="getstageconfig()">
     <v-layer>
       <v-group v-for="(list, y) in lists" :key="list.id" :ref="list.id">
-        <v-group v-for="(card, x) in list.cards" :key="card.id" :ref="card.id" @dragmove="adjustPoint()" :config="{
-            x: 100 + x*150,
-            y: 100 + y*150,
-            draggable: true
-          }">
-        <v-rect :config="getrectconfig(card)"></v-rect>
-            <v-text :config="{ text: card.name, fontSize: 15, width: 120, padding: 15, fontFamily: 'Roboto,sans-serif' }"></v-text>
+        <v-group v-for="(card, x) in list.cards" :key="card.id" :ref="card.id" @dragmove="adjustPoint()" :config="getgroupconfig(x,y)">
+          <v-rect :config="getrectconfig(card)"></v-rect>
+          <v-text :config="gettextconfig(card)"></v-text>
         </v-group>
       </v-group>
       <!-- <v-group ref="rect1" @dragmove="adjustPoint()" :config="{
@@ -41,14 +37,11 @@ export default {
   data() {
     return {
       lists: [],
-      stageconfig: {},
       groupconfig: {},
-      rectconfig: {},
       arrowconfig: {},
     }
   },
   created: function() {
-    this.getstageconfig()
     this.getcards()
   },
   mounted: function() {
@@ -104,7 +97,6 @@ export default {
             card.color = list.color
             card.hover = false
           })
-          console.log(list)
           that.lists.push(list)
         })
       })
@@ -112,24 +104,40 @@ export default {
     getstageconfig: function() {
       let stagewidth = window.innerWidth
       let stageheight = window.innerHeight
-      this.stageconfig = {
+      return {
         width: stagewidth,
         height: stageheight,
         draggable: true
       }
     },
+    getgroupconfig: function(x,y) {
+      return {
+        x: 100 + x*150,
+        y: 100 + y*150,
+        draggable: true
+      }
+    },
     getrectconfig: function(card) {
-return {
-            fill: card.color,
-            width: 120,
-            height: 70,
-            shadowColor: 'black',
-            shadowOffset: {
-              x: 5,
-              y: 5
-            },
-              shadowOpacity: 0.6
-          }
+      return {
+        fill: card.color,
+        width: 120,
+        height: 70,
+        shadowColor: 'black',
+        shadowOffset: {
+          x: 5,
+          y: 5
+        },
+          shadowOpacity: 0.6
+      }
+    },
+    gettextconfig: function(card) {
+      return { 
+        text: card.name, 
+        fontSize: 15, 
+        width: 120, 
+        padding: 15, 
+        fontFamily: 'Roboto,sans-serif' 
+      }
     },
     adjustPoint: function(e){
       /* let p=[this.$refs.rect.getStage().getX() + this.$refs.rect.getStage().children[0].getWidth()/2, this.$refs.rect.getStage().getY() + this.$refs.rect.getStage().children[0].getHeight(), this.$refs.rect1.getStage().getX() + this.$refs.rect1.getStage().children[0].getWidth()/2, this.$refs.rect1.getStage().getY()];
