@@ -2,32 +2,13 @@
   <v-stage :config="getstageconfig()">
     <v-layer>
       <v-group v-for="(list, y) in lists" :key="list.id" :ref="list.id">
-        <v-group v-for="(card, x) in list.cards" :key="card.id" :ref="card.id" @dragmove="adjustPoint()" :config="getgroupconfig(x,y)">
+        <v-group v-for="(card, x) in list.cards" :key="card.id" @dragmove="adjustPoint()" :config="getgroupconfig(x,y)">
           <v-rect :config="getrectconfig(card)"></v-rect>
           <v-text :config="gettextconfig(card)"></v-text>
         </v-group>
       </v-group>
-      <!-- <v-group ref="rect1" @dragmove="adjustPoint()" :config="{
-        x: 500,
-        y: 300,
-        draggable: true
-      }">
-      <v-rect :config="{
-          fill: '#ff7043',
-          width: 200,
-          height: 100,
-          shadowColor: 'black',
-          shadowOffset: {
-            x: 5,
-            y: 5
-          },
-          shadowOpacity: 0.6
-        }"></v-rect>
-          <v-text :config="{ text: '動物保護檢查員有需要可以請警察陪同', fontSize: 15, width: 200, padding: 30, fontFamily: 'Roboto,sans-serif' }"></v-text>
-      </v-group>
-      <v-arrow ref="arrow" :config="arrowconfig">
-
-      </v-arrow> -->
+      <v-group ref="5abcdef478"></v-group>
+      <!-- <v-arrow ref="arrow" :config="arrowconfig"></v-arrow> -->
     </v-layer>
   </v-stage>
 </template>
@@ -37,7 +18,6 @@ export default {
   data() {
     return {
       lists: [],
-      groupconfig: {},
       arrowconfig: {},
     }
   },
@@ -45,6 +25,16 @@ export default {
     this.getcards()
   },
   mounted: function() {
+    console.log(this.$refs)
+    Object.keys(this.$refs).forEach(key => {
+      console.log(key);
+    });
+      /* this.lists.map(l => {
+        if ( == l.id) {
+          console.log('fuck')
+        }
+      }) */
+
     /* this.arrowconfig = {fill: 'black',
         points: [this.$refs.rect.getStage().getX() + this.$refs.rect.getStage().children[0].getWidth()/2,this.$refs.rect.getStage().getY() + this.$refs.rect.getStage().children[0].getHeight(), this.$refs.rect1.getStage().getX() + this.$refs.rect1.getStage().children[0].getWidth()/2, this.$refs.rect1.getStage().getY()],
         stroke: 'black',
@@ -103,7 +93,7 @@ export default {
     },
     getstageconfig: function() {
       let stagewidth = window.innerWidth
-      let stageheight = window.innerHeight
+      let stageheight = window.innerHeight - 64
       return {
         width: stagewidth,
         height: stageheight,
@@ -113,7 +103,7 @@ export default {
     getgroupconfig: function(x,y) {
       return {
         x: 100 + x*150,
-        y: 100 + y*150,
+        y: 50 + y*150,
         draggable: true
       }
     },

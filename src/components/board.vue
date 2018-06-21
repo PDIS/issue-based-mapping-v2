@@ -13,12 +13,15 @@
         <v-card flat class="mt-2">
           <v-card-text>
             <div class="headline"># {{board.name}} </div>
-            <v-btn :to="{name:'mindmap', params:{id:board.id}}">心智圖</v-btn>
-            <v-btn @click="relationmode = true">關聯卡片</v-btn>
           </v-card-text>
         </v-card>
       </v-flex>
-      <v-flex xs3 offset-xs6>
+      <v-flex xs6>
+        <v-btn :to="{name:'mindmap', params:{id:board.id}}">心智圖</v-btn>
+        <v-btn @click="relationmode = true" v-if="relationmode == false">關聯卡片</v-btn>
+        <v-btn @click="endrelationmode()" v-if="relationmode == true">結束關聯卡片</v-btn>
+      </v-flex>
+      <v-flex xs3>
         <v-text-field color="grey darken-4" class="mt-3 mb-0" prepend-icon="search" label="搜尋卡片關鍵字" value="Input text" v-model="search"></v-text-field>
       </v-flex>
     </v-layout>
@@ -454,6 +457,8 @@ export default {
           //this.card.desc = card.desc
           this.card.desc.people = card.desc.people
           this.card.desc.data = card.desc.data
+          this.card.desc.related = card.desc.related
+          this.card.desc.explain = card.desc.explain
           this.editable = true
         }
       }
@@ -470,20 +475,13 @@ export default {
         }
         else {
           let that = this
-          if (!this.firstcard.desc.related.includes(card.id)) {
-            this.firstcard.desc.related.push(card.id)
-          }
-          else {
-            //this.firstcard.desc.related.push(card.id)
-          }
-          Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
-            that.relatedmode = false
-            that.lists.map(l => {
-              l.cards.map(c => {
-                c.color = l.color
+          if (this.firstcard.column + 1 == list.column) {
+            if (!this.firstcard.desc.related.includes(card.id)) {
+              this.firstcard.desc.related.push(card.id)
+              Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
               })
-            })
-          })
+            }
+          }
         }
       }
     },
@@ -581,6 +579,7 @@ export default {
               card.desc = desc
             }
             card.color = list.color
+            card.column = list.column
             card.hover = false
           })
           that.lists.push(list)
@@ -690,6 +689,18 @@ export default {
                 }
               }
             }
+            if (card.desc.related != undefined) {
+              card.desc.related.map( r => {
+                this.lists.map(l => {
+                  l.cards.map( c => {
+                    if (c.id == r) {
+                      c.color = 'blue-grey darken-2'
+                      c.hover = true
+                    }
+                  })
+                })
+              })
+            }
           }
         }
         else {
@@ -752,6 +763,18 @@ export default {
                 }
               }
             }
+            if (card.desc.related != undefined) {
+              card.desc.related.map( r => {
+                this.lists.map(l => {
+                  l.cards.map(c => {
+                    if (c.id == r) {
+                      c.color = l.color
+                      c.hover = false
+                    }
+                  })
+                })
+              })
+            }
           }
         }
       }
@@ -773,6 +796,15 @@ export default {
             that.snackbar = true
           })
         }
+      })
+    },
+    endrelationmode: function() {
+      this.relationmode = false
+      this.firstcard = {}
+      this.lists.map(l => {
+        l.cards.map(c => {
+          c.color = l.color
+        })
       })
     }
   },
