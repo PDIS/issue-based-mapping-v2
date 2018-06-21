@@ -1,13 +1,12 @@
 <template>
   <v-stage :config="getstageconfig()">
     <v-layer>
-      <v-group v-for="(list, y) in lists" :key="list.id" :ref="list.id">
-        <v-group v-for="(card, x) in list.cards" :key="card.id" @dragmove="adjustPoint()" :config="getgroupconfig(x,y)">
+      <v-group v-for="(list, y) in lists" :key="list.id">
+        <v-group v-for="(card, x) in list.cards" :ref="card.id" :key="card.id" @dragmove="adjustPoint()" :config="getgroupconfig(x,y)">
           <v-rect :config="getrectconfig(card)"></v-rect>
           <v-text :config="gettextconfig(card)"></v-text>
         </v-group>
       </v-group>
-      <v-group ref="5abcdef478"></v-group>
       <!-- <v-arrow ref="arrow" :config="arrowconfig"></v-arrow> -->
     </v-layer>
   </v-stage>
@@ -24,17 +23,16 @@ export default {
   created: function() {
     this.getcards()
   },
-  mounted: function() {
-    console.log(this.$refs)
+  updated: function() {
     Object.keys(this.$refs).forEach(key => {
-      console.log(key);
+      this.lists.map(l => {
+        l.cards.map(c => {
+          if (c.id == key) {
+            console.log('fuck')
+          }
+        })
+      })
     });
-      /* this.lists.map(l => {
-        if ( == l.id) {
-          console.log('fuck')
-        }
-      }) */
-
     /* this.arrowconfig = {fill: 'black',
         points: [this.$refs.rect.getStage().getX() + this.$refs.rect.getStage().children[0].getWidth()/2,this.$refs.rect.getStage().getY() + this.$refs.rect.getStage().children[0].getHeight(), this.$refs.rect1.getStage().getX() + this.$refs.rect1.getStage().children[0].getWidth()/2, this.$refs.rect1.getStage().getY()],
         stroke: 'black',
