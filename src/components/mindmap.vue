@@ -2,12 +2,12 @@
   <v-stage :config="getstageconfig()">
     <v-layer>
       <v-group v-for="(list, y) in lists" :key="list.id">
-        <v-group v-for="(card, x) in list.cards" :ref="card.id" :key="card.id" @dragmove="adjustPoint()" :config="getgroupconfig(x,y)">
+        <v-group v-for="(card, x) in list.cards" :ref="card.id" :key="card.id" @dragmove="adjustPoint(card.id)" :config="getgroupconfig(x,y)">
           <v-rect :config="getrectconfig(card)"></v-rect>
           <v-text :config="gettextconfig(card)"></v-text>
         </v-group>
       </v-group>
-      <!-- <v-arrow ref="arrow" :config="arrowconfig"></v-arrow> -->
+      <v-arrow v-for="arrow in arrows" :key="arrow" ref="arrow" :config="arrowconfig[arrow]"></v-arrow>
     </v-layer>
   </v-stage>
 </template>
@@ -17,27 +17,29 @@ export default {
   data() {
     return {
       lists: [],
-      arrowconfig: {},
+      arrows: 0,
+      arrowconfig: [],
     }
   },
   created: function() {
     this.getcards()
   },
-  updated: function() {
-    Object.keys(this.$refs).forEach(key => {
-      this.lists.map(l => {
+  mounted: function() {
+    let that = this
+    setTimeout( () => {
+      that.lists.map(l => {
         l.cards.map(c => {
-          if (c.id == key) {
-            console.log('fuck')
+          if (c.desc.related != undefined) {
+            if (c.desc.related.length != 0) {
+              c.desc.related.map( r => {
+                that.arrows++
+                that.getarrowconfig(c.id,r)
+              })
+            }
           }
         })
       })
-    });
-    /* this.arrowconfig = {fill: 'black',
-        points: [this.$refs.rect.getStage().getX() + this.$refs.rect.getStage().children[0].getWidth()/2,this.$refs.rect.getStage().getY() + this.$refs.rect.getStage().children[0].getHeight(), this.$refs.rect1.getStage().getX() + this.$refs.rect1.getStage().children[0].getWidth()/2, this.$refs.rect1.getStage().getY()],
-        stroke: 'black',
-        strokeWidth: 4,
-        draggable: true} */
+    }, 1000)
   },
   methods: {
     getcards: function() {
@@ -127,11 +129,36 @@ export default {
         fontFamily: 'Roboto,sans-serif' 
       }
     },
-    adjustPoint: function(e){
-      /* let p=[this.$refs.rect.getStage().getX() + this.$refs.rect.getStage().children[0].getWidth()/2, this.$refs.rect.getStage().getY() + this.$refs.rect.getStage().children[0].getHeight(), this.$refs.rect1.getStage().getX() + this.$refs.rect1.getStage().children[0].getWidth()/2, this.$refs.rect1.getStage().getY()];
-      this.$refs.arrow.getStage().setPoints(p); */
-    }
-  }
+    getarrowconfig: function(c,r) {
+      let startpoint = this.$refs[c][0].getStage()
+      let endpoint = this.$refs[r][0].getStage()
+      let startpointx = startpoint.getX() + startpoint.children[0].getWidth()/2
+      let startpointy = startpoint.getY() + startpoint.children[0].getHeight()
+      let endpointx = endpoint.getX() + endpoint.children[0].getWidth()/2
+      let endpointy = endpoint.getY()
+      this.arrowconfig[this.arrows] = {
+        name: c + ',' + r,
+        fill: 'black',
+        points: [startpointx,startpointy,endpointx,endpointy],
+        stroke: 'black',
+        strokeWidth: 4,
+        draggable: true,
+      }
+    },
+    adjustPoint: function(id){
+      let point = this.$refs[id][0].getStage()
+      this.$refs.arrow.map(a => {
+        let ids = a.getStage().getName().split(',')
+        if (id == ids[0]) {
+          let p = [point.getX() + point.children[0].getWidth()/2,point.getY() + point.children[0].getHeight(),a.getStage().getPoints()[2],a.getStage().getPoints()[3]]
+          a.getStage().setPoints(p)
+        } else if (id == ids[1]) {
+          let p = [a.getStage().getPoints()[0],a.getStage().getPoints()[1],point.getX() + point.children[0].getWidth()/2,point.getY()]
+          a.getStage().setPoints(p)
+        }       
+      })
+    },
+  },
 }
 </script>
 
