@@ -472,6 +472,16 @@ export default {
             })
           })
           this.firstcard = card
+          card.desc.related.map( r => {
+            this.lists.map(l => {
+              l.cards.map( c => {
+                if (c.id == r) {
+                  c.color = 'blue-grey darken-2'
+                  c.hover = true
+                }
+              })
+            })
+          })
         }
         else {
           let that = this
@@ -479,6 +489,15 @@ export default {
             if (!this.firstcard.desc.related.includes(card.id)) {
               this.firstcard.desc.related.push(card.id)
               Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
+                card.color = 'blue-grey darken-2'
+                card.hover = true
+              })
+            } else {
+              let index = this.firstcard.desc.related.indexOf(card.id);
+              if (index !== -1) this.firstcard.desc.related.splice(index, 1);
+              Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
+                card.color = list.color
+                card.hover = false
               })
             }
           }
@@ -804,6 +823,7 @@ export default {
       this.lists.map(l => {
         l.cards.map(c => {
           c.color = l.color
+          c.hover = false
         })
       })
     }

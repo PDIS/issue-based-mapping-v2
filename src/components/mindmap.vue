@@ -142,7 +142,6 @@ export default {
         points: [startpointx,startpointy,endpointx,endpointy],
         stroke: 'black',
         strokeWidth: 4,
-        draggable: true,
       }
     },
     adjustPoint: function(id){
