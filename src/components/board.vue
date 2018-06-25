@@ -341,8 +341,10 @@ export default {
           induction: '',
           people: [],
           data: [],
-          related: []
-        }
+          related: [],
+          x: 0,
+          y: 0
+        },
       },
       peoplelist: [],
       datalist: [],
@@ -402,7 +404,9 @@ export default {
       let that = this
       if (this.editable == false) 
       {
-        Trello.post('cards', {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function() {
+        this.card.desc.x = 100 + this.selectedlist.cards.length * 150
+        this.card.desc.y = this.selectedlist.column * 150 
+        Trello.post('cards', {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc)} , function() {
           window.location.reload(true);
         })
       }
@@ -442,6 +446,8 @@ export default {
       this.selectedlist.name = list.name;
       this.selectedlist.id = list.id;
       this.selectedlist.color = list.color
+      this.selectedlist.cards = list.cards
+      this.selectedlist.column = list.column
       this.editable = false
       this.resetForm()
     },
@@ -452,6 +458,8 @@ export default {
           this.selectedlist.name = list.name;
           this.selectedlist.id = list.id;
           this.selectedlist.color = list.color
+          this.selectedlist.cards = list.cards
+          this.selectedlist.column = list.column
           this.card.id = card.id
           this.card.title = card.name
           //this.card.desc = card.desc
@@ -584,9 +592,11 @@ export default {
             break
             case '利害關係人':
             list.color = 'cyan darken-2'
+            list.column = 6
             break
             case '資料/文件/連結':
             list.color = 'blue-grey lighten-4'
+            list.column = 7
             break
             default:
             list.color = 'teal'
