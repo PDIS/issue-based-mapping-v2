@@ -2,7 +2,7 @@
   <v-stage :config="getstageconfig()">
     <v-layer>
       <v-group v-for="(list, y) in lists" :key="list.id">
-        <v-group v-for="(card, x) in list.cards" :ref="card.id" :key="card.id" @dragmove="adjustPoint(card.id)" :config="getgroupconfig(card)">
+        <v-group v-for="(card, x) in list.cards" :ref="card.id" :key="card.id" @dragmove="adjustPoint(card.id)" @dragend="add(card,list)" :config="getgroupconfig(card)">
           <v-rect :config="getrectconfig(card)"></v-rect>
           <v-text :config="gettextconfig(card)"></v-text>
         </v-group>
@@ -157,6 +157,12 @@ export default {
         }       
       })
     },
+    add: function(card,list) {
+      card.desc.x = this.$refs[card.id][0].getStage().getX()
+      card.desc.y = this.$refs[card.id][0].getStage().getY()
+      Trello.put('cards/' + card.id, {'idList': list.id,'desc': JSON.stringify(card.desc) } , function() {
+      })
+    }
   },
 }
 </script>
