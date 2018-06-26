@@ -1,55 +1,55 @@
 <template>
-   <v-stage ref="stage" :config="configKonva">
-    <v-layer ref="layer">
-      <v-group :config="{draggable: true}">
-      <v-circle :config="configCircle">
-      </v-circle>
-        <v-regular-polygon :config="{
-      x: 100,
-      y: 100,
-      sides: 5,
-      radius: 70,
-      fill: 'red',
-      stroke: 'black',
-      strokeWidth: 4,
-      shadowOffsetX : 20,
-      shadowOffsetY : 25,
-      shadowBlur : 40,
-      opacity : 0.5,
-      draggable: true
-    }" />
-    <v-text :config="{ x: 100,
-      y: 15,
-      text: 'Simple Text',
-      fontSize: 30,
-      fontFamily: 'Calibri',
-      fill: 'green',
-      draggable: true}">
-
-        </v-text>
-      </v-group>
-    </v-layer>
-  </v-stage>
+ <div>
+    <input type="file" @change="onFileChange">
+    <v-btn @click="upload()">上傳</v-btn>
+ </div>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      configKonva: {
-        width: window.innerWidth,
-        height: window.innerHeight
-      },
-      configCircle: {
-        x: 100,
-        y: 100,
-        radius: 70,
-        fill: "red",
-        stroke: "black",
-        strokeWidth: 4,
-        draggable: true,
-      }
+      files: [],
     }
+  },
+  methods: {
+    onFileChange: function(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length)
+        return;
+      //this.createImage(files[0]);
+      this.files = files[0]
+      var formData = new FormData();
+      formData.append('key','fb8dab318e1888679f571104d8b36ac7')
+      formData.append('token',localStorage.trello_token)
+      formData.append("file", files[0])
+      formData.append("name", "這是一個測試檔案");
+      console.log(formData)  
+      // formData.append("mimeType", "image/png"); // Optionally, set mimeType if needed.
+      var request = new XMLHttpRequest();
+      request.responseType = "json";
+      request.onreadystatechange = function() {
+        // When we have a response back from the server we want to share it!
+        // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/response
+        if (request.readyState === 4) {
+          console.log(`Successfully uploaded at: ${request.response.date}`);
+        }
+      }
+      request.open("POST", `https://api.trello.com/1/cards/5b30629995b4855bd26155a7/attachments/`);
+      request.send(formData);
+    },
+    upload: function(card) {
+      console.log(localStorage.trello_token)
+
+    },
+    getattachment: function() {
+      Trello.cards.get('5b30629995b4855bd26155a7',{fields: 'all',attachments: true},function(res) {
+        console.log(res)
+      })
+    }
+  },
+  created: function() {
+    this.getattachment()
   }
 }
 </script>
