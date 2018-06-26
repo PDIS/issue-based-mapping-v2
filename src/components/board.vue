@@ -16,7 +16,7 @@
           </v-card-text>
         </v-card>
       </v-flex>
-      <v-flex xs6>
+      <v-flex xs6 class="mt-3">
         <v-btn :to="{name:'mindmap', params:{id:board.id}}">心智圖</v-btn>
         <v-btn @click="relationmode = true" v-if="relationmode == false">關聯卡片</v-btn>
         <v-btn @click="endrelationmode()" v-if="relationmode == true">結束關聯卡片</v-btn>
@@ -615,6 +615,7 @@ export default {
         })
         that.getpeople()
         that.getdata()
+        that.getattachments()
       })
     },
     newmember: function() {
@@ -834,6 +835,23 @@ export default {
         l.cards.map(c => {
           c.color = l.color
           c.hover = false
+        })
+      })
+    },
+    getattachments: function() {
+      this.lists.map( l => {
+        l.cards.map( c => {
+          c.attachments = []
+          Trello.cards.get(c.id,{fields: 'attachments',attachments: true,},function(res) {
+            if (res.attachments.length != 0) {
+              res.attachments.map( a => {
+                let attachments = {}
+                attachments.name = a.name
+                attachments.url = a.url
+                c.attachments.push(attachments)
+              })
+            }
+          })
         })
       })
     }
