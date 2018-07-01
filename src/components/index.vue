@@ -117,11 +117,19 @@
         <v-card-title class="headline">確定刪除?</v-card-title>
         <v-card-text></v-card-text>
         <v-card-actions>
-          <v-btn color="blue" flat="flat" @click.native="dialog=false; closeboard(selectedid)">確定</v-btn>
+          <v-btn color="blue" flat="flat" @click.native="closeboard(selectedid)">確定</v-btn>
           <v-btn color="black" flat="flat" @click.native="dialog=false" :to="{name:'index'}" active-class>取消</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-snackbar
+      :timeout="5000"
+      top="top"
+      v-model="snackbar"
+    >
+      刪除成功!
+      <v-btn flat color="pink" @click.native="snackbar = false">關閉</v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -131,29 +139,31 @@ export default {
     return {
       boards: [],
       search: '',
-      dialog: false,
       selectedid: '',
       me: '',
       canedit: true,
       orgadmin: [],
       showtable: false,
       headers: [
-          {
-            text: '議題名稱',
-            align: 'left',
-            sortable: false,
-            value: 'title'
-          },
-          { text: '提案名稱', value: 'desc.title' },
-          { text: '提案人', value: 'desc.person' },
-          { text: '提案日期', value: 'desc.date' },
-          { text: '主責部會', value: 'desc.department' },
-          { text: '', value:''}
-        ],
+        {
+          text: '議題名稱',
+          align: 'left',
+          sortable: false,
+          value: 'title'
+        },
+        { text: '提案名稱', value: 'desc.title' },
+        { text: '提案人', value: 'desc.person' },
+        { text: '提案日期', value: 'desc.date' },
+        { text: '主責部會', value: 'desc.department' },
+        { text: '', value:''}
+      ],
+      dialog: false,
+      snackbar: false
     }
   },
   methods: {
     getboards: function () {
+      this.boards = []
       let that = this
       Trello.organizations.get('ibm249/boards',{'filter':'open'}, function(res) {
         res.map(b => {
@@ -176,7 +186,9 @@ export default {
     closeboard: function(id) {
       let that = this
       Trello.put('boards/' + id ,{'closed':true},function(res) {
-        window.location.reload(true);
+        that.dialog = false
+        that.snackbar = true
+        that.getboards()
       })
     },
     getme: function() {

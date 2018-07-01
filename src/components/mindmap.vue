@@ -111,7 +111,7 @@ export default {
       return {
         fill: card.color,
         width: 120,
-        height: 70,
+        height: 80,
         shadowColor: 'black',
         shadowOffset: {
           x: 5,
