@@ -48,7 +48,7 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <v-dialog v-model="dialog"  max-width="50em">
+    <v-dialog v-model="dialog" max-width="50em">
       <v-card>
         <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
           <v-container>
@@ -131,6 +131,13 @@
                   </v-flex>
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="歸納" prepend-icon="people" v-model="card.desc.induction" ></v-text-field>
+                  </v-flex>
+                  <v-flex d-flex xs12>
+                    <input type="file" @change="onFileChange">
+                    <v-btn color="blue-grey" class="white--text" @click.prevent="upload(card)">
+                      上傳檔案
+                      <v-icon right dark >cloud_upload</v-icon>
+                    </v-btn>
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -370,6 +377,7 @@ export default {
       },
       relationmode: false,
       firstcard: {},
+      uploadfile: FormData
     }
   },
   methods: {
@@ -854,6 +862,28 @@ export default {
           })
         })
       })
+    },
+    onFileChange: function(e) {
+      let files = e.target.files || e.dataTransfer.files;
+      if (!files.length)
+        return;
+      let formData = new FormData();
+      formData.append('key','fb8dab318e1888679f571104d8b36ac7')
+      formData.append('token',localStorage.trello_token)
+      formData.append("file", files[0])
+      formData.append("name", "這是一個測試檔案");
+      this.uploadfile = formData
+    },
+    upload: function(card) {
+      let request = new XMLHttpRequest();
+      request.responseType = "json";
+      request.onreadystatechange = function() {
+        if (request.readyState === 4) {
+          console.log(`Successfully uploaded at: ${request.response.date}`);
+        }
+      }
+      request.open("POST", 'https://api.trello.com/1/cards/' + card.id + '/attachments/');
+      request.send(this.uploadfile);
     }
   },
   created: function() {

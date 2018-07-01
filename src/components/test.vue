@@ -9,7 +9,7 @@
 export default {
   data() {
     return {
-      files: [],
+      file: FormData,
     }
   },
   methods: {
@@ -24,7 +24,8 @@ export default {
       formData.append('token',localStorage.trello_token)
       formData.append("file", files[0])
       formData.append("name", "這是一個測試檔案");
-      console.log(formData)  
+      this.file = formData
+      /* console.log(formData)  
       // formData.append("mimeType", "image/png"); // Optionally, set mimeType if needed.
       var request = new XMLHttpRequest();
       request.responseType = "json";
@@ -36,10 +37,20 @@ export default {
         }
       }
       request.open("POST", `https://api.trello.com/1/cards/5b30629995b4855bd26155a7/attachments/`);
-      request.send(formData);
+      request.send(formData); */
     },
-    upload: function(card) {
-      console.log(localStorage.trello_token)
+    upload: function() {
+      var request = new XMLHttpRequest();
+      request.responseType = "json";
+      request.onreadystatechange = function() {
+        // When we have a response back from the server we want to share it!
+        // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/response
+        if (request.readyState === 4) {
+          console.log(`Successfully uploaded at: ${request.response.date}`);
+        }
+      }
+      request.open("POST", `https://api.trello.com/1/cards/5b30629995b4855bd26155a7/attachments/`);
+      request.send(this.file);
 
     },
     getattachment: function() {
