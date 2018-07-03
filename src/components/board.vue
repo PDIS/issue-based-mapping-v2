@@ -140,8 +140,8 @@
                     </v-btn>
                   </v-flex>
                   <v-flex d-flex xs12>
-                    <div v-if="card.attachments == []">
-                      fuck
+                    <div v-if="card.attachments">
+                      
                     </div>
                   </v-flex>
                 </v-layout>

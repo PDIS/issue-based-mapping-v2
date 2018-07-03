@@ -213,7 +213,6 @@ export default {
     this.getboards()
     this.getme()
     this.getorgadmin()
-    console.log(navigator.language)
   },
   computed: {
     filteredList() {
