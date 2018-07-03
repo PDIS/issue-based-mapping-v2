@@ -5,7 +5,7 @@
         <v-text-field color="blue-grey darken-4" class="mt-3 mb-0" prepend-icon="search" label="搜尋議題" value="Input text" v-model="search"></v-text-field>
       </v-flex>
       <v-flex xs4 text-xs-left pt-5>          
-        <span>所有議題列表</span>
+        <span>{{ $t('IssueList') }}</span>
       </v-flex>
        <v-flex xs4 text-xs-right offset-xs4 pt-4>   
           <span class="group">
@@ -98,14 +98,14 @@
           <td class="text-xs-left">{{ props.item.desc.department }}</td>
           <td class="text-xs-left">
             <div v-if="props.item.admin.includes(me)">
-          <v-btn icon class="mx-0" :to="{name:'editboard',params:{id:props.item.id}}">
-            <v-icon color="teal">edit</v-icon>
-          </v-btn>
-          <v-btn icon class="mx-0" @click="dialog=true;selectedid=props.item.id">
-            <v-icon color="pink">delete</v-icon>
-          </v-btn>
+              <v-btn icon class="mx-0" :to="{name:'editboard',params:{id:props.item.id}}">
+                <v-icon color="teal">edit</v-icon>
+              </v-btn>
+              <v-btn icon class="mx-0" @click="dialog=true;selectedid=props.item.id">
+                <v-icon color="pink">delete</v-icon>
+              </v-btn>
             </div>
-        </td>
+          </td>
         </template>
         <v-alert slot="no-results" :value="true" color="error" icon="warning">
           沒有符合 "{{ search }}" 的搜尋結果:(
@@ -213,6 +213,7 @@ export default {
     this.getboards()
     this.getme()
     this.getorgadmin()
+    console.log(navigator.language)
   },
   computed: {
     filteredList() {

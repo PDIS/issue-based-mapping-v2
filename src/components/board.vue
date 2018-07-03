@@ -139,6 +139,11 @@
                       <v-icon right dark >cloud_upload</v-icon>
                     </v-btn>
                   </v-flex>
+                  <v-flex d-flex xs12>
+                    <div v-if="card.attachments == []">
+                      fuck
+                    </div>
+                  </v-flex>
                 </v-layout>
               </v-flex>
               <v-divider></v-divider>
@@ -618,12 +623,23 @@ export default {
             card.color = list.color
             card.column = list.column
             card.hover = false
+            card.attachments = []
+            Trello.cards.get(card.id,{fields: 'attachments',attachments: true,},function(res) {
+              if (res.attachments.length != 0) {
+                res.attachments.map( a => {
+                  let attachment = {}
+                  attachment.name = a.name
+                  attachment.url = a.url
+                  card.attachments.push(attachment)
+                })
+              }                
+            })
           })
           that.lists.push(list)
         })
         that.getpeople()
         that.getdata()
-        that.getattachments()
+        /* that.getattachments() */
       })
     },
     newmember: function() {
@@ -853,12 +869,12 @@ export default {
           Trello.cards.get(c.id,{fields: 'attachments',attachments: true,},function(res) {
             if (res.attachments.length != 0) {
               res.attachments.map( a => {
-                let attachments = {}
-                attachments.name = a.name
-                attachments.url = a.url
-                c.attachments.push(attachments)
+                let attachment = {}
+                attachment.name = a.name
+                attachment.url = a.url
+                c.attachments.push(attachment)
               })
-            }
+            }                
           })
         })
       })
@@ -884,7 +900,7 @@ export default {
       }
       request.open("POST", 'https://api.trello.com/1/cards/' + card.id + '/attachments/');
       request.send(this.uploadfile);
-    }
+    },
   },
   created: function() {
     this.getboard()

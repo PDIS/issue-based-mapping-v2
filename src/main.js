@@ -5,21 +5,40 @@ import App from './App'
 import router from './router'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
-import VueMindmap from 'vue-mindmap'
-import 'vue-mindmap/dist/vue-mindmap.css'
 import VueKonva from 'vue-konva'
+import VueI18n from 'vue-i18n';
+import Vuex from 'vuex'
+import store from './store'
 
+
+Vue.use(Vuex)
 Vue.use(VueKonva)
-
+Vue.use(VueI18n);
 Vue.use(Vuetify)
-Vue.use(VueMindmap)
 
 Vue.config.productionTip = false
+
+//i18n
+import en from './i18n/en.json';
+import tw from './i18n/tw.json';
+
+const locales = {
+  'en': en,
+  'zh-TW': tw,
+};
+
+const i18n = new VueI18n({
+  locale: navigator.language, // set locale
+  messages: locales // set locale messages
+})
+
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  store,
+  i18n
 })
