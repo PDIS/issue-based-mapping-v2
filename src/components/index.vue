@@ -5,7 +5,7 @@
         <v-text-field color="blue-grey darken-4" class="mt-3 mb-0" prepend-icon="search" label="搜尋議題" value="Input text" v-model="search"></v-text-field>
       </v-flex>
       <v-flex xs4 text-xs-left pt-5>          
-        <span>{{ $t('IssueList') }}</span>
+        <span>{{ $t("IssueList") }}</span>
       </v-flex>
        <v-flex xs4 text-xs-right offset-xs4 pt-4>   
           <span class="group">

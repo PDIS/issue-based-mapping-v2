@@ -1,0 +1,3 @@
+export default {
+  count: 1//只定義一個count，但畫面的狀態越來越多的時候，就會定義越來越多的值，可能是array或object，甚至是字串....
+}
