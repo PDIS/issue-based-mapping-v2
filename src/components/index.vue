@@ -2,7 +2,7 @@
   <v-container grid-list-md >
     <v-layout row wrap>
       <v-flex xs12 >
-        <v-text-field color="blue-grey darken-4" class="mt-3 mb-0" prepend-icon="search" label="搜尋議題" value="Input text" v-model="search"></v-text-field>
+        <v-text-field color="blue-grey darken-4" class="mt-3 mb-0" prepend-icon="search" :label="$t('Search')" value="Input text" v-model="search"></v-text-field>
       </v-flex>
       <v-flex xs4 text-xs-left pt-5>          
         <span>{{ $t("IssueList") }}</span>
@@ -154,7 +154,7 @@ export default {
         { text: '提案名稱', value: 'desc.title' },
         { text: '提案人', value: 'desc.person' },
         { text: '提案日期', value: 'desc.date' },
-        { text: '主責部會', value: 'desc.department' },
+        { text: '負責單位', value: 'desc.department' },
         { text: '', value:''}
       ],
       dialog: false,
