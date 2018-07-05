@@ -92,10 +92,12 @@
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title v-text="title"></v-toolbar-title>
       <v-spacer></v-spacer>
-      <strong class="mr-3 title">Hi, {{me.name}}</strong>
-      <v-btn icon outline small fab btn disabled class="mr-3" v-if="me.avatar != ''">
+      <v-switch class='mt-4' color="primary" label="English"  :true-value="'en'" :false-value="'zh-TW'" v-model="lang" @change="setlang(lang)"></v-switch>
+      <v-spacer></v-spacer>
+      <strong class="mr-3 title">Hi, {{user.name}}</strong>
+      <v-btn icon outline small fab btn disabled class="mr-3" v-if="user.avatar != ''">
         <v-avatar>
-          <img :src="me.avatar" alt="username">
+          <img :src="user.avatar" alt="username">
         </v-avatar> 
       </v-btn>
     </v-toolbar> 
@@ -103,6 +105,8 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   data () {
     return {
@@ -111,34 +115,17 @@ export default {
       fixed: false,
       miniVariant: false,
       title: '議題分析表',
-      me: {
-        'id':'',
-        'name':'',
-        'avatar': ''
-      },
       board: {
         id: '',
         name: '',
         desc: {}
       },
-      search: ''
+      search: '',
+      lang: 'zh-TW'
     }
   },
   methods: {
-    login: function () {
-      Trello.authorize({name: '議題分析表' ,expiration:'never',scope: { read: true, write: true },})
-    },
-    getuser: function() {
-      let that = this
-      Trello.members.get('me', function (res) {
-        that.me.id = res.id
-        that.me.name = res.fullName
-        if (res.avatarSource != 'none')
-        {
-          that.me.avatar = res.avatarUrl + '/50.png'
-        }
-      },this.login())
-    },
+    ...mapActions(['getuser']),
     getboardinfo: function() {
       let that = this
       if (this.$route.params.id != undefined) {
@@ -153,17 +140,23 @@ export default {
       else {
         this.board.desc = {}
       }
+    },
+    setlang: function(lang) {
+      Vue.i18n.set(lang);
     }
   },
   created: function() {
-    this.getuser()
+    this.$store.dispatch('getuser')
     this.getboardinfo()
   },
   watch: {
     $route: function() {
       this.getboardinfo()
     }
-  }
+  },
+  computed: mapGetters({
+    user: 'user',
+  }),
 }
 </script>
 
