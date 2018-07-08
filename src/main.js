@@ -24,18 +24,7 @@ import tw from './i18n/tw.json';
 Vue.i18n.add('en', en);
 Vue.i18n.add('zh-TW', tw);
 Vue.i18n.set('zh-TW');
-/* const locales = {
-  'en': en,
-  'zh-TW': tw,
-};
 
-const i18n = new VueI18n({
-  locale: navigator.language, // set locale
-  messages: locales // set locale messages
-})
- */
-
-/* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,

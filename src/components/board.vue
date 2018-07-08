@@ -1,6 +1,6 @@
 <template>
   <v-container grid-list-md>
-    <v-layout row wrap v-if="board.admin.includes(me)">
+    <v-layout row wrap v-if="board.admin.includes(user.id)">
       <v-flex xs11>
         <v-text-field color="grey darken-4" class="mt-3 mb-0" prepend-icon="people" label="新增議題成員" value="Input text" v-model="email"></v-text-field> 
       </v-flex>
@@ -40,7 +40,7 @@
               </v-card>
             </draggable>
           </v-container>
-          <v-footer v-if="board.admin.includes(me) || board.members.includes(me)">
+          <v-footer v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
             <v-btn text-md-left color="grey lighten-3" style="margin:0;width:100%" @click.native.stop="newcard(list)" > 
               <v-icon small>add</v-icon>新增卡片<v-spacer></v-spacer> 
             </v-btn>
@@ -98,6 +98,12 @@
                 <v-layout row wrap  v-if="selectedlist.name == '回應'">
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="回應" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                  </v-flex>
+                  <v-flex d-flex xs12>
+                    <v-radio-group v-model="card.desc.responsetime" row @change="changeresponsetime(card)">
+                      <v-radio label="現在" value="nowadays" selected ></v-radio>
+                      <v-radio label="未來" color="orange" value="future"></v-radio>
+                    </v-radio-group>
                   </v-flex>
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
@@ -161,12 +167,13 @@
                       multiple
                       autocomplete
                       deletable-chips
+                      no-data-text="目前尚無資料"
                     >
                       <template slot="item" slot-scope="data">
                         <template v-if="typeof data.item !== 'object'">                   
                         </template>
                         <template v-else>
-                          <v-list-tile-avatar class="mt-4">
+                          <v-list-tile-avatar>
                             <v-checkbox v-model="card.desc.people" :value="data.item.id"></v-checkbox>
                           </v-list-tile-avatar>
                           <v-list-tile-content v-text="data.item.name"></v-list-tile-content> 
@@ -214,9 +221,10 @@
                       multiple
                       autocomplete
                       deletable-chips
+                      no-data-text="目前尚無資料"
                     >
                       <template slot="item" slot-scope="data">
-                        <v-list-tile-avatar class="mt-4">
+                        <v-list-tile-avatar>
                           <v-checkbox v-model="card.desc.data" :value="data.item.id"></v-checkbox>
                         </v-list-tile-avatar>
                         <v-list-tile-content v-text="data.item.name"></v-list-tile-content>
@@ -311,6 +319,7 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 import draggable from 'vuedraggable'
 import newcard from './newcard'
 export default {
@@ -347,6 +356,7 @@ export default {
         title: '',
         desc:{
           explain:'',
+          responsetime: 'nowadays',
           department: '',
           background: '',
           summary: '',
@@ -363,8 +373,6 @@ export default {
       fab: false,
       editable: false,
       search: '',
-      admin: [],
-      me: '',
       deletedialog: false,
       email: '',
       hover: false,
@@ -382,7 +390,8 @@ export default {
       },
       relationmode: false,
       firstcard: {},
-      uploadfile: FormData
+      uploadfile: FormData,
+      responsestring: ''
     }
   },
   methods: {
@@ -440,7 +449,6 @@ export default {
           })
         }
       })
-      /* this.peoplelist.push('新增利害關係人') */
     },
     getdata: function() {
       this.lists.map(list => {
@@ -463,10 +471,17 @@ export default {
       this.selectedlist.column = list.column
       this.editable = false
       this.resetForm()
+      if (this.selectedlist.name == '回應') {
+        if (this.card.desc.responsetime == 'nowadays') {
+          this.card.title = '[現在]'
+        } else {
+          this.card.title = '[未來]'
+        }
+      }
     },
     editcard: function(card,list) {
       if (this.relationmode == false) {
-        if (this.board.admin.includes(this.me) || this.board.members.includes(this.me)) {
+        if (this.board.admin.includes(this.user.id) || this.board.members.includes(this.user.id)) {
           this.dialog = true
           this.selectedlist.name = list.name;
           this.selectedlist.id = list.id;
@@ -475,7 +490,7 @@ export default {
           this.selectedlist.column = list.column
           this.card.id = card.id
           this.card.title = card.name
-          //this.card.desc = card.desc
+          this.card.desc.responsetime = card.desc.responsetime
           this.card.desc.people = card.desc.people
           this.card.desc.data = card.desc.data
           this.card.desc.related = card.desc.related
@@ -554,22 +569,6 @@ export default {
             that.board.members.push(m.idMember)
           }
         })
-      })
-    },
-   /*  getadmin: function() {
-      let that = this;
-      Trello.boards.get(this.board.id +'/memberships', function(res) {
-        res.map( m => {
-          if (m.memberType == 'admin') {
-            that.admin.push(m.idMember)
-          }
-        })
-      })
-    }, */
-    getme: function() {
-      let that = this;
-      Trello.members.get('me', function (res) {
-        that.me = res.id
       })
     },
     getlists: function() {
@@ -901,17 +900,25 @@ export default {
       request.open("POST", 'https://api.trello.com/1/cards/' + card.id + '/attachments/');
       request.send(this.uploadfile);
     },
+    changeresponsetime: function(card) {
+      card.title = card.title.replace('[現在]','').replace('[未來]','')
+      if (card.desc.responsetime == 'nowadays') {
+        this.responsestring = '[現在]'
+      } else {
+        this.responsestring = '[未來]'
+      }
+      card.title = this.responsestring + card.title
+    }
   },
   created: function() {
+    this.$store.dispatch('getuser')
     this.getboard()
-    /* this.getadmin() */
-    this.getme()
     this.getlists()
     this.getcards()
-    /* Trello.cards.get("Uta5z7Fr/attachments", function(res) {
-      console.log(res)
-    }) */
   },
+  computed: mapGetters({
+    user: 'user',
+  })
 }
 </script>
 

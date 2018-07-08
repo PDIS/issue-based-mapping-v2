@@ -13,8 +13,8 @@
   font-family: "cwTeXHei"!important
 } */
 @import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css);
-.application {
-    font-family: Roboto, 'Noto Sans TC';
+.application, .title, .headline{
+  font-family: Roboto, 'Noto Sans TC'!important
 }
 </style>
 

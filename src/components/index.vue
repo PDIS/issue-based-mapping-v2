@@ -16,12 +16,12 @@
     </v-layout>  
     <v-divider></v-divider>
     <v-layout row wrap v-if="!showtable">
-      <v-flex xs12 sm6 md4 lg3 text-xs-center v-if="orgadmin.includes(me)">
-        <v-card height='20em' hover class="yellow darken-2" :to="{name:'newboard'}">
+      <v-flex xs12 sm6 md4 lg3 text-xs-center v-if="members.includes(user.id)">
+        <v-card height='20em' hover class="yellow darken-2">
           <v-container fill-height>
             <v-layout align-center justify-center>
               <v-card-text >
-                <v-btn class="cyan darken-4" fab dark large :to="{name:'newboard'}">
+                <v-btn class="cyan darken-4" fab dark large @click="changeboardform('')">
                   <v-icon dark>add</v-icon>
                 </v-btn>
               </v-card-text>
@@ -70,17 +70,17 @@
           <v-card-actions class="mt-1" style="background-color:white">  
             <v-btn class="blue-grey darken-4 white--text" :to="{name:'board', params:{id:board.id}}"><v-icon>arrow_right</v-icon> 進入議題</v-btn>
             <v-spacer></v-spacer> 
-            <div v-if="board.admin.includes(me)">
-              <v-btn icon flat color="grey" :to="{name:'editboard',params:{id:board.id}}"><v-icon>edit</v-icon></v-btn>
-              <v-btn icon flat color="grey" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id"><v-icon>delete</v-icon></v-btn>
+            <div v-if="board.admin.includes(user.id)">
+              <v-btn icon flat color="teal" :to="{name:'index'}" @click="changeboardform(board.id)"><v-icon>edit</v-icon></v-btn>
+              <v-btn icon flat color="pink" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id"><v-icon>delete</v-icon></v-btn>
             </div>
           </v-card-actions>
         </v-card>
       </v-flex>
     </v-layout>
     <template v-if="showtable">
-      <div v-if="orgadmin.includes(me)">
-        <v-btn color="primary" dark class="mb-2" :to="{name:'newboard'}">新增議題</v-btn>
+      <div v-if="members.includes(user.id)">
+        <v-btn color="primary" dark class="mb-2" @click="changeboardform()">新增議題</v-btn>
       </div>
       <v-data-table
         :headers="headers"
@@ -97,7 +97,7 @@
           <td class="text-xs-left">{{ props.item.desc.date }}</td>
           <td class="text-xs-left">{{ props.item.desc.department }}</td>
           <td class="text-xs-left">
-            <div v-if="props.item.admin.includes(me)">
+            <div v-if="props.item.admin.includes(user.id)">
               <v-btn icon class="mx-0" :to="{name:'editboard',params:{id:props.item.id}}">
                 <v-icon color="teal">edit</v-icon>
               </v-btn>
@@ -130,19 +130,22 @@
       刪除成功!
       <v-btn flat color="pink" @click.native="snackbar = false">關閉</v-btn>
     </v-snackbar>
+    <boardform></boardform>
   </v-container>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+import boardform from './boardform'
 export default {
+  components: {
+    boardform
+  },
   data () {
     return {
-      boards: [],
       search: '',
       selectedid: '',
-      me: '',
       canedit: true,
-      orgadmin: [],
       showtable: false,
       headers: [
         {
@@ -162,59 +165,27 @@ export default {
     }
   },
   methods: {
-    getboards: function () {
-      this.boards = []
-      let that = this
-      Trello.organizations.get('ibm249/boards',{'filter':'open'}, function(res) {
-        res.map(b => {
-          let board = {};
-          board.id = b.id
-          board.title = b.name
-          if (b.desc != '') {
-            board.desc = JSON.parse(b.desc)
-          }
-          board.admin = []
-          b.memberships.map( m => {
-            if (m.memberType == 'admin') {
-              board.admin.push(m.idMember)
-            }
-          })
-          that.boards.push(board)
-        })
-      })
-    },
+    ...mapActions(['changeboardform']),
     closeboard: function(id) {
       let that = this
       Trello.put('boards/' + id ,{'closed':true},function(res) {
         that.dialog = false
         that.snackbar = true
-        that.getboards()
+        that.$store.dispatch('getboards')
       })
     },
-    getme: function() {
-      let that = this;
-      Trello.members.get('me', function (res) {
-        that.me = res.id
-      })
-    },
-    getorgadmin: function() {
-      let that = this;
-      Trello.organizations.get('ibm249',{'fields':'all'}, function(res) {
-        res.memberships.map(m => {
-          /* if (m.memberType == 'admin') {
-            that.orgadmin.push(m.idMember)
-          } */
-          that.orgadmin.push(m.idMember)
-        })
-      })
-    }
   },
   created: function() {
-    this.getboards()
-    this.getme()
-    this.getorgadmin()
+    this.$store.dispatch('getuser')
+    this.$store.dispatch('getmembers')
+    this.$store.dispatch('getboards')
   },
   computed: {
+    ...mapGetters({
+      user: 'user',
+      members: 'members',
+      boards: 'boards'
+    }), 
     filteredList() {
       return this.boards.filter(board => {
         return board.title.toLowerCase().includes(this.search.toLowerCase())

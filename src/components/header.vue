@@ -115,47 +115,31 @@ export default {
       fixed: false,
       miniVariant: false,
       title: '議題分析表',
-      board: {
-        id: '',
-        name: '',
-        desc: {}
-      },
       search: '',
       lang: 'zh-TW'
     }
   },
   methods: {
-    ...mapActions(['getuser']),
-    getboardinfo: function() {
-      let that = this
-      if (this.$route.params.id != undefined) {
-        this.board.id = this.$route.params.id
-        Trello.boards.get(this.board.id, function(res) {
-          that.board.name = res.name
-          if (res.desc != '') {
-            that.board.desc = JSON.parse(res.desc)
-          }
-        })
-      }
-      else {
-        this.board.desc = {}
-      }
-    },
     setlang: function(lang) {
       Vue.i18n.set(lang);
     }
   },
   created: function() {
     this.$store.dispatch('getuser')
-    this.getboardinfo()
+    if (this.$route.params.id != undefined) {
+      this.$store.dispatch('getboardinfo', this.$route.params.id)
+    }
   },
   watch: {
     $route: function() {
-      this.getboardinfo()
+      if (this.$route.params.id != undefined) {
+        this.$store.dispatch('getboardinfo', this.$route.params.id)
+      }
     }
   },
   computed: mapGetters({
     user: 'user',
+    board: 'board'
   }),
 }
 </script>

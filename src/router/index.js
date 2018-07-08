@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import index from '@/components/index'
-import newboard from '@/components/newboard'
 import board from '@/components/board'
 import newcard from '@/components/newcard'
 import test from '@/components/test'
@@ -17,19 +16,9 @@ export default new Router({
       component: index
     },
     {
-      path: '/newboard',
-      name: 'newboard',
-      component: newboard
-    },
-    {
       path: '/board/:id',
       name: 'board',
       component: board
-    },
-    {
-      path: '/editboard/:id',
-      name: 'editboard',
-      component: newboard
     },
     {
       path: '/newcard',
