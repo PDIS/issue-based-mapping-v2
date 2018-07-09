@@ -100,7 +100,7 @@
                     <v-text-field color="blue-grey darken-2" label="回應" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
-                    <v-radio-group v-model="card.desc.responsetime" row @change="changeresponsetime(card)">
+                    <v-radio-group prepend-icon="schedule" v-model="card.desc.responsetime" row @change="changeresponsetime(card)">
                       <v-radio label="現在" value="nowadays" selected ></v-radio>
                       <v-radio label="未來" color="orange" value="future"></v-radio>
                     </v-radio-group>

@@ -71,7 +71,7 @@
             <v-btn class="blue-grey darken-4 white--text" :to="{name:'board', params:{id:board.id}}"><v-icon>arrow_right</v-icon> 進入議題</v-btn>
             <v-spacer></v-spacer> 
             <div v-if="board.admin.includes(user.id)">
-              <v-btn icon flat color="teal" :to="{name:'index'}" @click="changeboardform(board.id)"><v-icon>edit</v-icon></v-btn>
+              <v-btn icon flat color="teal" :to="{name:'index'}" active-class @click="changeboardform(board.id)"><v-icon>edit</v-icon></v-btn>
               <v-btn icon flat color="pink" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id"><v-icon>delete</v-icon></v-btn>
             </div>
           </v-card-actions>
@@ -80,7 +80,7 @@
     </v-layout>
     <template v-if="showtable">
       <div v-if="members.includes(user.id)">
-        <v-btn color="primary" dark class="mb-2" @click="changeboardform()">新增議題</v-btn>
+        <v-btn color="primary" dark class="mb-2" @click="changeboardform('')">新增議題</v-btn>
       </div>
       <v-data-table
         :headers="headers"
@@ -96,14 +96,10 @@
           <td class="text-xs-left">{{ props.item.desc.person }}</td>
           <td class="text-xs-left">{{ props.item.desc.date }}</td>
           <td class="text-xs-left">{{ props.item.desc.department }}</td>
-          <td class="text-xs-left">
+          <td class="justify-center px-0">
             <div v-if="props.item.admin.includes(user.id)">
-              <v-btn icon class="mx-0" :to="{name:'editboard',params:{id:props.item.id}}">
-                <v-icon color="teal">edit</v-icon>
-              </v-btn>
-              <v-btn icon class="mx-0" @click="dialog=true;selectedid=props.item.id">
-                <v-icon color="pink">delete</v-icon>
-              </v-btn>
+              <v-icon color="teal" class="mr-2" @click="changeboardform(props.item.id)">edit</v-icon>
+              <v-icon color="pink" @click="dialog=true;selectedid=props.item.id">delete</v-icon>
             </div>
           </td>
         </template>
@@ -195,6 +191,6 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>

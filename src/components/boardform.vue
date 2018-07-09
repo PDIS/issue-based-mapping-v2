@@ -78,6 +78,7 @@ export default {
             that.success = '修改成功!'
             that.snackbar = true
             that.$store.dispatch('changeboardform','')
+            that.$store.dispatch('getboards')
           })
         })
       }
@@ -88,6 +89,7 @@ export default {
             that.snackbar = true
             that.$router.push('/')
             that.$store.dispatch('changeboardform','')
+            that.$store.dispatch('getboards')
           })
         })
       }
