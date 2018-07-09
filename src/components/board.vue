@@ -53,7 +53,7 @@
         <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
           <v-container>
             <v-layout row wrap class="ma-5">
-              <v-flex d-flex md6>
+              <!-- <v-flex d-flex md6>
                 <v-card :color='selectedlist.color'>
                   <v-card-title primary-title>
                     {{card.title}}
@@ -62,7 +62,7 @@
               </v-flex>
               <v-flex d-flex md6>
                 <v-layout row wrap>
-                 <!--  <v-flex d-flex xs12>
+                  <v-flex d-flex xs12>
                     <div>
                       <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
                       </v-chip>
@@ -73,9 +73,9 @@
                       <v-chip small color="pink lighten-1" text-color="white" v-for="data in card.desc.data" :key="data.id" >
                       </v-chip>
                     </div>
-                  </v-flex> -->
+                  </v-flex>
                 </v-layout >
-              </v-flex>
+              </v-flex> -->
               <v-flex d-flex md12 class="pt-5">
                 <v-layout row wrap v-if="selectedlist.name =='問題面向'">
                   <v-flex d-flex xs12>
@@ -138,7 +138,7 @@
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="歸納" prepend-icon="people" v-model="card.desc.induction" ></v-text-field>
                   </v-flex>
-                  <v-flex d-flex xs12>
+                  <v-flex d-flex xs12 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
                     <input type="file" @change="onFileChange">
                     <v-btn color="blue-grey" class="white--text" @click.prevent="upload(card)">
                       上傳檔案
@@ -256,7 +256,7 @@
                   </v-flex>
                 </v-layout>
               </v-flex>
-              <v-flex d-flex md12>
+              <v-flex d-flex md12 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
                 <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '利害關係人'">
                   <v-flex d-flex xs6>
                     <v-btn color="blue-grey" class="white--text" @click.native="newpersondialog=true">
@@ -267,7 +267,7 @@
                 </v-layout>
               </v-flex>
             </v-layout>
-            <v-card-actions class="pa-3">
+            <v-card-actions class="pa-3" v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
               <!--  <v-btn :disabled="!formIsValid" flat color="primary" type="submit" class="subheading">確認</v-btn> -->
               <v-btn flat color="red lighten-1" class="subheading"  @click.native.stop="deletedialog=true;selectedid=card.id">刪除便利貼</v-btn>
               <v-btn flat color="grey lighten-1" class="subheading" @click="resetForm">重新填寫</v-btn>
@@ -481,7 +481,7 @@ export default {
     },
     editcard: function(card,list) {
       if (this.relationmode == false) {
-        if (this.board.admin.includes(this.user.id) || this.board.members.includes(this.user.id)) {
+        /* if (this.board.admin.includes(this.user.id) || this.board.members.includes(this.user.id)) { */
           this.dialog = true
           this.selectedlist.name = list.name;
           this.selectedlist.id = list.id;
@@ -496,7 +496,7 @@ export default {
           this.card.desc.related = card.desc.related
           this.card.desc.explain = card.desc.explain
           this.editable = true
-        }
+        /* } */
       }
       else {
         if (Object.keys(this.firstcard).length == 0) {
