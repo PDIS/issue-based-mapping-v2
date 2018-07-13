@@ -127,6 +127,9 @@
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="背景" prepend-icon="folder" v-model="card.desc.background"  ></v-text-field>
                   </v-flex>
+                  <v-flex d-flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="角色（此人與議題的關聯）" prepend-icon="folder" v-model="card.desc.role"  ></v-text-field>
+                  </v-flex>
                 </v-layout>
                 <v-layout row wrap v-if="selectedlist.name == '資料/文件/連結'">
                   <v-flex d-flex xs12>
@@ -134,9 +137,6 @@
                   </v-flex>
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="關聯利害關係人" prepend-icon="people" v-model="card.desc.summary"></v-text-field>
-                  </v-flex>
-                  <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="歸納" prepend-icon="people" v-model="card.desc.induction" ></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
                     <input type="file" @change="onFileChange">
@@ -359,8 +359,7 @@ export default {
           responsetime: 'nowadays',
           department: '',
           background: '',
-          summary: '',
-          induction: '',
+          role: '',
           people: [],
           data: [],
           related: [],
@@ -382,8 +381,7 @@ export default {
         explain:'',
         department: '',
         background: '',
-        summary: '',
-        induction: '',
+        role: '',
         people: [],
         data: [],
         related: []
@@ -417,8 +415,7 @@ export default {
       this.card.desc.explain = ''
       this.card.desc.department= ''
       this.card.desc.background= ''
-      this.card.desc.summary= ''
-      this.card.desc.induction= ''
+      this.card.desc.role= ''
       this.card.desc.people = []
       this.card.desc.data = []
     },
@@ -495,6 +492,9 @@ export default {
           this.card.desc.data = card.desc.data
           this.card.desc.related = card.desc.related
           this.card.desc.explain = card.desc.explain
+          this.card.desc.role = card.desc.role
+          this.card.desc.department= card.desc.department
+          this.card.desc.background= card.desc.background
           this.editable = true
         /* } */
       }
