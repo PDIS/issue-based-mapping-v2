@@ -23,7 +23,7 @@ import tw from './i18n/tw.json';
 
 Vue.i18n.add('en', en);
 Vue.i18n.add('zh-TW', tw);
-Vue.i18n.set('zh-TW');
+Vue.i18n.set(navigator.language);
 
 new Vue({
   el: '#app',

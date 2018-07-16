@@ -135,16 +135,9 @@
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="資料/文件/連結" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                   </v-flex>
-                  <v-flex d-flex xs12>
+                  <!-- <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="關聯利害關係人" prepend-icon="people" v-model="card.desc.summary"></v-text-field>
-                  </v-flex>
-                  <v-flex d-flex xs12 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
-                    <input type="file" @change="onFileChange">
-                    <v-btn color="blue-grey" class="white--text" @click.prevent="upload(card)">
-                      上傳檔案
-                      <v-icon right dark >cloud_upload</v-icon>
-                    </v-btn>
-                  </v-flex>
+                  </v-flex> -->
                   <v-flex d-flex xs12>
                     <div v-if="card.attachments">
                       
@@ -154,7 +147,7 @@
               </v-flex>
               <v-divider></v-divider>
               <v-flex d-flex md12>
-                <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '利害關係人'">
+                <v-layout row wrap v-if="selectedlist.name != '利害關係人'">
                   <v-flex d-flex xs12 >
                     <v-select
                       v-model="card.desc.people"
@@ -255,6 +248,13 @@
                     </v-select> -->
                   </v-flex>
                 </v-layout>
+              </v-flex>
+              <v-flex d-flex xs12 v-if="selectedlist.name == '資料/文件/連結' && (board.admin.includes(user.id) || board.members.includes(user.id))">
+                <input type="file" @change="onFileChange">
+                <v-btn color="blue-grey" class="white--text" @click.prevent="upload(card)">
+                  上傳檔案
+                  <v-icon right dark >cloud_upload</v-icon>
+                </v-btn>
               </v-flex>
               <v-flex d-flex md12 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
                 <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '利害關係人'">
