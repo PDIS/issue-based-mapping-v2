@@ -43,7 +43,7 @@
                   <v-icon color="grey lighten-1">announcement</v-icon>
                 </v-list-tile-avatar>
                 <v-list-tile-content>
-                  <v-list-tile-sub-title>提案名稱</v-list-tile-sub-title>
+                  <v-list-tile-sub-title>{{ $t("Name of Topic") }}</v-list-tile-sub-title>
                   <v-list-tile-title v-html="board.desc.title"></v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
@@ -52,7 +52,7 @@
                   <v-icon color="grey lighten-1">face</v-icon>
                 </v-list-tile-avatar>
                 <v-list-tile-content>
-                  <v-list-tile-sub-title>提案人</v-list-tile-sub-title>
+                  <v-list-tile-sub-title>{{ $t("Initiator") }}</v-list-tile-sub-title>
                   <v-list-tile-title v-html="board.desc.person"></v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
@@ -61,14 +61,14 @@
                   <v-icon color="grey lighten-1">event</v-icon>
                 </v-list-tile-avatar>
                 <v-list-tile-content>
-                  <v-list-tile-sub-title>提案日期</v-list-tile-sub-title>
+                  <v-list-tile-sub-title>{{ $t("Kick-off Date") }}</v-list-tile-sub-title>
                   <v-list-tile-title v-html="board.desc.date"></v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
             </v-list>
           <v-divider></v-divider> 
           <v-card-actions class="mt-1" style="background-color:white">  
-            <v-btn class="blue-grey darken-4 white--text" :to="{name:'board', params:{id:board.id}}"><v-icon>arrow_right</v-icon> 進入議題</v-btn>
+            <v-btn class="blue-grey darken-4 white--text" :to="{name:'board', params:{id:board.id}}"><v-icon>arrow_right</v-icon>{{ $t("Enter") }}</v-btn>
             <v-spacer></v-spacer> 
             <div v-if="board.admin.includes(user.id)">
               <v-btn icon flat color="teal" :to="{name:'index'}" active-class @click="changeboardform(board.id)"><v-icon>edit</v-icon></v-btn>
@@ -80,7 +80,7 @@
     </v-layout>
     <template v-if="showtable">
       <div v-if="members.includes(user.id)">
-        <v-btn color="primary" dark class="mb-2" @click="changeboardform('')">新增議題</v-btn>
+        <v-btn color="primary" dark class="mb-2" @click="changeboardform('')">{{ $t("New Topic") }}</v-btn>
       </div>
       <v-data-table
         :headers="headers"
@@ -145,15 +145,15 @@ export default {
       showtable: false,
       headers: [
         {
-          text: '議題名稱',
+          text: this.$t("Name of Topic"),
           align: 'left',
           sortable: false,
           value: 'title'
         },
-        { text: '提案名稱', value: 'desc.title' },
-        { text: '提案人', value: 'desc.person' },
-        { text: '提案日期', value: 'desc.date' },
-        { text: '負責單位', value: 'desc.department' },
+        { text: this.$t("Name of Topic"), value: 'desc.title' },
+        { text: this.$t("Initiator"), value: 'desc.person' },
+        { text: this.$t("Kick-off Date"), value: 'desc.date' },
+        { text: this.$t("Responsible Bodies"), value: 'desc.department' },
         { text: '', value:''}
       ],
       dialog: false,

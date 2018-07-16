@@ -20,7 +20,7 @@
             <v-icon medium >home</v-icon>
           </v-list-tile-action>
           <v-list-tile-content >
-            <v-list-tile-title>回到首頁</v-list-tile-title>
+            <v-list-tile-title>{{$t("Home")}}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
         <v-list-tile>
@@ -28,7 +28,7 @@
             <v-icon >work</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title>說明文件</v-list-tile-title>
+            <v-list-tile-title>{{ $t("Instruction") }}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
         <v-list-tile>
@@ -36,7 +36,7 @@
             <v-icon >pan_tool</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title>常見問題</v-list-tile-title>
+            <v-list-tile-title>{{ $t("FAQ") }}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -90,7 +90,7 @@
       color="grey lighten-3" 
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title v-text="title"></v-toolbar-title>
+      <v-toolbar-title >{{$t("Issue Mapping Instruction")}}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-switch class='mt-4' color="primary" label="English"  :true-value="'en'" :false-value="'zh-TW'" v-model="lang" @change="setlang(lang)"></v-switch>
       <v-spacer></v-spacer>
@@ -114,7 +114,7 @@ export default {
       drawer: false,
       fixed: false,
       miniVariant: false,
-      title: '議題分析表',
+      title: this.$t("Issue Mapping Instruction"),
       search: '',
       lang: 'zh-TW'
     }

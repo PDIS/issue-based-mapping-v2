@@ -17,7 +17,7 @@
         </v-card>
       </v-flex>
       <v-flex xs6 class="mt-3">
-        <v-btn :to="{name:'mindmap', params:{id:board.id}}">心智圖</v-btn>
+        <v-btn :to="{name:'mindmap', params:{id:board.id}}">{{ $t("Mind Mapping") }}</v-btn>
         <v-btn @click="relationmode = true" v-if="relationmode == false">關聯卡片</v-btn>
         <v-btn @click="endrelationmode()" v-if="relationmode == true">結束關聯卡片</v-btn>
       </v-flex>

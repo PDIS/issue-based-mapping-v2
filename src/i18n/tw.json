@@ -1,4 +1,16 @@
 {
   "IssueList": "所有議題列表",
-  "Search": "搜尋議題"
+  "Search": "搜尋議題",
+  "Enter": "進入議題",
+  "Issue Mapping Instruction": "議題分析表",
+  "Name of Topic": "提案名稱",
+  "New Topic": "新增議題",
+  "Name of Topic": "議題名稱",
+  "Initiator": "提案人",
+  "Kick-off Date": "提案日期",
+  "Responsible Bodies": "負責單位",
+  "Mind Mapping": "心智圖",
+  "Instruction": "說明文件",
+  "FAQ": "常見問題",
+  "Home": "回到首頁"
 }
