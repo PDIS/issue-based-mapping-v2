@@ -5,6 +5,12 @@
         <v-group v-for="card in list.cards" :ref="card.id" :key="card.id" @dragmove="adjustPoint(card.id)" @dragend="changeposition(card,list)" :config="getgroupconfig(card)">
           <v-rect :config="getrectconfig(card)"></v-rect>
           <v-text :config="gettextconfig(card)"></v-text>
+          <v-group v-for="person in card.desc.people" :key="person">
+            <v-group v-for="label in labeltextconfig" :key="label.id">
+              <v-tag :config="getlabelconfig()"></v-tag>
+              <v-text :config="labeltextconfig[0]"></v-text>
+            </v-group>
+          </v-group>
         </v-group>
       </v-group>
       <v-arrow v-for="arrow in arrows" :key="arrow" ref="arrow" :config="arrowconfig[arrow]"></v-arrow>
@@ -19,10 +25,12 @@ export default {
       lists: [],
       arrows: 0,
       arrowconfig: [],
+      labeltextconfig: []
     }
   },
   created: function() {
     this.getcards()
+    this.getlabeltextconfig()
   },
   mounted: function() {
     let that = this
@@ -110,24 +118,60 @@ export default {
     getrectconfig: function(card) {
       return {
         fill: card.color,
-        width: 120,
-        height: 80,
+        width: 150,
+        height: 100,
         shadowColor: 'black',
         shadowOffset: {
           x: 5,
           y: 5
         },
-          shadowOpacity: 0.6
+        shadowOpacity: 0.6
       }
     },
     gettextconfig: function(card) {
       return { 
         text: card.name, 
         fontSize: 15, 
-        width: 120, 
+        width: 150, 
         padding: 15, 
         fontFamily: 'Roboto,sans-serif' 
       }
+    },
+    getlabelconfig: function() {
+      return {
+        x: 15,
+        y: 70,
+        width: 50,
+        height: 20,
+        fill: 'pink',
+      }
+    },
+   /*  getlabeltextconfig: function(person) {
+      Trello.cards.get(person, function(res) {
+        return  {
+          'x': 15,
+          'y': 70,
+          'text': res.name,
+
+        } 
+      })
+    }, */
+    getlabeltextconfig: function() {
+      let id = this.$route.params.id
+      Trello.boards.get(id + '/lists',{cards: 'open'}, function(res) {
+        res.map( l => {
+          if (l.name == '利害關係人') {
+            for (let i = 0; i < l.cards.length; i++ ) {
+              this.labeltextconfig[i] = {
+                x: 15,
+                y: 70,
+                text: l.cards[i].name,
+                id: l.cards[i].id
+              }
+            }
+          }
+        })
+      })
     },
     getarrowconfig: function(c,r) {
       let startpoint = this.$refs[c][0].getStage()

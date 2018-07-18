@@ -135,13 +135,8 @@
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="資料/文件/連結" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                   </v-flex>
-                  <!-- <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="關聯利害關係人" prepend-icon="people" v-model="card.desc.summary"></v-text-field>
-                  </v-flex> -->
                   <v-flex d-flex xs12>
-                    <div v-if="card.attachments">
-                      
-                    </div>
+                    {{card.attachments}}
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -631,7 +626,7 @@ export default {
                   attachment.url = a.url
                   card.attachments.push(attachment)
                 })
-              }                
+              }               
             })
           })
           that.lists.push(list)
@@ -875,7 +870,7 @@ export default {
               })
             }                
           })
-        })
+        console.log(c.attachments)})
       })
     },
     onFileChange: function(e) {
@@ -915,10 +910,14 @@ export default {
     this.getboard()
     this.getlists()
     this.getcards()
+    this.getattachments()
   },
   computed: mapGetters({
     user: 'user',
-  })
+  }),
+  mounted: function() {
+    this.getattachments()
+  }
 }
 </script>
 
