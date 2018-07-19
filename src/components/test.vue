@@ -2,6 +2,19 @@
  <div>
     <input type="file" @change="onFileChange">
     <v-btn @click="upload()">上傳</v-btn>
+    <div v-for="list in lists" :key="list.id">
+      <div v-for="card in list.cards" :key="card.id">
+         <v-container>
+            <v-layout row wrap>
+              <v-flex d-flex xs12>
+                <div v-if="typeof(card.attachments) !== 'undefined'">
+                    {{card.attachments.name}}        
+                </div>
+              </v-flex>
+            </v-layout>
+         </v-container>
+      </div>
+    </div>
  </div>
 </template>
 
@@ -10,6 +23,7 @@ export default {
   data() {
     return {
       file: FormData,
+      lists: []
     }
   },
   methods: {
@@ -57,10 +71,54 @@ export default {
       Trello.cards.get('5b30629995b4855bd26155a7',{fields: 'all',attachments: true},function(res) {
         console.log(res)
       })
+    },
+    async fuck() {
+      let a = await Trello.boards.get('5ae1a06add97661f233209a5' + '/lists',{cards: 'open'})
+      for (let i = 0; i < a.length; i++) {
+        let list = {}
+        list.id = a[i].id
+        for (let j = 0; j < a[i].cards.length; j++) {
+          let b = await Trello.cards.get(a[i].cards[j].id,{fields: 'attachments',attachments: true})
+          if (b.attachments.length != 0) {
+            for (let k = 0; k < b.attachments.length;k++) {
+              let attachment = {}
+              attachment.name = b.attachments[k].name
+              attachment.url = b.attachments[k].url
+              a[i].cards[j].attachments = await attachment
+            }
+            /* attachments.map( a => {
+              let attachment = {}
+              attachment.name = a.name
+              attachment.url = a.url
+              card.attach.push(attachment)
+            }) */
+          }
+                        console.log(typeof(a[i].cards[j].attachments))
+        }
+        list.cards = await a[i].cards
+        this.lists.push(list)
+      }
+      /* a.map( l => {
+        let list = {}
+        list.cards = l.cards
+        list.cards.map( card => {
+          let attachments = await Trello.cards.get(card.id,{fields: 'attachments',attachments: true})
+          if (attachments.length != 0) {
+            attachments.map( a => {
+              let attachment = {}
+              attachment.name = a.name
+              attachment.url = a.url
+              card.attach.push(attachment)
+            })
+          }
+        })
+        this.lists.push(list)
+      }) */
     }
   },
-  created: function() {
-    this.getattachment()
+  created: async function() {
+    let a = await this.fuck()
+    //console.log(this.lists)
   }
 }
 </script>
