@@ -30,7 +30,7 @@ export default {
   },
   created: function() {
     this.getcards()
-    this.getlabeltextconfig()
+    /* this.getlabeltextconfig() */
   },
   mounted: function() {
     let that = this
@@ -50,10 +50,60 @@ export default {
     }, 1000)
   },
   methods: {
-    getcards: function() {
-      let that = this;
-      let id = this.$route.params.id
+    getcards: async function() {
       this.lists = []
+      let id = this.$route.params.id
+      let listarray = await Trello.boards.get(id + '/lists',{cards: 'open'})
+      listarray.map( await (l => {
+        let list = {}
+        list.id = l.id
+        list.name = l.name
+        list.cards = l.cards
+        switch (list.name)
+        {
+          case '問題面向':
+          list.color = '#FBC02D'
+          break
+          case '問題細節':
+          list.color = '#FFE082'
+          break
+          case '解法':
+          list.color = '#689F38'
+          break
+          case '回應':
+          list.color = '#F4511E'
+          break
+          case '困難':
+          list.color = '#FF8A80'
+          break
+          case '利害關係人':
+          list.color = '#0097A7'
+          break
+          case '資料/文件/連結':
+          list.color = '#CFD8DC'
+          break
+          default:
+          list.color = 'teal'
+          break
+        }
+        list.cards.map( async (card) => {
+          let desc = JSON.parse(card.desc)
+          card.desc = desc
+          card.color = list.color
+          card.hover = false
+          let attach = await Trello.cards.get(card.id,{fields: 'attachments',attachments: true})
+          if (attach.attachments.length != 0) {
+            attach.attachments.map( async (att) => {
+              let attachment = {}
+              attachment.name = att.name
+              attachment.url = att.url
+              card.attachments = await att
+            })
+          }
+        })
+        this.lists.push(list)
+      }))
+      /* let that = this
       Trello.boards.get(id + '/lists',{cards: 'open'}, function(res) {
         res.map( l => {
           let list = {}
@@ -97,7 +147,7 @@ export default {
           })
           that.lists.push(list)
         })
-      })
+      }) */
     },
     getstageconfig: function() {
       let stagewidth = window.innerWidth
@@ -156,7 +206,7 @@ export default {
         } 
       })
     }, */
-    getlabeltextconfig: function() {
+   /*  getlabeltextconfig: function() {
       let id = this.$route.params.id
       Trello.boards.get(id + '/lists',{cards: 'open'}, function(res) {
         res.map( l => {
@@ -172,7 +222,7 @@ export default {
           }
         })
       })
-    },
+    }, */
     getarrowconfig: function(c,r) {
       let startpoint = this.$refs[c][0].getStage()
       let endpoint = this.$refs[r][0].getStage()

@@ -86,6 +86,7 @@
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="問題細節" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                   </v-flex>
+                  {{card}}
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain" ></v-text-field>
                   </v-flex>
@@ -490,6 +491,7 @@ export default {
           this.card.desc.role = card.desc.role
           this.card.desc.department= card.desc.department
           this.card.desc.background= card.desc.background
+          this.card.attachments = card.attachments
           this.editable = true
         /* } */
       }
@@ -566,8 +568,68 @@ export default {
         })
       })
     },
-    getlists: function() {
-      let that = this;
+    getlists: async function() {
+      this.lists = []
+      let id = this.$route.params.id
+      let listarray = await Trello.boards.get(id + '/lists',{cards: 'open'})
+      listarray.map( async (l) => {
+        let list = {}
+        list.id = l.id
+        list.name = l.name
+        list.cards = l.cards
+        switch (list.name)
+        {
+          case '問題面向':
+          list.color = 'yellow darken-2'
+          list.column = 1
+          break
+          case '問題細節':
+          list.color = 'amber lighten-3'
+          list.column = 2
+          break
+          case '解法':
+          list.color = 'light-green darken-2'
+          list.column = 3
+          break
+          case '回應':
+          list.color = 'deep-orange lighten-1'
+          list.column = 4
+          break
+          case '困難':
+          list.color = 'red accent-1'
+          list.column = 5
+          break
+          case '利害關係人':
+          list.color = 'cyan darken-2'
+          list.column = 6
+          break
+          case '資料/文件/連結':
+          list.color = 'blue-grey lighten-4'
+          list.column = 7
+          break
+          default:
+          list.color = 'teal'
+          break
+        }
+        list.cards.map( async (card) => {
+          let desc = JSON.parse(card.desc)
+          card.desc = desc
+          card.color = list.color
+          card.hover = false
+          let attach = await Trello.cards.get(card.id,{fields: 'attachments',attachments: true})
+          if (attach.attachments.length != 0) {
+            attach.attachments.map( async (att) => {
+              let attachment = {}
+              attachment.name = att.name
+              attachment.url = att.url
+              card.attachments = await att
+            })
+          }
+          console.log(card)
+        })
+        this.lists.push(list)
+      })
+      /* let that = this;
       this.lists = []
       Trello.boards.get(this.board.id + '/lists',{cards: 'open'}, function(res) {
         res.map( l => {
@@ -630,11 +692,11 @@ export default {
             })
           })
           that.lists.push(list)
-        })
-        that.getpeople()
-        that.getdata()
+        }) */
+        this.getpeople()
+        this.getdata()
         /* that.getattachments() */
-      })
+      /* }) */
     },
     newmember: function() {
       Trello.put('boards/' + this.board.id +'/members' ,{'email':this.email ,'type':'normal'},function(res) {
@@ -910,7 +972,7 @@ export default {
     this.getboard()
     this.getlists()
     this.getcards()
-    this.getattachments()
+    /* this.getattachments() */
   },
   computed: mapGetters({
     user: 'user',
