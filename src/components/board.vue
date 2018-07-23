@@ -86,7 +86,6 @@
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="問題細節" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                   </v-flex>
-                  {{card}}
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain" ></v-text-field>
                   </v-flex>
@@ -135,9 +134,6 @@
                 <v-layout row wrap v-if="selectedlist.name == '資料/文件/連結'">
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="資料/文件/連結" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
-                  </v-flex>
-                  <v-flex d-flex xs12>
-                    {{card.attachments}}
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -245,11 +241,14 @@
                   </v-flex>
                 </v-layout>
               </v-flex>
-              <v-flex d-flex xs12 v-if="selectedlist.name == '資料/文件/連結' && (board.admin.includes(user.id) || board.members.includes(user.id))">
+              <v-flex d-flex xs12 v-if="selectedlist.name == '資料/文件/連結' && (board.admin.includes(user.id) || board.members.includes(user.id)) && card.title != ''">
                 <input type="file" @change="onFileChange">
                 <v-btn color="blue-grey" class="white--text" @click.prevent="upload(card)">
                   上傳檔案
                   <v-icon right dark >cloud_upload</v-icon>
+                </v-btn>
+                <v-btn color="warning" class="white--text" target="_blank" :href="card.attachments.url">
+                  {{card.attachments.name}}
                 </v-btn>
               </v-flex>
               <v-flex d-flex md12 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
@@ -625,7 +624,6 @@ export default {
               card.attachments = await att
             })
           }
-          console.log(card)
         })
         this.lists.push(list)
       })
@@ -943,7 +941,7 @@ export default {
       formData.append('key','fb8dab318e1888679f571104d8b36ac7')
       formData.append('token',localStorage.trello_token)
       formData.append("file", files[0])
-      formData.append("name", "這是一個測試檔案");
+      formData.append("name", this.card.title);
       this.uploadfile = formData
     },
     upload: function(card) {
