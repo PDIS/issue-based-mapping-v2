@@ -621,7 +621,7 @@ export default {
               let attachment = {}
               attachment.name = att.name
               attachment.url = att.url
-              card.attachments = await att
+              card.attachments = await attachment
             })
           }
         })
