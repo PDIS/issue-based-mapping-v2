@@ -178,10 +178,12 @@ export default {
       }
     },
     getrectconfig: function(card) {
+      let tags = card.desc.people.length + card.desc.data.length
+      if (tags < 2) { tags = 2 }
       return {
         fill: card.color,
         width: 180,
-        height: 120,
+        height: 130 + ((tags - 2) * 30),
         shadowColor: 'black',
         shadowOffset: {
           x: 5,
@@ -203,15 +205,24 @@ export default {
     gettagconfig: function(text, i, tags) {
       let textlength = text.length
       let tagslength = 0
+      let j = 0
+      let k = 0
       let color = '#0097A7'
       if (tags != undefined) {
         tagslength = tags.length
         color = '#CFD8DC'
+        if (tagslength + i > 1) {
+          j = (tagslength + i) / 2
+        }
+        k = (tagslength + i) % 2
+      }
+      else {
+        k = (tagslength + i) % 2
       }
       return {
-        x: 20 + (i + tagslength) * 60,
-        y: 70,
-        width: textlength * 15,
+        x: 20 + k * 85,
+        y: 100 + j * 30,
+        width: 70,
         height: 20,
         fill: color,
         pointerDirection: 'left',
@@ -223,16 +234,25 @@ export default {
     gettagtextconfig: function(text, i, tags) {
       let textlength = text.length
       let tagslength = 0
+      let j = 0
+      let k = 0
       if (tags != undefined) {
         tagslength = tags.length
+        if (tagslength + i > 1) {
+          j = (tagslength + i) / 2
+        }
+        k = (tagslength + i) % 2
+      }
+      else {
+        k = (tagslength + i) % 2
       }
       return {
-        x: 20 + (i + tagslength) * 60,
-        y: 73,
+        x: 25 + k * 85,
+        y: 103 + j * 30,
         width: textlength * 15,
         text: text,
-        fontSize: 14,
-        fontFamily: 'Noto Sans TC'
+        fontSize: 12,
+        fontFamily: 'Noto Sans TC',
       }
     },
     getarrowconfig: function(c,r) {
