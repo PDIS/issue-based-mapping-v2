@@ -1,4 +1,16 @@
 <template>
+<div>
+   <v-btn
+              absolute
+              dark
+              fab
+              bottom
+              right
+              color="pink"
+              style="bottom:1em"
+            >
+              <v-icon>add</v-icon>
+            </v-btn>
   <v-stage :config="getstageconfig()">
     <v-layer>
       <v-group v-for="list in lists" :key="list.id">
@@ -18,6 +30,7 @@
       <v-arrow v-for="arrow in arrows" :key="arrow" ref="arrow" :config="arrowconfig[arrow]"></v-arrow>
     </v-layer>
   </v-stage>
+</div>
 </template>
 
 <script>
