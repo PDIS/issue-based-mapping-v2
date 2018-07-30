@@ -1,17 +1,9 @@
 <template>
 <div>
-   <v-btn
-              absolute
-              dark
-              fab
-              bottom
-              right
-              color="pink"
-              style="bottom:1em"
-            >
-              <v-icon>add</v-icon>
-            </v-btn>
-  <v-stage :config="getstageconfig()">
+  <v-btn absolute dark fab bottom right color="pink" style="bottom:1em">
+    <v-icon>add</v-icon>
+  </v-btn>
+  <v-stage ref="stage" :config="getstageconfig()">
     <v-layer>
       <v-group v-for="list in lists" :key="list.id">
         <v-group v-for="card in list.cards" :ref="card.id" :key="card.id" @dragmove="adjustPoint(card.id)" @dragend="changeposition(card,list)" :config="getgroupconfig(card)">
@@ -49,6 +41,8 @@ export default {
   },
   mounted: function() {
     let that = this
+    let stage = this.$refs.stage.getStage()
+    let scaleBy = 1.1;
     setTimeout( () => {
       that.lists.map(l => {
         l.cards.map(c => {
@@ -63,6 +57,25 @@ export default {
         })
       })
     }, 1000)
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      let oldScale = stage.scaleX();
+
+      let mousePointTo = {
+          x: stage.getPointerPosition().x / oldScale - stage.x() / oldScale,
+          y: stage.getPointerPosition().y / oldScale - stage.y() / oldScale,
+      };
+
+      let newScale = e.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+      stage.scale({ x: newScale, y: newScale });
+
+      let newPos = {
+          x: -(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale,
+          y: -(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale
+      };
+      stage.position(newPos);
+      stage.batchDraw();
+    });
   },
   methods: {
     getcards: async function() {
