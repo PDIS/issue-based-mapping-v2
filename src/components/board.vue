@@ -1,8 +1,8 @@
 <template>
   <v-container grid-list-md>
     <v-layout row wrap v-if="board.admin.includes(user.id)">
-      <v-btn icon outline small fab btn disabled class="mr-3" v-for="a in avatar">
-          <img :src="a+'/50.png'" /> 
+      <v-btn icon outline small fab btn disabled class="mr-3" v-for="a in avatar" :key="a">
+          <img :src="a+'/50.png'" style="border-radius:50%"/> 
       </v-btn>
       <v-flex xs11>
         <v-text-field color="grey darken-4" class="mt-3 mb-0" prepend-icon="people" label="新增議題成員" value="Input text" v-model="email"></v-text-field> 
