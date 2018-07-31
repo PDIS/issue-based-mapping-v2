@@ -1,6 +1,9 @@
 <template>
   <v-container grid-list-md>
     <v-layout row wrap v-if="board.admin.includes(user.id)">
+      <v-btn icon outline small fab btn disabled class="mr-3" v-for="a in avatar">
+          <img :src="a+'/50.png'" /> 
+      </v-btn>
       <v-flex xs11>
         <v-text-field color="grey darken-4" class="mt-3 mb-0" prepend-icon="people" label="新增議題成員" value="Input text" v-model="email"></v-text-field> 
       </v-flex>
@@ -279,7 +282,7 @@
         <v-card-title class="headline">確定刪除?</v-card-title>
         <v-card-text></v-card-text>
         <v-card-actions>
-          <v-btn color="blue" flat="flat" @click.native="deletedialog=false; cloasecard(card.id)">確定</v-btn>
+          <v-btn color="blue" flat="flat" @click.native="deletedialog=false; closecard(card.id)">確定</v-btn>
           <v-btn color="black" flat="flat" @click.native="deletedialog=false" >取消</v-btn>
         </v-card-actions>
       </v-card>
@@ -338,6 +341,8 @@ export default {
       },
       lists: [],
       cards: [],
+      members: [],
+      avatar: [],
       dialog: false,
       selectedlist: {},
       snackbar: false,
@@ -541,7 +546,7 @@ export default {
         return card.name.toLowerCase().includes(this.search.toLowerCase())
       })
     },
-    cloasecard: function(id) {
+    closecard: function(id) {
       let that = this
       Trello.put('cards/' + id ,{'closed':true},function(res) {
         window.location.reload(true);
@@ -696,10 +701,38 @@ export default {
         /* that.getattachments() */
       /* }) */
     },
-    newmember: function() {
-      Trello.put('boards/' + this.board.id +'/members' ,{'email':this.email ,'type':'normal'},function(res) {
-        window.location.reload(true);
+    getavatar: function(usr){
+      console.log("calling getavatar, shello, I am getting avatar for "+usr);
+      let that = this
+      Trello.get('/members/'+usr,function(e){
+          console.log(e);
+          that.avatar.push(e.avatarUrl);
       })
+    },
+    getmembers: function(){
+      
+      console.log("calling getmembers");
+      let that = this
+      let heremembers = []
+      this.board.id = this.$route.params.id
+      Trello.boards.get(this.board.id+'/members', function(e){
+          console.log(e);
+
+          for (let i of e) {
+            console.log(i.username);
+            heremembers.push(i.username);
+            that.getavatar(i.username);
+          }
+      })
+      this.members = heremembers
+      
+    },
+    newmember: function() {
+      // console.log("hello");
+      // Trello.put('boards/' + this.board.id +'/members' ,{'email':this.email ,'type':'normal'},function(res) {
+      //   window.location.reload(true);
+      // })
+      
     },
     getcolor: function() {
       if (this.hover == true) {
@@ -891,6 +924,7 @@ export default {
       let that = this;
       this.board.id = this.$route.params.id
       Trello.boards.get(this.board.id + '/cards',{'fields':'all'}, function(res) {
+        //console.log(res);
         that.cards = res
       })
     },
@@ -970,6 +1004,7 @@ export default {
     this.getboard()
     this.getlists()
     this.getcards()
+    this.getmembers()
     /* this.getattachments() */
   },
   computed: mapGetters({
