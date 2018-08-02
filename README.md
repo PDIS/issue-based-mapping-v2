@@ -1,21 +1,32 @@
-# issue-based-mapping-v2
+# PDIS議題卡/議題分析表/議題手冊
 
-> A Vue.js project
+## Requirement
 
-## Build Setup
+* Node.js >= v8.x
 
-``` bash
-# install dependencies
+## Install
+
+```
+git clone https://github.com/PDIS/issue-based-mapping-v2.git
+cd issue-based-mapping-v2
 npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## Start & watch
+
+```
+npm start
+```
+
+## Simple build for production
+
+```
+npm run build
+```
+
+## Update sources
+
+```
+git pull
+npm install
+```
