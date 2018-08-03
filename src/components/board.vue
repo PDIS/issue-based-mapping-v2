@@ -1,15 +1,19 @@
 <template>
   <v-container grid-list-md>
     <v-layout row wrap v-if="board.admin.includes(user.id)">
-      <v-btn icon outline small fab btn disabled class="mr-3" v-for="a in avatar" :key="a">
+      <v-btn icon small fab btn disabled v-for="a in avatar" :key="a">
           <img :src="a+'/50.png'" style="border-radius:50%"/> 
       </v-btn>
-      <v-flex xs11>
-        <v-text-field color="grey darken-4" class="mt-3 mb-0" prepend-icon="people" label="新增議題成員" value="Input text" v-model="email"></v-text-field> 
-      </v-flex>
-      <v-flex xs1>
-         <v-btn top color="info" @click="newmember()">新增</v-btn>
-       </v-flex>
+      <v-icon  @click="add_member()" medium fab btn outline class=" dark ml-2">person_add</v-icon>
+
+          <v-flex xs5 v-if="show_add_member">
+            <v-text-field  color="grey darken-4" class="mt-3 mb-0" label="新增議題成員" value="Input text" v-model="email"></v-text-field> 
+          </v-flex>
+          <v-flex xs3 v-if="show_add_member">
+            <v-btn top color="info" @click="newmember()">新增</v-btn>
+          </v-flex>
+
+        
     </v-layout>
     <v-layout row>
       <v-flex xs3 >
@@ -347,6 +351,7 @@ export default {
       selectedlist: {},
       snackbar: false,
       valid: false,
+      show_add_member: false,
       titleRules: [
         v => !!v || '此欄位為必填!',
         v => v.length <= 20 || '此欄位不可超過20個字!'
@@ -997,6 +1002,10 @@ export default {
         this.responsestring = '[未來]'
       }
       card.title = this.responsestring + card.title
+    },
+    add_member: function(){
+      console.log("I clicked the add person button")  
+      this.show_add_member = !this.show_add_member;
     }
   },
   created: function() {
