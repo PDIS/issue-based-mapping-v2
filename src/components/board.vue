@@ -328,7 +328,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn flat class="subheading">取消</v-btn>
-            <v-btn flat color="cyan" type="submit" class="subheading">確認</v-btn>
+            <v-btn flat color="cyan" type="submit" class="subheading" @click="newmember()">確認</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -757,10 +757,10 @@ export default {
       
     },
     newmember: function() {
-      // console.log("hello");
-      // Trello.put('boards/' + this.board.id +'/members' ,{'email':this.email ,'type':'normal'},function(res) {
-      //   window.location.reload(true);
-      // })
+      console.log("hello, this works!");
+      Trello.put('boards/' + this.board.id +'/members' ,{'email':this.email ,'type':'normal'},function(res) {
+        window.location.reload(true);
+      })
       
     },
     getcolor: function() {
