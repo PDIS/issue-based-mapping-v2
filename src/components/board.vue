@@ -4,12 +4,12 @@
       <v-btn icon small fab btn disabled v-for="a in avatar" :key="a">
           <img :src="a+'/50.png'" style="border-radius:50%"/> 
       </v-btn>
-      <v-icon  @click="add_member()" medium fab btn outline class=" dark ml-2">person_add</v-icon>
+      <v-icon  @click="new_member()" medium fab btn outline class=" dark ml-2">person_add</v-icon>
 
-          <v-flex xs5 v-if="show_add_member">
-            <v-text-field  color="grey darken-4" class="mt-3 mb-0" label="新增議題成員" value="Input text" v-model="email"></v-text-field> 
+          <v-flex xs5 v-if="show_new_member">
+            <v-text-field  color="grey darken-4" class="mt-0 mb-0" label="新增議題成員" value="Input text" v-model="email"></v-text-field> 
           </v-flex>
-          <v-flex xs3 v-if="show_add_member">
+          <v-flex xs3 v-if="show_new_member">
             <v-btn top color="info" @click="newmember()">新增</v-btn>
           </v-flex>
 
@@ -309,6 +309,29 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="newmemberdialog" max-width="500px">
+        <v-card>
+          <v-card-title>
+            新增議題成員
+          </v-card-title>
+          <v-card-text>
+          <v-form>
+          <v-container>
+            <v-layout>
+              <v-flex>
+            <v-text-field  color="grey darken-4" class="mt-0 mb-0" label="email address or name" value="Input text" v-model="email"></v-text-field> 
+            </v-flex>
+            </v-layout>
+          </v-container>
+        </v-form>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn flat class="subheading">取消</v-btn>
+            <v-btn flat color="cyan" type="submit" class="subheading">確認</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     <v-snackbar
       :timeout="5000"
       top="top"
@@ -351,7 +374,7 @@ export default {
       selectedlist: {},
       snackbar: false,
       valid: false,
-      show_add_member: false,
+      show_new_member: false,
       titleRules: [
         v => !!v || '此欄位為必填!',
         v => v.length <= 20 || '此欄位不可超過20個字!'
@@ -394,7 +417,8 @@ export default {
       relationmode: false,
       firstcard: {},
       uploadfile: FormData,
-      responsestring: ''
+      responsestring: '',
+      newmemberdialog: false
     }
   },
   methods: {
@@ -1003,9 +1027,10 @@ export default {
       }
       card.title = this.responsestring + card.title
     },
-    add_member: function(){
-      console.log("I clicked the add person button")  
-      this.show_add_member = !this.show_add_member;
+    new_member: function(){
+      console.log("I clicked the add person button")
+      this.newmemberdialog = true;  
+      // this.show_new_member = add_member!this.show_new_member;
     }
   },
   created: function() {
