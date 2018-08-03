@@ -1,7 +1,7 @@
 <template>
 <div>
   <v-btn absolute dark fab bottom right color="pink" style="bottom:1em">
-    <v-icon>add</v-icon>
+    <v-icon medium>add</v-icon>
   </v-btn>
   <v-stage ref="stage" :config="getstageconfig()">
     <v-layer>

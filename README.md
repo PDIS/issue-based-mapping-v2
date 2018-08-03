@@ -1,21 +1,35 @@
-# issue-based-mapping-v2
+# PDIS 數位版議題分析表
 
-> A Vue.js project
+議題分析表是為開放政府聯絡人(PO) 設計的議題分析架構。議題分析表紙本版從 2017 年初開始開發，透過超過超過三十次協作會議的經驗，在各部會 PO 數次使用之
+後，共同腦力激盪、意見回饋、修正改版，促成數位版議題分析表的產生。數位版的議題分析表除了將紙本數位化，也期許建置協作編輯環境、將資料結構化以便後續分析利用。
 
-## Build Setup
+## Requirement
 
-``` bash
-# install dependencies
+* Node.js >= v8.x
+
+## Install
+
+```
+git clone https://github.com/PDIS/issue-based-mapping-v2.git
+cd issue-based-mapping-v2
 npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## Start & watch
+
+```
+npm start
+```
+
+## Simple build for production
+
+```
+npm run build
+```
+
+## Update sources
+
+```
+git pull
+npm install
+```

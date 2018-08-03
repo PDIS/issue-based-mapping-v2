@@ -22,7 +22,7 @@
             <v-layout align-center justify-center>
               <v-card-text >
                 <v-btn class="cyan darken-4" fab dark large @click="changeboardform('')">
-                  <v-icon dark>add</v-icon>
+                  <v-icon large dark>add</v-icon>
                 </v-btn>
               </v-card-text>
             </v-layout>
