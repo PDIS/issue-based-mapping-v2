@@ -756,11 +756,16 @@ export default {
       this.members = heremembers
       
     },
-    newmember: function() {
-      console.log("hello, this works!");
-      Trello.put('boards/' + this.board.id +'/members' ,{'email':this.email ,'type':'normal'},function(res) {
+    newmember: function() {      
+      console.log("hello, this works! adding "+this.email);
+      for (let this_email of this.email.split(", ")) {
+        console.log(this_email);
+        Trello.put('boards/' + this.board.id +'/members' ,{'email':this_email ,'type':'normal'},function(res) {
         window.location.reload(true);
       })
+      }
+      
+
       
     },
     getcolor: function() {
