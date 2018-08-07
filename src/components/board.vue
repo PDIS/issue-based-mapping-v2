@@ -142,6 +142,9 @@
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="資料/文件/連結" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
                   </v-flex>
+                  <v-flex d-flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="文件連結" prepend-icon="announcement" v-model="card.desc.attachment"></v-text-field>
+                  </v-flex>
                 </v-layout>
               </v-flex>
               <v-divider></v-divider>
@@ -248,7 +251,7 @@
                   </v-flex>
                 </v-layout>
               </v-flex>
-              <v-flex d-flex xs12 v-if="selectedlist.name == '資料/文件/連結' && (board.admin.includes(user.id) || board.members.includes(user.id)) && card.title != ''">
+              <v-flex d-flex xs12 v-if="selectedlist.name == '資料/文件/連結' && (board.admin.includes(user.id) || board.members.includes(user.id)) && editable == true ">
                 <input type="file" @change="onFileChange">
                 <v-btn color="blue-grey" class="white--text" @click.prevent="upload(card)">
                   上傳檔案
@@ -391,6 +394,7 @@ export default {
           people: [],
           data: [],
           related: [],
+          attachment: '',
           x: 0,
           y: 0
         },
@@ -454,8 +458,12 @@ export default {
       {
         this.card.desc.x = 100 + this.selectedlist.cards.length * 150
         this.card.desc.y = this.selectedlist.column * 150 
-        Trello.post('cards', {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc)} , function() {
-          window.location.reload(true);
+        Trello.post('cards', {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc)} , function(res) {
+          if (that.card.desc.attachments != '' && that.card.attachments != 'undefined') {
+            Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
+              window.location.reload(true);
+            })
+          }
         })
       }
       else {
@@ -522,8 +530,11 @@ export default {
           this.card.desc.related = card.desc.related
           this.card.desc.explain = card.desc.explain
           this.card.desc.role = card.desc.role
-          this.card.desc.department= card.desc.department
-          this.card.desc.background= card.desc.background
+          this.card.desc.department = card.desc.department
+          this.card.desc.background = card.desc.background
+          this.card.desc.attachment = card.desc.attachment 
+          this.card.desc.x = card.desc.x
+          this.card.desc.y = card.desc.y
           this.card.attachments = card.attachments
           this.editable = true
         /* } */
@@ -661,112 +672,33 @@ export default {
         })
         this.lists.push(list)
       })
-      /* let that = this;
-      this.lists = []
-      Trello.boards.get(this.board.id + '/lists',{cards: 'open'}, function(res) {
-        res.map( l => {
-          let list = {}
-          list.id = l.id
-          list.name = l.name
-          list.cards = l.cards
-          switch (list.name)
-          {
-            case '問題面向':
-            list.color = 'yellow darken-2'
-            list.column = 1
-            break
-            case '問題細節':
-            list.color = 'amber lighten-3'
-            list.column = 2
-            break
-            case '解法':
-            list.color = 'light-green darken-2'
-            list.column = 3
-            break
-            case '回應':
-            list.color = 'deep-orange lighten-1'
-            list.column = 4
-            break
-            case '困難':
-            list.color = 'red accent-1'
-            list.column = 5
-            break
-            case '利害關係人':
-            list.color = 'cyan darken-2'
-            list.column = 6
-            break
-            case '資料/文件/連結':
-            list.color = 'blue-grey lighten-4'
-            list.column = 7
-            break
-            default:
-            list.color = 'teal'
-            break
-          }
-          list.cards.map(card => {
-            if (card.desc != '') {
-              let desc = JSON.parse(card.desc)
-              card.desc = desc
-            }
-            card.color = list.color
-            card.column = list.column
-            card.hover = false
-            card.attachments = []
-            Trello.cards.get(card.id,{fields: 'attachments',attachments: true,},function(res) {
-              if (res.attachments.length != 0) {
-                res.attachments.map( a => {
-                  let attachment = {}
-                  attachment.name = a.name
-                  attachment.url = a.url
-                  card.attachments.push(attachment)
-                })
-              }               
-            })
-          })
-          that.lists.push(list)
-        }) */
-        this.getpeople()
-        this.getdata()
-        /* that.getattachments() */
-      /* }) */
+      this.getpeople()
+      this.getdata()
     },
-    getavatar: function(usr){
-      console.log("calling getavatar, shello, I am getting avatar for "+usr);
+    getavatar: function(usr){;
       let that = this
       Trello.get('/members/'+usr,function(e){
-          console.log(e);
           that.avatar.push(e.avatarUrl);
       })
     },
     getmembers: function(){
-      
-      console.log("calling getmembers");
       let that = this
       let heremembers = []
       this.board.id = this.$route.params.id
       Trello.boards.get(this.board.id+'/members', function(e){
-          console.log(e);
-
           for (let i of e) {
-            console.log(i.username);
             heremembers.push(i.username);
             that.getavatar(i.username);
           }
       })
       this.members = heremembers
-      
     },
     newmember: function() {      
-      console.log("hello, this works! adding "+this.email);
       for (let this_email of this.email.split(", ")) {
-        console.log(this_email);
         Trello.put('boards/' + this.board.id +'/members' ,{'email':this_email ,'type':'normal'},function(res) {
-        window.location.reload(true);
-      })
+          window.location.reload(true);
+        })
       }
-      
-
-      
     },
     getcolor: function() {
       if (this.hover == true) {
@@ -958,7 +890,6 @@ export default {
       let that = this;
       this.board.id = this.$route.params.id
       Trello.boards.get(this.board.id + '/cards',{'fields':'all'}, function(res) {
-        //console.log(res);
         that.cards = res
       })
     },
@@ -998,7 +929,7 @@ export default {
               })
             }                
           })
-        console.log(c.attachments)})
+        })
       })
     },
     onFileChange: function(e) {
@@ -1017,7 +948,6 @@ export default {
       request.responseType = "json";
       request.onreadystatechange = function() {
         if (request.readyState === 4) {
-          console.log(`Successfully uploaded at: ${request.response.date}`);
         }
       }
       request.open("POST", 'https://api.trello.com/1/cards/' + card.id + '/attachments/');
@@ -1033,7 +963,6 @@ export default {
       card.title = this.responsestring + card.title
     },
     new_member: function(){
-      console.log("I clicked the add person button")
       this.newmemberdialog = true;  
       // this.show_new_member = add_member!this.show_new_member;
     }
@@ -1049,9 +978,9 @@ export default {
   computed: mapGetters({
     user: 'user',
   }),
-  mounted: function() {
+  /* mounted: function() {
     this.getattachments()
-  }
+  } */
 }
 </script>
 
