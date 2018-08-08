@@ -41,8 +41,8 @@ export default {
   },
   mounted: function() {
     let that = this
-    let stage = this.$refs.stage.getStage()
-    let scaleBy = 1.1;
+/*     let stage = this.$refs.stage.getStage()
+    let scaleBy = 1.1; */
     setTimeout( () => {
       that.lists.map(l => {
         l.cards.map(c => {
@@ -58,6 +58,8 @@ export default {
       })
     }, 1000)
     window.addEventListener('wheel', (e) => {
+      let stage = this.$refs.stage.getStage()
+      let scaleBy = 1.1;
       e.preventDefault();
       let oldScale = stage.scaleX();
 
@@ -76,6 +78,28 @@ export default {
       stage.position(newPos);
       stage.batchDraw();
     });
+  },
+  destroyed: function() {
+    window.removeEventListener('wheel', (e) => {
+          console.log('fuck')
+      e.preventDefault();
+      let oldScale = stage.scaleX();
+
+      let mousePointTo = {
+          x: stage.getPointerPosition().x / oldScale - stage.x() / oldScale,
+          y: stage.getPointerPosition().y / oldScale - stage.y() / oldScale,
+      };
+
+      let newScale = e.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+      stage.scale({ x: newScale, y: newScale });
+
+      let newPos = {
+          x: -(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale,
+          y: -(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale
+      };
+      stage.position(newPos);
+      stage.batchDraw();}
+    )
   },
   methods: {
     getcards: async function() {
@@ -325,8 +349,27 @@ export default {
       else {
         document.body.style.cursor = 'default';
       }
-    }
-  },
+    },
+    /* handlescroll: function() {
+      console.log(window.scrollY)
+      let stage = this.$refs.stage.getStage()
+      let scaleBy = 1.1;
+      let oldScale = stage.scaleX();
+      let mousePointTo = {
+          x: stage.getPointerPosition().x / oldScale - stage.x() / oldScale,
+          y: stage.getPointerPosition().y / oldScale - stage.y() / oldScale,
+      };
+      let newScale = window.scrollY.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+      stage.scale({ x: newScale, y: newScale });
+
+      let newPos = {
+          x: -(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale,
+          y: -(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale
+      };
+      stage.position(newPos);
+      stage.batchDraw();
+    } */
+  }
 }
 </script>
 
