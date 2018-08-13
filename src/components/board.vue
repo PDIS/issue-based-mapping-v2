@@ -255,7 +255,7 @@
                 <input type="file" @change="onFileChange">
                 <v-btn color="blue-grey" class="white--text" @click.prevent="upload(card)">
                   上傳檔案
-                  <v-icon right dark >cloud_upload</v-icon>
+                  <!-- <v-icon right dark >cloud_upload</v-icon> -->
                 </v-btn>
                 <v-btn color="warning" class="white--text" target="_blank" :href="card.attachments.url" v-if="card.attachments != undefined">
                   {{card.attachments.name}}
@@ -470,8 +470,12 @@ export default {
         })
       }
       else {
-        Trello.put('cards/' + this.card.id, {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function() {
-          window.location.reload(true);
+        Trello.put('cards/' + this.card.id, {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function(res) {
+          if (that.card.desc.attachments != '' && that.card.attachments == undefined) {
+            Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
+              window.location.reload(true);
+            })
+          }
         })
       }
     },
