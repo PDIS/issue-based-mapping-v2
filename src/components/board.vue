@@ -257,8 +257,11 @@
                   上傳檔案
                   <v-icon right dark >cloud_upload</v-icon>
                 </v-btn>
-                <v-btn color="warning" class="white--text" target="_blank" :href="card.attachments.url">
+                <v-btn color="warning" class="white--text" target="_blank" :href="card.attachments.url" v-if="card.attachments != undefined">
                   {{card.attachments.name}}
+                </v-btn>
+                <v-btn color="error" class="white--text" @click="deleteattachment(card)">
+                  刪除附件
                 </v-btn>
               </v-flex>
               <v-flex d-flex md12 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
@@ -459,7 +462,7 @@ export default {
         this.card.desc.x = 100 + this.selectedlist.cards.length * 150
         this.card.desc.y = this.selectedlist.column * 150 
         Trello.post('cards', {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc)} , function(res) {
-          if (that.card.desc.attachments != '' && that.card.attachments != 'undefined') {
+          if (that.card.desc.attachments != '' && that.card.attachments == undefined) {
             Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
               window.location.reload(true);
             })
@@ -664,6 +667,7 @@ export default {
           if (attach.attachments.length != 0) {
             attach.attachments.map( async (att) => {
               let attachment = {}
+              attachment.id = att.id
               attachment.name = att.name
               attachment.url = att.url
               card.attachments = await attachment
@@ -965,6 +969,11 @@ export default {
     new_member: function(){
       this.newmemberdialog = true;  
       // this.show_new_member = add_member!this.show_new_member;
+    },
+    deleteattachment: function(card) {
+      Trello.delete('cards/' + card.id + '/attachments/' + card.attachments.id, function() {
+        window.location.reload(true);
+      })
     }
   },
   created: function() {
