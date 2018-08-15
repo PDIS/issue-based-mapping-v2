@@ -346,6 +346,14 @@
       新增成功!
       <v-btn flat color="pink" @click.native="snackbar = false">關閉</v-btn>
     </v-snackbar>
+    <v-snackbar
+      :timeout="5000"
+      top="top"
+      v-model="attsnackbar"
+    >
+      請先刪除附件再重新上傳!
+      <v-btn flat color="pink" @click.native="attsnackbar = false">關閉</v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -425,7 +433,8 @@ export default {
       firstcard: {},
       uploadfile: FormData,
       responsestring: '',
-      newmemberdialog: false
+      newmemberdialog: false,
+      attsnackbar: false
     }
   },
   methods: {
@@ -462,19 +471,27 @@ export default {
         this.card.desc.x = 100 + this.selectedlist.cards.length * 150
         this.card.desc.y = this.selectedlist.column * 150 
         Trello.post('cards', {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc)} , function(res) {
-          if (that.card.desc.attachments != '' && that.card.attachments == undefined) {
+          if (that.card.desc.attachment != '' && that.card.attachments == undefined) {
             Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
               window.location.reload(true);
             })
+          } else if (that.card.desc.attachment == that.card.attachments.url) {
+            window.location.reload(true);
+          } else {
+            that.attsnackbar = true
           }
         })
       }
       else {
         Trello.put('cards/' + this.card.id, {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function(res) {
-          if (that.card.desc.attachments != '' && that.card.attachments == undefined) {
+          if (that.card.desc.attachment != '' && that.card.attachments == undefined) {
             Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
               window.location.reload(true);
             })
+          } else if (that.card.desc.attachment == that.card.attachments.url) {
+            window.location.reload(true);
+          } else {
+            that.attsnackbar = true
           }
         })
       }
