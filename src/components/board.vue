@@ -251,18 +251,51 @@
                   </v-flex>
                 </v-layout>
               </v-flex>
-              <v-flex d-flex xs12 v-if="selectedlist.name == '資料/文件/連結' && (board.admin.includes(user.id) || board.members.includes(user.id)) && editable == true ">
+              <v-flex d-flex xs12 v-if="selectedlist.name == '資料/文件/連結' && (board.admin.includes(user.id) || board.members.includes(user.id)) && editable == true && card.attachments == undefined">
                 <input type="file" @change="onFileChange">
                 <v-btn color="blue-grey" class="white--text" @click.prevent="upload(card)">
                   上傳檔案
-                  <!-- <v-icon right dark >cloud_upload</v-icon> -->
+                  <v-icon right dark >cloud_upload</v-icon>
                 </v-btn>
-                <v-btn color="warning" class="white--text" target="_blank" :href="card.attachments.url" v-if="card.attachments != undefined">
+                <!-- <v-btn color="warning" class="white--text" target="_blank" :href="card.attachments.url" v-if="card.attachments != undefined">
                   {{card.attachments.name}}
-                </v-btn>
-                <v-btn color="error" class="white--text" @click="deleteattachment(card)">
+                </v-btn> -->
+                <!-- <v-btn color="error" class="white--text" @click="deleteattachment(card)">
                   刪除附件
-                </v-btn>
+                </v-btn> -->
+              </v-flex>
+              <v-flex d-flex xs12 v-if="selectedlist.name == '資料/文件/連結' && editable == true && card.attachments != undefined && card.attachments.preview != undefined">
+                <v-card>
+                  <v-card-media
+                    :src="card.attachments.preview.url"
+                    :height="card.attachments.preview.height"
+                  ></v-card-media>
+
+                  <v-card-title primary-title>
+                    <div>
+                      <h3 class="headline mb-0">{{card.attachments.name}}</h3>
+                    </div>
+                  </v-card-title>
+
+                  <v-card-actions>
+                    <v-btn flat color="" target="_blank" :href="card.attachments.url">下載附件</v-btn>
+                    <v-btn flat color="error" @click="deleteattachment(card)">刪除附件</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-flex>
+              <v-flex d-flex xs12 v-if="selectedlist.name == '資料/文件/連結' && editable == true && card.attachments != undefined && card.attachments.preview == undefined">
+                 <v-card>
+                  <v-card-title primary-title>
+                    <div>
+                      <h3 class="headline mb-0">{{card.attachments.name}}</h3>
+                    </div>
+                  </v-card-title>
+
+                  <v-card-actions>
+                    <v-btn flat color="" target="_blank" :href="card.attachments.url">下載附件</v-btn>
+                    <v-btn flat color="error" @click="deleteattachment(card)">刪除附件</v-btn>
+                  </v-card-actions>
+                </v-card>
               </v-flex>
               <v-flex d-flex md12 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
                 <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '利害關係人'">
@@ -471,27 +504,36 @@ export default {
         this.card.desc.x = 100 + this.selectedlist.cards.length * 150
         this.card.desc.y = this.selectedlist.column * 150 
         Trello.post('cards', {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc)} , function(res) {
-          if (that.card.desc.attachment != '' && that.card.attachments == undefined) {
-            Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
+          if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
+            if (that.card.attachments == undefined) {
+              Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
+                window.location.reload(true);
+              })
+            } else if (that.card.desc.attachment == that.card.attachments.url) {
               window.location.reload(true);
-            })
-          } else if (that.card.desc.attachment == that.card.attachments.url) {
-            window.location.reload(true);
+            } else {
+              that.attsnackbar = true
+            }
           } else {
-            that.attsnackbar = true
+            window.location.reload(true);
           }
         })
       }
       else {
         Trello.put('cards/' + this.card.id, {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function(res) {
-          if (that.card.desc.attachment != '' && that.card.attachments == undefined) {
-            Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
+          console.log(that.card)
+          if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
+            if (that.card.attachments == undefined) {
+              Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
+                window.location.reload(true);
+              })
+            } else if (that.card.desc.attachment == that.card.attachments.url) {
               window.location.reload(true);
-            })
-          } else if (that.card.desc.attachment == that.card.attachments.url) {
-            window.location.reload(true);
+            } else {
+              that.attsnackbar = true
+            }
           } else {
-            that.attsnackbar = true
+            window.location.reload(true);
           }
         })
       }
@@ -559,6 +601,7 @@ export default {
           this.card.desc.attachment = card.desc.attachment 
           this.card.desc.x = card.desc.x
           this.card.desc.y = card.desc.y
+          console.log(card.attachments)
           this.card.attachments = card.attachments
           this.editable = true
         /* } */
@@ -691,6 +734,9 @@ export default {
               attachment.id = att.id
               attachment.name = att.name
               attachment.url = att.url
+              if (att.previews.length != 0) {
+                attachment.preview = att.previews[4]
+              }
               card.attachments = await attachment
             })
           }
@@ -969,14 +1015,19 @@ export default {
       this.uploadfile = formData
     },
     upload: function(card) {
-      let request = new XMLHttpRequest();
-      request.responseType = "json";
-      request.onreadystatechange = function() {
-        if (request.readyState === 4) {
+      if (card.attachments == undefined) {
+        let request = new XMLHttpRequest()
+        request.responseType = "json"
+        request.onreadystatechange = function() {
+          if (request.readyState === 4) {
+            window.location.reload(true)
+          }
         }
+        request.open("POST", 'https://api.trello.com/1/cards/' + card.id + '/attachments/')
+        request.send(this.uploadfile)
+      } else {
+        this.attsnackbar = true
       }
-      request.open("POST", 'https://api.trello.com/1/cards/' + card.id + '/attachments/');
-      request.send(this.uploadfile);
     },
     changeresponsetime: function(card) {
       card.title = card.title.replace('[現在]','').replace('[未來]','')

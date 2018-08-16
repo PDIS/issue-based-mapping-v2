@@ -68,7 +68,7 @@ export default {
           y: stage.getPointerPosition().y / oldScale - stage.y() / oldScale,
       };
 
-      let newScale = e.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+      let newScale = e.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
       stage.scale({ x: newScale, y: newScale });
 
       let newPos = {
