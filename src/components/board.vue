@@ -27,6 +27,7 @@
         <v-btn :to="{name:'mindmap', params:{id:board.id}}">{{ $t("Mind Mapping") }}</v-btn>
         <v-btn @click="relationmode = true" v-if="relationmode == false">關聯卡片</v-btn>
         <v-btn @click="endrelationmode()" v-if="relationmode == true">結束關聯卡片</v-btn>
+        <v-btn target="_blank" :href="board.desc.link">共筆連結</v-btn>
       </v-flex>
       <v-flex xs3>
         <v-text-field color="grey darken-4" class="mt-3 mb-0" prepend-icon="search" label="搜尋卡片關鍵字" value="Input text" v-model="search"></v-text-field>
@@ -152,12 +153,12 @@
                 <v-layout row wrap v-if="selectedlist.name != '利害關係人'">
                   <v-flex d-flex xs12 >
                     <v-select
-                      v-model="card.desc.people"
+                      v-model="card.desc.peoplefrom"
                       :items="peoplelist"
                       item-text="name"
                       item-value="id"
                       prepend-icon="people"
-                      label="關聯利害關係人"                     
+                      label="關聯利害關係人(資料來源)"                     
                       chips
                       multiple
                       autocomplete
@@ -169,35 +170,42 @@
                         </template>
                         <template v-else>
                           <v-list-tile-avatar>
-                            <v-checkbox v-model="card.desc.people" :value="data.item.id"></v-checkbox>
+                            <v-checkbox v-model="card.desc.peoplefrom" :value="data.item.id"></v-checkbox>
                           </v-list-tile-avatar>
                           <v-list-tile-content v-text="data.item.name"></v-list-tile-content> 
                         </template>
                       </template>                                        
                     </v-select>
-                    <!-- <v-select
-                      v-model="card.desc.people"
+                  </v-flex>
+                </v-layout>
+              </v-flex>
+              <v-flex d-flex md12>
+                <v-layout row wrap v-if="selectedlist.name != '利害關係人'">
+                  <v-flex d-flex xs12 >
+                    <v-select
+                      v-model="card.desc.peopleto"
                       :items="peoplelist"
                       item-text="name"
-                      label="關聯利害關係人"
+                      item-value="id"
                       prepend-icon="people"
-                      color="blue-grey darken-2" 
+                      label="關聯利害關係人(要向誰提問)"                     
                       chips
-                      tags
                       multiple
+                      autocomplete
+                      deletable-chips
+                      no-data-text="目前尚無資料"
                     >
-                      <template slot="selection" slot-scope="data">
-                        <v-chip
-                          :selected="data.selected"
-                          :key="JSON.stringify(data.item)"
-                          class="chip--select-multi"
-                          @input="data.parent.selectItem(data.item)"
-                          close
-                        >
-                          {{ data.item.name }}
-                        </v-chip>
-                      </template>
-                    </v-select> -->
+                      <template slot="item" slot-scope="data">
+                        <template v-if="typeof data.item !== 'object'">                   
+                        </template>
+                        <template v-else>
+                          <v-list-tile-avatar>
+                            <v-checkbox v-model="card.desc.peopleto" :value="data.item.id"></v-checkbox>
+                          </v-list-tile-avatar>
+                          <v-list-tile-content v-text="data.item.name"></v-list-tile-content> 
+                        </template>
+                      </template>                                        
+                    </v-select>
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -393,11 +401,9 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import draggable from 'vuedraggable'
-import newcard from './newcard'
 export default {
   components: {
     draggable,
-    newcard
   },
   data () {
     return {
@@ -408,7 +414,8 @@ export default {
           'title': '',
           'person': '',
           'date': null,
-          'department': ''
+          'department': '',
+          'link': ''
         },
         admin: [],
         members: []
@@ -435,7 +442,8 @@ export default {
           department: '',
           background: '',
           role: '',
-          people: [],
+          peopleto: [],
+          peoplefrom: [],
           data: [],
           related: [],
           attachment: '',
@@ -454,13 +462,18 @@ export default {
       newpersondialog: false,
       newperson: '',
       newpersondesc: {
-        explain:'',
-        department: '',
-        background: '',
-        role: '',
-        people: [],
-        data: [],
-        related: []
+          explain:'',
+          responsetime: 'nowadays',
+          department: '',
+          background: '',
+          role: '',
+          peopleto: [],
+          peoplefrom: [],
+          data: [],
+          related: [],
+          attachment: '',
+          x: 0,
+          y: 0
       },
       relationmode: false,
       firstcard: {},
@@ -494,7 +507,8 @@ export default {
       this.card.desc.department= ''
       this.card.desc.background= ''
       this.card.desc.role= ''
-      this.card.desc.people = []
+      this.card.desc.peopleto = []
+      this.card.desc.peoplefrom = []
       this.card.desc.data = []
     },
     submit: function() {
@@ -521,7 +535,6 @@ export default {
       }
       else {
         Trello.put('cards/' + this.card.id, {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function(res) {
-          console.log(that.card)
           if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
             if (that.card.attachments == undefined) {
               Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
@@ -591,7 +604,8 @@ export default {
           this.card.id = card.id
           this.card.title = card.name
           this.card.desc.responsetime = card.desc.responsetime
-          this.card.desc.people = card.desc.people
+          this.card.desc.peopleto = card.desc.peopleto
+          this.card.desc.peoplefrom = card.desc.peoplefrom
           this.card.desc.data = card.desc.data
           this.card.desc.related = card.desc.related
           this.card.desc.explain = card.desc.explain
@@ -601,7 +615,6 @@ export default {
           this.card.desc.attachment = card.desc.attachment 
           this.card.desc.x = card.desc.x
           this.card.desc.y = card.desc.y
-          console.log(card.attachments)
           this.card.attachments = card.attachments
           this.editable = true
         /* } */
@@ -726,6 +739,7 @@ export default {
           let desc = JSON.parse(card.desc)
           card.desc = desc
           card.color = list.color
+          card.column = list.column
           card.hover = false
           let attach = await Trello.cards.get(card.id,{fields: 'attachments',attachments: true})
           if (attach.attachments.length != 0) {
@@ -813,8 +827,20 @@ export default {
             card.hover = true
             this.lists.map( l => {
               l.cards.map( c => {
-                if (c.desc.people != undefined) {
-                  c.desc.people.map( p => {
+                if (c.desc.peoplefrom != undefined) {
+                  c.desc.peoplefrom.map( p => {
+                    if (p == card.id) {
+                      c.color ='blue-grey darken-2'
+                      c.hover = true
+                    }
+                  })
+                }
+              })
+            })
+            this.lists.map( l => {
+              l.cards.map( c => {
+                if (c.desc.peopleto != undefined) {
+                  c.desc.peopleto.map( p => {
                     if (p == card.id) {
                       c.color ='blue-grey darken-2'
                       c.hover = true
@@ -843,8 +869,20 @@ export default {
           else {
             card.color = 'black'
             card.hover = true
-            if (card.desc.people != undefined) {
-              for (let p of card.desc.people) {
+            if (card.desc.peoplefrom != undefined) {
+              for (let p of card.desc.peoplefrom) {
+                for (let l of this.lists) {
+                  for (let c of l.cards) {
+                    if (c.id == p) {
+                      c.color = 'blue-grey darken-2'
+                      c.hover = true
+                    }
+                  }
+                }
+              }
+            }
+            if (card.desc.peopleto != undefined) {
+              for (let p of card.desc.peopleto) {
                 for (let l of this.lists) {
                   for (let c of l.cards) {
                     if (c.id == p) {
@@ -887,8 +925,16 @@ export default {
             card.hover = false
             this.lists.map( l => {
               l.cards.map( c => {
-                if (c.desc.people != undefined) {
-                  c.desc.people.map( p => {
+                if (c.desc.peoplefrom != undefined) {
+                  c.desc.peoplefrom.map( p => {
+                    if (p == card.id) {
+                      c.color = l.color
+                      c.hover = false
+                    }
+                  })
+                }
+                if (c.desc.peopleto != undefined) {
+                  c.desc.peopleto.map( p => {
                     if (p == card.id) {
                       c.color = l.color
                       c.hover = false
@@ -917,8 +963,20 @@ export default {
           else {
             card.color = list.color
             card.hover = false
-            if (card.desc.people != undefined) {
-              for (let p of card.desc.people) {
+            if (card.desc.peopleto != undefined) {
+              for (let p of card.desc.peopleto) {
+                for (let l of this.lists) {
+                  for (let c of l.cards) {
+                    if (c.id == p) {
+                      c.color = l.color
+                      c.hover = false
+                    }
+                  }
+                }
+              }
+            }
+            if (card.desc.peoplefrom != undefined) {
+              for (let p of card.desc.peoplefrom) {
                 for (let l of this.lists) {
                   for (let c of l.cards) {
                     if (c.id == p) {

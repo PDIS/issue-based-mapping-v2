@@ -7,7 +7,8 @@ const state = {
       'title': '',
       'person': '',
       'date': null,
-      'department': ''
+      'department': '',
+      'link': ''
     },
   },
   boardform: false,
