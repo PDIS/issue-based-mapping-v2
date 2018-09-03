@@ -7,7 +7,7 @@
   <v-stage id="stage" ref="stage" :config="getstageconfig()">
     <v-layer ref="layer">
       <v-group v-for="list in lists" :key="list.id">
-        <v-group v-for="(card, index) in list.cards" :ref="card.id" :key="card.id" @dragmove="adjustPoint(card.id)" @dragend="changeposition(card,list)" :config="getgroupconfig(card)">
+        <v-group v-for="(card, index) in list.cards" :ref="card.id" :key="card.id" @click="linkcard(card)" @dragmove="adjustPoint(card.id)" @dragend="changeposition(card,list)" :config="getgroupconfig(card)">
           <v-rect :config="getrectconfig(card)" ></v-rect>
           <v-text :config="gettextconfig(card)" @dblclick="edittext(card, index)" :ref="'text' + card.id"></v-text>
           <v-group v-for="(person,i) in card.tagsfrom" :key="person">
@@ -328,6 +328,7 @@ export default {
         v => !!v || '此欄位為必填!',
         v => v.length <= 20 || '此欄位不可超過20個字!'
       ],
+      pressshift: false,
     }
   },
   created: function() {
@@ -339,18 +340,7 @@ export default {
 /*     let stage = this.$refs.stage.getStage()
     let scaleBy = 1.1; */
     setTimeout( () => {
-      that.lists.map(l => {
-        l.cards.map(c => {
-          if (c.desc.related != undefined) {
-            if (c.desc.related.length != 0) {
-              c.desc.related.map( r => {
-                that.arrows++
-                that.getarrowconfig(c.id,r)
-              })
-            }
-          }
-        })
-      })
+      this.getarrows()
     }, 1000)
     window.addEventListener('wheel', (e) => {
       let stage = this.$refs.stage.getStage()
@@ -372,6 +362,16 @@ export default {
       };
       stage.position(newPos);
       stage.batchDraw();
+    });
+    window.addEventListener("keydown", (e) => {
+      if (event.keyCode == 16) {
+        this.pressshift = true
+      }
+    });
+    window.addEventListener("keyup", (e) => {
+      if (event.keyCode == 16) {
+        this.pressshift = false
+      }
     });
   },
   destroyed: function() {
@@ -465,6 +465,21 @@ export default {
           this.lists.push(list)
         }
       }))
+    },
+    getarrows: function() {
+      let that = this
+      that.lists.map(l => {
+        l.cards.map(c => {
+          if (c.desc.related != undefined) {
+            if (c.desc.related.length != 0) {
+              c.desc.related.map( r => {
+                that.arrows++
+                that.getarrowconfig(c.id,r)
+              })
+            }
+          }
+        })
+      })
     },
     getstageconfig: function() {
       let stagewidth = window.innerWidth
@@ -603,6 +618,15 @@ export default {
         document.body.style.cursor = 'default';
       }
     },
+    linkcard: function(card) {
+      console.log(this.pressshift)
+      /* let stage = this.$refs.stage.getStage()
+      stage.addEventListener('keydown', function (e) {
+         if (e.keyCode === 37) {
+           console.log('fuck')
+         }
+      }) */
+    },
     edittext: function(card,index) {
       this.editdialog = true
       this.card.id = card.id
@@ -635,12 +659,15 @@ export default {
       Trello.put('cards/' + this.card.id, {'name': this.card.title } , function(res) {
         that.getcards()
         that.editdialog = false
+        setTimeout( () => {
+          that.getarrows()
+        }, 1000)
         /* let text = that.$refs['text' + this.card.id][0].getStage()
         text.text(that.card.title)
         let stage = that.$refs.stage.getStage();
         stage.draw() */
       })
-    }
+    },
     /* handlescroll: function() {
       console.log(window.scrollY)
       let stage = this.$refs.stage.getStage()
