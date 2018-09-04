@@ -633,6 +633,9 @@ export default {
       if (this.pressshift) {
         if (Object.keys(this.firstcard).length == 0) {
           this.firstcard = card
+          this.$refs[card.id][0].getStage().children[0].fill('black')
+          this.$refs[card.id][0].getStage().children[1].fill('white')
+          this.$refs.stage.getStage().draw()
         }
         else {
           if (this.firstcard.column + 1 == card.column) {
