@@ -663,6 +663,7 @@ export default {
             }
           } else {
             this.firstcard = {}
+            this.getcards()
           }
         }
       }
