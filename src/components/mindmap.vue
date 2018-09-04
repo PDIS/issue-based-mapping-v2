@@ -658,6 +658,8 @@ export default {
                 }, 1000)
               })
             }
+          } else {
+            this.firstcard = {}
           }
         }
       }
