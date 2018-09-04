@@ -329,6 +329,7 @@ export default {
         v => v.length <= 20 || '此欄位不可超過20個字!'
       ],
       pressshift: false,
+      firstcard: {},
     }
   },
   created: function() {
@@ -411,24 +412,31 @@ export default {
           {
             case '問題面向':
             list.color = '#FBC02D'
+            list.column = 1
             break
             case '問題細節':
             list.color = '#FFE082'
+            list.column = 2
             break
             case '解法':
             list.color = '#689F38'
+            list.column = 3
             break
             case '回應':
             list.color = '#F4511E'
+            list.column = 4
             break
             case '困難':
             list.color = '#FF8A80'
+            list.column = 5
             break
             case '利害關係人':
             list.color = '#0097A7'
+            list.column = 6
             break
             case '資料/文件/連結':
             list.color = '#CFD8DC'
+            list.column = 7
             break
             default:
             list.color = 'teal'
@@ -438,6 +446,7 @@ export default {
             let desc = JSON.parse(card.desc)
             card.desc = desc
             card.color = list.color
+            card.column = list.column
             card.hover = false
             card.tagsfrom = []
             card.tagsto = []
@@ -468,6 +477,7 @@ export default {
     },
     getarrows: function() {
       let that = this
+      this.arrows = 0
       that.lists.map(l => {
         l.cards.map(c => {
           if (c.desc.related != undefined) {
@@ -619,7 +629,38 @@ export default {
       }
     },
     linkcard: function(card) {
-      console.log(this.pressshift)
+      let that = this
+      if (this.pressshift) {
+        if (Object.keys(this.firstcard).length == 0) {
+          this.firstcard = card
+        }
+        else {
+          if (this.firstcard.column + 1 == card.column) {
+            if (!this.firstcard.desc.related.includes(card.id) && this.firstcard.id !== card.id) {
+              this.firstcard.desc.related.push(card.id)
+              Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
+                that.firstcard = {}
+                that.getcards()
+                that.editdialog = false
+                setTimeout( () => {
+                  that.getarrows()
+                }, 1000)
+              })
+            } else {
+              let index = this.firstcard.desc.related.indexOf(card.id);
+              if (index !== -1) this.firstcard.desc.related.splice(index, 1);
+              Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
+                that.firstcard = {}
+                that.getcards()
+                that.editdialog = false
+                setTimeout( () => {
+                  that.getarrows()
+                }, 1000)
+              })
+            }
+          }
+        }
+      }
       /* let stage = this.$refs.stage.getStage()
       stage.addEventListener('keydown', function (e) {
          if (e.keyCode === 37) {
