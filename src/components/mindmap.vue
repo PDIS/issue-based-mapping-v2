@@ -32,215 +32,55 @@
         <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
           <v-container>
             <v-layout row wrap class="ma-5">
-              <v-flex d-flex md12 class="pt-5">
-                <v-layout row wrap v-if="selectedlist.name =='問題面向'">
-                  <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="問題面向" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+              <v-flex flex xs12 class="pt-5">
+                <v-select v-model="newcard.typeid" :items="lists" label="卡片類型" item-text="name" item-value="id" prepend-icon="category" @change="changetype"></v-select>
+                <v-layout row wrap v-if="newcard.type == '問題面向'">
+                  <v-flex flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="20" :rules="titleRules"></v-text-field>
                   </v-flex>
                 </v-layout>
-                <v-layout row wrap v-if="selectedlist.name == '問題細節'">
+                <v-layout row wrap v-if="newcard.type == '問題細節'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="問題細節" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="20" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain" ></v-text-field>
-                  </v-flex>
-                </v-layout >
-                <v-layout row wrap  v-if="selectedlist.name == '解法'">
-                  <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="解法" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="newcard.desc.explain" ></v-text-field>
                   </v-flex>
                 </v-layout>
-                <v-layout row wrap  v-if="selectedlist.name == '回應'">
+                <v-layout row wrap  v-if="newcard.type == '解法'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="回應" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="20" :rules="titleRules"></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap  v-if="newcard.type == '回應'">
+                  <v-flex d-flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="20" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
-                    <v-radio-group prepend-icon="schedule" v-model="card.desc.responsetime" row @change="changeresponsetime(card)">
+                    <v-radio-group prepend-icon="schedule" v-model="newcard.desc.responsetime" row @change="changeresponsetime(newcard)">
                       <v-radio label="現在" value="nowadays" selected ></v-radio>
                       <v-radio label="未來" color="orange" value="future"></v-radio>
                     </v-radio-group>
                   </v-flex>
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="newcard.desc.explain"  ></v-text-field>
                   </v-flex>
                 </v-layout>
-                <v-layout row wrap v-if="selectedlist.name == '困難'">
+                <v-layout row wrap v-if="newcard.type == '困難'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="困難" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
-                  </v-flex>
-                  <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
-                  </v-flex>
-                </v-layout>
-                <v-layout row wrap v-if="selectedlist.name == '利害關係人'">
-                  <v-flex d-flex xs12>
-                    <v-text-field  color="blue-grey darken-2" label="利害關係人" prepend-icon="person" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="20" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="單位" prepend-icon="work" v-model="card.desc.department" ></v-text-field>
-                  </v-flex>
-                  <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="背景" prepend-icon="folder" v-model="card.desc.background"  ></v-text-field>
-                  </v-flex>
-                  <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="角色（此人與議題的關聯）" prepend-icon="folder" v-model="card.desc.role"  ></v-text-field>
-                  </v-flex>
-                </v-layout>
-                <v-layout row wrap v-if="selectedlist.name == '資料/文件/連結'">
-                  <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="資料/文件/連結" prepend-icon="announcement" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
-                  </v-flex>
-                  <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="文件連結" prepend-icon="announcement" v-model="card.desc.attachment"></v-text-field>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-              <v-divider></v-divider>
-              <v-flex d-flex md12>
-                <v-layout row wrap v-if="selectedlist.name != '利害關係人'">
-                  <v-flex d-flex xs12 >
-                    <v-select
-                      v-model="card.desc.peoplefrom"
-                      :items="peoplelist"
-                      item-text="name"
-                      item-value="id"
-                      prepend-icon="people"
-                      label="關聯利害關係人(資料來源)"                     
-                      chips
-                      multiple
-                      autocomplete
-                      deletable-chips
-                      no-data-text="目前尚無資料"
-                    >
-                      <template slot="item" slot-scope="data">
-                        <template v-if="typeof data.item !== 'object'">                   
-                        </template>
-                        <template v-else>
-                          <v-list-tile-avatar>
-                            <v-checkbox v-model="card.desc.peoplefrom" :value="data.item.id"></v-checkbox>
-                          </v-list-tile-avatar>
-                          <v-list-tile-content v-text="data.item.name"></v-list-tile-content> 
-                        </template>
-                      </template>                                        
-                    </v-select>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-              <v-flex d-flex md12>
-                <v-layout row wrap v-if="selectedlist.name != '利害關係人'">
-                  <v-flex d-flex xs12 >
-                    <v-select
-                      v-model="card.desc.peopleto"
-                      :items="peoplelist"
-                      item-text="name"
-                      item-value="id"
-                      prepend-icon="people"
-                      label="關聯利害關係人(要向誰提問)"                     
-                      chips
-                      multiple
-                      autocomplete
-                      deletable-chips
-                      no-data-text="目前尚無資料"
-                    >
-                      <template slot="item" slot-scope="data">
-                        <template v-if="typeof data.item !== 'object'">                   
-                        </template>
-                        <template v-else>
-                          <v-list-tile-avatar>
-                            <v-checkbox v-model="card.desc.peopleto" :value="data.item.id"></v-checkbox>
-                          </v-list-tile-avatar>
-                          <v-list-tile-content v-text="data.item.name"></v-list-tile-content> 
-                        </template>
-                      </template>                                        
-                    </v-select>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-              <v-flex d-flex md12>
-                <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '利害關係人'">
-                  <v-flex d-flex xs12 >
-                    <v-select
-                      v-model="card.desc.data"
-                      :items="datalist"
-                      item-text="name"
-                      item-value="id"
-                      prepend-icon="picture_as_pdf"
-                      label="佐證文件"
-                      color="blue-grey darken-2"
-                      chips
-                      multiple
-                      autocomplete
-                      deletable-chips
-                      no-data-text="目前尚無資料"
-                    >
-                      <template slot="item" slot-scope="data">
-                        <v-list-tile-avatar>
-                          <v-checkbox v-model="card.desc.data" :value="data.item.id"></v-checkbox>
-                        </v-list-tile-avatar>
-                        <v-list-tile-content v-text="data.item.name"></v-list-tile-content>
-                      </template>
-                    </v-select>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-              <v-flex d-flex xs12 v-if="selectedlist.name == '資料/文件/連結' && (board.admin.includes(user.id) || board.members.includes(user.id)) && editable == true && card.attachments == undefined">
-                <input type="file" @change="onFileChange">
-                <v-btn color="blue-grey" class="white--text" @click.prevent="upload(card)">
-                  上傳檔案
-                  <v-icon right dark >cloud_upload</v-icon>
-                </v-btn>
-              </v-flex>
-              <v-flex d-flex xs12 v-if="selectedlist.name == '資料/文件/連結' && editable == true && card.attachments != undefined && card.attachments.preview != undefined">
-                <v-card>
-                  <v-card-media
-                    :src="card.attachments.preview.url"
-                    :height="card.attachments.preview.height"
-                  ></v-card-media>
-
-                  <v-card-title primary-title>
-                    <div>
-                      <h3 class="headline mb-0">{{card.attachments.name}}</h3>
-                    </div>
-                  </v-card-title>
-
-                  <v-card-actions>
-                    <v-btn flat color="" target="_blank" :href="card.attachments.url">下載附件</v-btn>
-                    <v-btn flat color="error" @click="deleteattachment(card)">刪除附件</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-flex>
-              <v-flex d-flex xs12 v-if="selectedlist.name == '資料/文件/連結' && editable == true && card.attachments != undefined && card.attachments.preview == undefined">
-                 <v-card>
-                  <v-card-title primary-title>
-                    <div>
-                      <h3 class="headline mb-0">{{card.attachments.name}}</h3>
-                    </div>
-                  </v-card-title>
-
-                  <v-card-actions>
-                    <v-btn flat color="" target="_blank" :href="card.attachments.url">下載附件</v-btn>
-                    <v-btn flat color="error" @click="deleteattachment(card)">刪除附件</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-flex>
-              <v-flex d-flex md12 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
-                <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '利害關係人'">
-                  <v-flex d-flex xs6>
-                    <v-btn color="blue-grey" class="white--text" @click.native="newpersondialog=true">
-                      <v-icon small>add</v-icon>
-                      新增利害關係人
-                    </v-btn>
+                    <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="newcard.desc.explain"  ></v-text-field>
                   </v-flex>
                 </v-layout>
               </v-flex>
             </v-layout>
             <v-card-actions class="pa-3" v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
               <!--  <v-btn :disabled="!formIsValid" flat color="primary" type="submit" class="subheading">確認</v-btn> -->
-              <v-btn flat color="red lighten-1" class="subheading"  @click.native.stop="deletedialog=true;selectedid=card.id">刪除便利貼</v-btn>
               <v-btn flat color="grey lighten-1" class="subheading" @click="resetForm">重新填寫</v-btn>
               <v-spacer></v-spacer>
-              <v-btn flat @click.native="closeDialog" class="subheading">取消</v-btn>
+              <v-btn flat @click.native="dialog = false" class="subheading">取消</v-btn>
               <v-btn flat color="cyan" type="submit" class="subheading">確認</v-btn>
             </v-card-actions>
           </v-container>
@@ -330,11 +170,31 @@ export default {
       ],
       pressshift: false,
       firstcard: {},
+      newcard: {
+        typeid: '',
+        type: '',
+        title: '',
+        desc:{
+          explain:'',
+          responsetime: 'nowadays',
+          department: '',
+          background: '',
+          role: '',
+          peopleto: [],
+          peoplefrom: [],
+          data: [],
+          related: [],
+          attachment: '',
+          x: 0,
+          y: 0
+        },
+      },
     }
   },
   created: function() {
     this.getcards()
     /* this.getlabeltextconfig() */
+    this.getboard()
   },
   mounted: function() {
     let that = this
@@ -714,6 +574,52 @@ export default {
         let stage = that.$refs.stage.getStage();
         stage.draw() */
       })
+    },
+    changetype: function() {
+      this.lists.map( list => {
+        if (list.id == this.newcard.typeid) {
+          this.newcard.type = list.name
+        }
+      })
+    },
+    getboard: function() {
+      let that = this;
+      this.board.id = this.$route.params.id
+      Trello.boards.get(this.board.id,{'fields':'all'}, function(res) {
+        that.board.name = res.name
+        if (res.desc != '') {
+          that.board.desc = JSON.parse(res.desc)
+        }
+        that.board.admin = []
+        that.board.members = []
+        res.memberships.map( m => {
+          if (m.memberType == 'admin') {
+            that.board.admin.push(m.idMember)
+          }
+          else {
+            that.board.members.push(m.idMember)
+          }
+        })
+      })
+    },
+    resetForm: function() {
+      this.newcard.title = ''
+      this.newcard.desc.explain = ''
+      this.newcard.desc.department= ''
+      this.newcard.desc.background= ''
+      this.newcard.desc.role= ''
+      this.newcard.desc.peopleto = []
+      this.newcard.desc.peoplefrom = []
+      this.newcard.desc.data = []
+    },
+    changeresponsetime: function(card) {
+      card.title = card.title.replace('[現在]','').replace('[未來]','')
+      if (card.desc.responsetime == 'nowadays') {
+        this.responsestring = '[現在]'
+      } else {
+        this.responsestring = '[未來]'
+      }
+      card.title = this.responsestring + card.title
     },
     /* handlescroll: function() {
       console.log(window.scrollY)
