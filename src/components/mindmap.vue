@@ -1,33 +1,33 @@
 <template>
-<div id="fuck">
-  <v-btn absolute dark fab bottom right color="pink" style="bottom:1em" @click="dialog = true">
-    <v-icon medium>add</v-icon>
-  </v-btn>
-   <!-- <v-textarea id="textbox" v-model="textbox.text" solo no-resize outline color="black" :width="textbox.width" :height="textbox.height" v-show="textbox.show"></v-textarea> -->
-  <v-stage id="stage" ref="stage" :config="getstageconfig()">
-    <v-layer ref="layer">
-      <v-group v-for="list in lists" :key="list.id">
-        <v-group v-for="(card, index) in list.cards" :ref="card.id" :key="card.id" @click="linkcard(card)" @dragmove="adjustPoint(card.id)" @dragend="changeposition(card,list)" :config="getgroupconfig(card)">
-          <v-rect :config="getrectconfig(card)" ></v-rect>
-          <v-text :config="gettextconfig(card)" @dblclick="edittext(card, index)" :ref="'text' + card.id"></v-text>
-          <v-group v-for="(person,i) in card.tagsfrom" :key="person">
-            <v-tag :config="gettagconfig(person,i,'#ABEBC6')"></v-tag>
-            <v-text :config="gettagtextconfig(person,i)"></v-text>
-          </v-group>
-          <v-group v-for="(person,i) in card.tagsto" :key="person">
-            <v-tag :config="gettagconfig(person,i,'#D2B4DE')"></v-tag>
-            <v-text :config="gettagtextconfig(person,i)"></v-text>
-          </v-group>
-          <v-group v-for="(attachment, j) in card.attachments" :key="attachment.name" @mouseup="viewattachment(attachment)" @mouseover="changecursor(true)" @mouseout="changecursor(false)">
-            <v-tag :config="gettagconfig(attachment.name, j,'#CFD8DC' , card.tags)"></v-tag>
-            <v-text :config="gettagtextconfig(attachment.name, j, card.tags)"></v-text>
+  <div id="mindmap">
+    <v-btn absolute dark fab bottom right color="pink" style="bottom:1em" @click="dialog = true">
+      <v-icon medium>add</v-icon>
+    </v-btn>
+    <!-- <v-textarea id="textbox" v-model="textbox.text" solo no-resize outline color="black" :width="textbox.width" :height="textbox.height" v-show="textbox.show"></v-textarea> -->
+    <v-stage id="stage" ref="stage" :config="getstageconfig()">
+      <v-layer ref="layer">
+        <v-group v-for="list in lists" :key="list.id">
+          <v-group v-for="(card, index) in list.cards" :ref="card.id" :key="card.id" @click="linkcard(card)" @dragmove="adjustPoint(card.id)" @dragend="changeposition(card,list)" :config="getgroupconfig(card)">
+            <v-rect :config="getrectconfig(card)" ></v-rect>
+            <v-text :config="gettextconfig(card)" @dblclick="edittext(card, index)" :ref="'text' + card.id"></v-text>
+            <v-group v-for="(person,i) in card.tagsfrom" :key="person">
+              <v-tag :config="gettagconfig(person,i,'#ABEBC6')"></v-tag>
+              <v-text :config="gettagtextconfig(person,i)"></v-text>
+            </v-group>
+            <v-group v-for="(person,i) in card.tagsto" :key="person">
+              <v-tag :config="gettagconfig(person,i,'#D2B4DE')"></v-tag>
+              <v-text :config="gettagtextconfig(person,i)"></v-text>
+            </v-group>
+            <v-group v-for="(attachment, j) in card.attachments" :key="attachment.name" @mouseup="viewattachment(attachment)" @mouseover="changecursor(true)" @mouseout="changecursor(false)">
+              <v-tag :config="gettagconfig(attachment.name, j,'#CFD8DC' , card.tags)"></v-tag>
+              <v-text :config="gettagtextconfig(attachment.name, j, card.tags)"></v-text>
+            </v-group>
           </v-group>
         </v-group>
-      </v-group>
-      <v-arrow v-for="arrow in arrows" :key="arrow" ref="arrow" :config="arrowconfig[arrow]"></v-arrow>
-    </v-layer>
-  </v-stage>
-  <v-dialog v-model="dialog" max-width="50em">
+        <v-arrow v-for="arrow in arrows" :key="arrow" ref="arrow" :config="arrowconfig[arrow]"></v-arrow>
+      </v-layer>
+    </v-stage>
+    <v-dialog v-model="dialog" persistent max-width="50em">
       <v-card>
         <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
           <v-container>
@@ -101,11 +101,11 @@
             </v-container>
           </v-form>
         </v-card-text>
-         <v-card-actions>
-          <v-spacer></v-spacer>
-            <v-btn flat class="subheading" @click="editdialog = false">取消</v-btn>
-            <v-btn flat color="cyan" type="submit" class="subheading" @click="edittextsubmit()">確認</v-btn>
-          </v-card-actions>
+        <v-card-actions>
+        <v-spacer></v-spacer>
+          <v-btn flat class="subheading" @click="editdialog = false">取消</v-btn>
+          <v-btn flat color="cyan" type="submit" class="subheading" @click="edittextsubmit()">確認</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
@@ -189,6 +189,7 @@ export default {
           y: 0
         },
       },
+      responsestring: '',
     }
   },
   created: function() {
@@ -579,6 +580,14 @@ export default {
       this.lists.map( list => {
         if (list.id == this.newcard.typeid) {
           this.newcard.type = list.name
+          this.resetForm()
+          if (this.newcard.type == '回應') {
+            if (this.newcard.desc.responsetime == 'nowadays') {
+              this.newcard.title = '[現在]'
+            } else {
+              this.newcard.title = '[未來]'
+            }
+          }
         }
       })
     },
@@ -608,11 +617,10 @@ export default {
       this.newcard.desc.department= ''
       this.newcard.desc.background= ''
       this.newcard.desc.role= ''
-      this.newcard.desc.peopleto = []
-      this.newcard.desc.peoplefrom = []
       this.newcard.desc.data = []
     },
     changeresponsetime: function(card) {
+      console.log(this)
       card.title = card.title.replace('[現在]','').replace('[未來]','')
       if (card.desc.responsetime == 'nowadays') {
         this.responsestring = '[現在]'
@@ -621,6 +629,15 @@ export default {
       }
       card.title = this.responsestring + card.title
     },
+    submit: function() {
+      let that = this
+      this.newcard.desc.x = 600
+      this.newcard.desc.y = 400
+      Trello.post('cards', {'name': this.newcard.title, 'idList': this.newcard.typeid,'desc': JSON.stringify(this.newcard.desc)} , function(res) {
+        that.dialog = false
+        that.getcards()
+      })
+    }
     /* handlescroll: function() {
       console.log(window.scrollY)
       let stage = this.$refs.stage.getStage()
