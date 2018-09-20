@@ -238,7 +238,6 @@ export default {
   },
   destroyed: function() {
     window.removeEventListener('wheel', (e) => {
-          console.log('fuck')
       e.preventDefault();
       let oldScale = stage.scaleX();
 
@@ -531,7 +530,6 @@ export default {
       /* let stage = this.$refs.stage.getStage()
       stage.addEventListener('keydown', function (e) {
          if (e.keyCode === 37) {
-           console.log('fuck')
          }
       }) */
     },
