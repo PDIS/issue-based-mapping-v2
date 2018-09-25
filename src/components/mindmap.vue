@@ -199,10 +199,15 @@ export default {
   },
   mounted: function() {
     let that = this
-/*     let stage = this.$refs.stage.getStage()
-    let scaleBy = 1.1; */
+    let stage = this.$refs.stage.getStage()
     setTimeout( () => {
       this.getarrows()
+      let rects = stage.find('.rectgroup')
+      rects.each( r => {
+        r.setZIndex(5)
+        stage.draw()
+                console.log(r.getZIndex())
+      })
     }, 1000)
     window.addEventListener('wheel', (e) => {
       let stage = this.$refs.stage.getStage()
@@ -364,7 +369,8 @@ export default {
       return {
         x: card.desc.x,
         y: card.desc.y,
-        draggable: true
+        draggable: true,
+        name: 'rectgroup'
       }
     },
     getrectconfig: function(card) {
@@ -379,7 +385,7 @@ export default {
           x: 5,
           y: 5
         },
-        shadowOpacity: 0.6
+        shadowOpacity: 0.5
       }
     },
     gettextconfig: function(card) {
@@ -388,7 +394,7 @@ export default {
         fontSize: 18, 
         width: 180, 
         padding: 15, 
-        fontFamily: 'Noto Sans TC' ,
+        fontFamily:  "Roboto, 'Noto Sans TC'" ,
         lineHeight: 1.5,
       }
     },
@@ -440,7 +446,7 @@ export default {
         width: textlength * 15,
         text: text,
         fontSize: 12,
-        fontFamily: 'Noto Sans TC',
+        fontFamily: "Roboto, 'Noto Sans TC'",
       }
     },
     getarrowconfig: function(c,r) {
@@ -456,6 +462,12 @@ export default {
         points: [startpointx,startpointy,endpointx,endpointy],
         stroke: 'black',
         strokeWidth: 4,
+        shadowColor: 'black',
+        shadowOffset: {
+          x: 1,
+          y: 1
+        },
+        shadowOpacity: 0.5,
       }
     },
     adjustPoint: function(id){
