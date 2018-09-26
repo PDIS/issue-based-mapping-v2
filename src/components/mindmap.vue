@@ -7,9 +7,13 @@
     <v-stage id="stage" ref="stage" :config="getstageconfig()">
       <v-layer ref="layer">
         <v-group v-for="list in lists" :key="list.id">
-          <v-group v-for="(card, index) in list.cards" :ref="card.id" :key="card.id" @click="linkcard(card)" @dragmove="adjustPoint(card.id)" @dragend="changeposition(card,list)" :config="getgroupconfig(card)">
+          <v-group v-for="(card, index) in list.cards" :ref="card.id" :key="card.id" @click="linkcard(card)" @dragmove="adjustPoint(card.id)" @dragend="changeposition(card,list)" @mouseenter="showexplain(card,true)" @mouseleave="showexplain(card,false)" :config="getgroupconfig(card)">
             <v-rect :config="getrectconfig(card)" ></v-rect>
             <v-text :config="gettextconfig(card)" @dblclick="edittext(card, index)" :ref="'text' + card.id"></v-text>
+            <v-group v-if="card.showexplain && card.desc.explain !== ''">
+              <v-rect :config="getexplainrectconfig(card)"></v-rect>  
+              <v-text :config="getexplainconfig(card)"></v-text>
+            </v-group>
             <v-group v-for="(person,i) in card.tagsfrom" :key="person">
               <v-tag :config="gettagconfig(person,i,'#ABEBC6')"></v-tag>
               <v-text :config="gettagtextconfig(person,i)"></v-text>
@@ -154,7 +158,7 @@ export default {
           related: [],
           attachment: '',
           x: 0,
-          y: 0
+          y: 0,
         },
       },
       textbox: {
@@ -190,6 +194,7 @@ export default {
         },
       },
       responsestring: '',
+      isexplain: false
     }
   },
   created: function() {
@@ -312,6 +317,7 @@ export default {
             card.desc = desc
             card.color = list.color
             card.column = list.column
+            card.showexplain = false
             card.hover = false
             card.tagsfrom = []
             card.tagsto = []
@@ -630,7 +636,6 @@ export default {
       this.newcard.desc.data = []
     },
     changeresponsetime: function(card) {
-      console.log(this)
       card.title = card.title.replace('[現在]','').replace('[未來]','')
       if (card.desc.responsetime == 'nowadays') {
         this.responsestring = '[現在]'
@@ -638,6 +643,34 @@ export default {
         this.responsestring = '[未來]'
       }
       card.title = this.responsestring + card.title
+    },
+    getexplainrectconfig: function(card) {
+      return {
+        fill: 'grey',
+        width: 180,
+        height: 130,
+        shadowColor: 'black',
+        shadowOffset: {
+          x: 5,
+          y: 5
+        },
+        shadowOpacity: 0.5
+      }
+    },
+    getexplainconfig: function(card) {
+      return { 
+        text: card.desc.explain, 
+        fill: 'pink',
+        fontSize: 18, 
+        width: 180, 
+        padding: 15, 
+        fontFamily:  "Roboto, 'Noto Sans TC'" ,
+        lineHeight: 1.5,
+        draggable: true
+      }
+    },
+    showexplain: function(card, show) {
+      card.showexplain = show
     },
     submit: function() {
       let that = this
