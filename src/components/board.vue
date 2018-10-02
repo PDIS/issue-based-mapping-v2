@@ -5,15 +5,12 @@
           <img :src="a+'/50.png'" style="border-radius:50%"/> 
       </v-btn>
       <v-icon  @click="new_member()" medium fab btn outline class=" dark ml-2">person_add</v-icon>
-
           <v-flex xs5 v-if="show_new_member">
             <v-text-field  color="grey darken-4" class="mt-0 mb-0" label="新增議題成員" value="Input text" v-model="email"></v-text-field> 
           </v-flex>
           <v-flex xs3 v-if="show_new_member">
             <v-btn top color="info" @click="newmember()">新增</v-btn>
           </v-flex>
-
-        
     </v-layout>
     <v-layout row>
       <v-flex xs3 >
@@ -60,7 +57,7 @@
       <v-card>
         <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
           <v-container>
-            <v-layout row wrap class="ma-5">
+            <v-layout row wrap class="ma-3">
               <!-- <v-flex d-flex md6>
                 <v-card :color='selectedlist.color'>
                   <v-card-title primary-title>

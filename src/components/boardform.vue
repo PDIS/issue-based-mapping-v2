@@ -10,8 +10,7 @@
     </v-snackbar>
     <v-dialog v-model="boardform" persistent  max-width="50em">
       <v-card>
-        <v-card-title class="headline">新增看板</v-card-title>
-        <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
+        <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit" class="pa-3">
           <v-container>
             <v-text-field label="看版名稱" prepend-icon="assignment" v-model="board.name" :counter="20" :rules="nameRules" color="grey-blue darken-2"></v-text-field>
             <v-text-field label="議題名稱" prepend-icon="announcement" v-model="board.desc.title" :rules="requiredRules" color="grey-blue darken-2"></v-text-field>
@@ -47,7 +46,7 @@ export default {
     return {
       date: null,
       picker: false,
-      valid:false,
+      valid: false,
       nameRules: [
         v => !!v || '此欄位為必填!',
         v => v.length <= 20 || '此欄位不可超過20個字!'
