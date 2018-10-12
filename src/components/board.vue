@@ -319,7 +319,7 @@
               <v-btn flat color="grey lighten-1" class="subheading" @click="resetForm">重新填寫</v-btn>
               <v-spacer></v-spacer>
               <v-btn flat @click.native="closeDialog" class="subheading">取消</v-btn>
-              <v-btn flat color="cyan" type="submit" class="subheading">確認</v-btn>
+              <v-btn flat color="cyan" type="submit" class="subheading" >確認</v-btn>
             </v-card-actions>
           </v-container>
         </v-form>
@@ -1113,6 +1113,15 @@ export default {
   },
   computed: mapGetters({
     user: 'user',
+    formIsValid () {
+      return (
+        this.card.title
+ /*        this.board.desc.title &&
+        this.board.desc.person &&
+        this.board.desc.date &&
+        this.board.desc.department */
+      )
+    }
   }),
   /* mounted: function() {
     this.getattachments()

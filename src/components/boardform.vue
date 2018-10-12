@@ -27,7 +27,7 @@
             <v-btn flat color="grey lighten-1" @click="resetForm" class="subheading">重新填寫</v-btn>
             <v-spacer></v-spacer>
             <v-btn flat class="subheading" @click="changeboardform('')">取消</v-btn>
-            <v-btn flat color="cyan" type="submit" class="subheading" :disabled="!formIsValid">確認</v-btn>
+            <v-btn flat color="cyan" type="submit" class="subheading" :disabled="!valid">確認</v-btn>
           </v-card-actions>
         </v-form>
       </v-card>
@@ -46,7 +46,7 @@ export default {
     return {
       date: null,
       picker: false,
-      valid: false,
+      valid: true,
       nameRules: [
         v => !!v || '此欄位為必填!',
         v => v.length <= 20 || '此欄位不可超過20個字!'
