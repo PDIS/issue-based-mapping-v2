@@ -73,26 +73,28 @@ export default {
     ...mapActions(['changeboardform']),
     submit: function() {
       let that = this
-      if (this.selectedboardid != '') {
-        Trello.put('boards/' + this.board.id,{'name':this.board.name},function(res) {
-          Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.board.desc)},function() {
-            that.success = '修改成功!'
-            that.snackbar = true
-            that.$store.dispatch('changeboardform','')
-            that.$store.dispatch('getboards')
+      if (this.$refs.form.validate()) {
+        if (this.selectedboardid != '') {
+          Trello.put('boards/' + this.board.id,{'name':this.board.name},function(res) {
+            Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.board.desc)},function() {
+              that.success = '修改成功!'
+              that.snackbar = true
+              that.$store.dispatch('changeboardform','')
+              that.$store.dispatch('getboards')
+            })
           })
-        })
-      }
-      else {
-        Trello.post('boards',{'name':this.board.name,'idOrganization':'5ad56d6d96cb269a7a2aaa0a','idBoardSource':'5ab49c39f2917ad1cff1a3de','prefs_permissionLevel':'public','keepFromSource':'none'},function(res) {
-          Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.board.desc)},function() {
-            that.success = '新增成功!'
-            that.snackbar = true
-            that.$router.push('/')
-            that.$store.dispatch('changeboardform','')
-            that.$store.dispatch('getboards')
+        }
+        else {
+          Trello.post('boards',{'name':this.board.name,'idOrganization':'5ad56d6d96cb269a7a2aaa0a','idBoardSource':'5ab49c39f2917ad1cff1a3de','prefs_permissionLevel':'public','keepFromSource':'none'},function(res) {
+            Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.board.desc)},function() {
+              that.success = '新增成功!'
+              that.snackbar = true
+              that.$router.push('/')
+              that.$store.dispatch('changeboardform','')
+              that.$store.dispatch('getboards')
+            })
           })
-        })
+        }
       }
     },
     resetForm: function() {

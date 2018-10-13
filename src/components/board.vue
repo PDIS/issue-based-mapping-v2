@@ -58,29 +58,6 @@
         <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
           <v-container>
             <v-layout row wrap class="ma-3">
-              <!-- <v-flex d-flex md6>
-                <v-card :color='selectedlist.color'>
-                  <v-card-title primary-title>
-                    {{card.title}}
-                  </v-card-title>
-                </v-card>
-              </v-flex>
-              <v-flex d-flex md6>
-                <v-layout row wrap>
-                  <v-flex d-flex xs12>
-                    <div>
-                      <v-chip small color="pink lighten-1" text-color="white" v-for="person in card.desc.people" :key="person.id" >
-                      </v-chip>
-                    </div>
-                  </v-flex>
-                  <v-flex d-flex xs12>
-                    <div>
-                      <v-chip small color="pink lighten-1" text-color="white" v-for="data in card.desc.data" :key="data.id" >
-                      </v-chip>
-                    </div>
-                  </v-flex>
-                </v-layout >
-              </v-flex> -->
               <v-flex d-flex md12 class="pt-5">
                 <v-layout row wrap v-if="selectedlist.name =='問題面向'">
                   <v-flex d-flex xs12>
@@ -319,7 +296,7 @@
               <v-btn flat color="grey lighten-1" class="subheading" @click="resetForm">重新填寫</v-btn>
               <v-spacer></v-spacer>
               <v-btn flat @click.native="closeDialog" class="subheading">取消</v-btn>
-              <v-btn flat color="cyan" type="submit" class="subheading" >確認</v-btn>
+              <v-btn flat color="cyan" type="submit" class="subheading" :disabled="!valid" >確認</v-btn>
             </v-card-actions>
           </v-container>
         </v-form>
@@ -510,42 +487,44 @@ export default {
     },
     submit: function() {
       let that = this
-      if (this.editable == false) 
-      {
-        this.card.desc.x = 100 + this.selectedlist.cards.length * 150
-        this.card.desc.y = this.selectedlist.column * 150 
-        Trello.post('cards', {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc)} , function(res) {
-          if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
-            if (that.card.attachments == undefined) {
-              Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
+      if (this.$refs.form.validate()) {
+        if (this.editable == false) 
+        {
+          this.card.desc.x = 100 + this.selectedlist.cards.length * 150
+          this.card.desc.y = this.selectedlist.column * 150 
+          Trello.post('cards', {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc)} , function(res) {
+            if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
+              if (that.card.attachments == undefined) {
+                Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
+                  window.location.reload(true);
+                })
+              } else if (that.card.desc.attachment == that.card.attachments.url) {
                 window.location.reload(true);
-              })
-            } else if (that.card.desc.attachment == that.card.attachments.url) {
-              window.location.reload(true);
+              } else {
+                that.attsnackbar = true
+              }
             } else {
-              that.attsnackbar = true
+              window.location.reload(true);
             }
-          } else {
-            window.location.reload(true);
-          }
-        })
-      }
-      else {
-        Trello.put('cards/' + this.card.id, {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function(res) {
-          if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
-            if (that.card.attachments == undefined) {
-              Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
+          })
+        }
+        else {
+          Trello.put('cards/' + this.card.id, {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function(res) {
+            if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
+              if (that.card.attachments == undefined) {
+                Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
+                  window.location.reload(true);
+                })
+              } else if (that.card.desc.attachment == that.card.attachments.url) {
                 window.location.reload(true);
-              })
-            } else if (that.card.desc.attachment == that.card.attachments.url) {
-              window.location.reload(true);
+              } else {
+                that.attsnackbar = true
+              }
             } else {
-              that.attsnackbar = true
+              window.location.reload(true);
             }
-          } else {
-            window.location.reload(true);
-          }
-        })
+          })
+        }
       }
     },
     getpeople: function() {
@@ -1111,18 +1090,16 @@ export default {
     this.getmembers()
     /* this.getattachments() */
   },
-  computed: mapGetters({
-    user: 'user',
+  computed: {
+    ...mapGetters({
+      user: 'user',
+    }),
     formIsValid () {
       return (
         this.card.title
- /*        this.board.desc.title &&
-        this.board.desc.person &&
-        this.board.desc.date &&
-        this.board.desc.department */
       )
     }
-  }),
+  }
   /* mounted: function() {
     this.getattachments()
   } */
