@@ -1,7 +1,15 @@
 <template>
   <div id="mindmap">
+    <v-card flat style="position:absolute" class="mt-3 ml-3">
+      <v-card-title primary-title>
+        <div class="headline"># {{board.name}} </div>
+      </v-card-title>
+    </v-card>
     <v-btn absolute dark fab bottom right color="pink" style="bottom:1em" @click="dialog = true">
       <v-icon medium>add</v-icon>
+    </v-btn>
+    <v-btn absolute dark fab bottom left color="blue" style="bottom:1em" :to="{name:'board', params:{id:board.id}}">
+      <v-icon medium>arrow_back</v-icon>
     </v-btn>
     <!-- <v-textarea id="textbox" v-model="textbox.text" solo no-resize outline color="black" :width="textbox.width" :height="textbox.height" v-show="textbox.show"></v-textarea> -->
     <v-stage id="stage" ref="stage" :config="getstageconfig()">
@@ -170,7 +178,7 @@ export default {
       editdialog: false,
       titleRules: [
         v => !!v || '此欄位為必填!',
-        v => v.length <= 20 || '此欄位不可超過20個字!'
+        v => v.length <= 30 || '此欄位不可超過30個字!'
       ],
       pressshift: false,
       firstcard: {},

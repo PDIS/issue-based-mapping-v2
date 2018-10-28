@@ -405,7 +405,7 @@ export default {
       show_new_member: false,
       titleRules: [
         v => !!v || '此欄位為必填!',
-        v => v.length <= 20 || '此欄位不可超過20個字!'
+        v => v.length <= 30 || '此欄位不可超過30個字!'
       ],
       card: {
         id: '',
