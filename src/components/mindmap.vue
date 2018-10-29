@@ -1,6 +1,6 @@
 <template>
   <div id="mindmap">
-    <v-card flat style="position:absolute" class="mt-3 ml-3">
+    <v-card flat style="position:absolute;z-index:5000" class="mt-3 ml-3">
       <v-card-title primary-title>
         <div class="headline"># {{board.name}} </div>
       </v-card-title>
@@ -48,12 +48,12 @@
                 <v-select v-model="newcard.typeid" :items="lists" label="卡片類型" item-text="name" item-value="id" prepend-icon="category" @change="changetype"></v-select>
                 <v-layout row wrap v-if="newcard.type == '問題面向'">
                   <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="20" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap v-if="newcard.type == '問題細節'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="20" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="newcard.desc.explain" ></v-text-field>
@@ -61,12 +61,12 @@
                 </v-layout>
                 <v-layout row wrap  v-if="newcard.type == '解法'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="20" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap  v-if="newcard.type == '回應'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="20" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
                     <v-radio-group prepend-icon="schedule" v-model="newcard.desc.responsetime" row @change="changeresponsetime(newcard)">
@@ -80,7 +80,7 @@
                 </v-layout>
                 <v-layout row wrap v-if="newcard.type == '困難'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="20" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="newcard.desc.explain"  ></v-text-field>
@@ -107,7 +107,7 @@
             <v-container>
               <v-layout row wrap>
                 <v-flex d-flex md12>
-                  <v-text-field color="blue-grey darken-2" v-model="card.title" :counter="20" :rules="titleRules"></v-text-field>
+                  <v-text-field color="blue-grey darken-2" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                 </v-flex>
               </v-layout>
             </v-container>
