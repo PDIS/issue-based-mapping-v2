@@ -15,7 +15,8 @@
     <v-stage id="stage" ref="stage" :config="getstageconfig()">
       <v-layer ref="layer">
         <v-group v-for="list in lists" :key="list.id">
-          <v-group v-for="(card, index) in list.cards" :ref="card.id" :key="card.id" @click="linkcard(card)" @dragmove="adjustPoint(card.id)" @dragend="changeposition(card,list)" @mouseenter="showexplain(card,true)" @mouseleave="showexplain(card,false)" :config="getgroupconfig(card)">
+          <!-- <v-group v-for="(card, index) in list.cards" :ref="card.id" :key="card.id" @click="linkcard(card)" @dragmove="adjustPoint(card.id)" @dragend="changeposition(card,list)" @mouseenter="showexplain(card,true)" @mouseleave="showexplain(card,false)" :config="getgroupconfig(card)"> -->
+          <v-group v-for="(card, index) in list.cards" :ref="card.id" :key="card.id" @click="linkcard(card)" @dragmove="adjustPoint(card.id)" @dragend="changeposition(card,list)" :config="getgroupconfig(card)">
             <v-rect :config="getrectconfig(card)" ></v-rect>
             <v-text :config="gettextconfig(card)" @dblclick="edittext(card, index)" :ref="'text' + card.id"></v-text>
             <v-group v-if="card.showexplain && card.desc.explain !== ''">
@@ -524,32 +525,62 @@ export default {
           this.$refs.stage.getStage().draw()
         }
         else {
-          if (this.firstcard.column + 1 == card.column) {
-            if (!this.firstcard.desc.related.includes(card.id) && this.firstcard.id !== card.id) {
-              this.firstcard.desc.related.push(card.id)
-              Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
-                that.firstcard = {}
-                that.getcards()
-                that.editdialog = false
-                setTimeout( () => {
-                  that.getarrows()
-                }, 1000)
-              })
+          if (this.firstcard.column == 1) {
+            if (this.firstcard.column == card.column || this.firstcard.column + 1 == card.column) {
+              if (!this.firstcard.desc.related.includes(card.id) && this.firstcard.id !== card.id) {
+                this.firstcard.desc.related.push(card.id)
+                Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
+                  that.firstcard = {}
+                  that.getcards()
+                  that.editdialog = false
+                  setTimeout( () => {
+                    that.getarrows()
+                  }, 1000)
+                })
+              } else {
+                let index = this.firstcard.desc.related.indexOf(card.id);
+                if (index !== -1) this.firstcard.desc.related.splice(index, 1);
+                Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
+                  that.firstcard = {}
+                  that.getcards()
+                  that.editdialog = false
+                  setTimeout( () => {
+                    that.getarrows()
+                  }, 1000)
+                })
+              }
             } else {
-              let index = this.firstcard.desc.related.indexOf(card.id);
-              if (index !== -1) this.firstcard.desc.related.splice(index, 1);
-              Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
-                that.firstcard = {}
-                that.getcards()
-                that.editdialog = false
-                setTimeout( () => {
-                  that.getarrows()
-                }, 1000)
-              })
+              this.firstcard = {}
+              this.getcards()
             }
           } else {
-            this.firstcard = {}
-            this.getcards()
+            if (this.firstcard.column + 1 == card.column) {
+              if (!this.firstcard.desc.related.includes(card.id) && this.firstcard.id !== card.id) {
+                this.firstcard.desc.related.push(card.id)
+                Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
+                  that.firstcard = {}
+                  that.getcards()
+                  that.editdialog = false
+                  setTimeout( () => {
+                    that.getarrows()
+                  }, 1000)
+                })
+              } else {
+                let index = this.firstcard.desc.related.indexOf(card.id);
+                if (index !== -1) this.firstcard.desc.related.splice(index, 1);
+                Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
+                  that.firstcard = {}
+                  that.getcards()
+                  that.editdialog = false
+                  setTimeout( () => {
+                    that.getarrows()
+                  }, 1000)
+                })
+              }
+            } else {
+              this.firstcard = {}
+              this.getcards()
+            }
           }
         }
       }

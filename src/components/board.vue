@@ -599,8 +599,14 @@ export default {
         if (Object.keys(this.firstcard).length == 0) {
           this.lists.map(l => {
             l.cards.map(c => {
-              if (c.id != card.id && l.column != list.column + 1) {
-                c.color = 'black'
+              if (c.column == 1) {
+                if (c.id != card.id && l.column != list.column + 1 && l.column != list.column) {
+                  c.color = 'black'
+                }
+              } else {
+                if (c.id != card.id && l.column != list.column + 1) {
+                  c.color = 'black'
+                }
               }
             })
           })
@@ -618,21 +624,40 @@ export default {
         }
         else {
           let that = this
-          if (this.firstcard.column + 1 == list.column) {
-            if (!this.firstcard.desc.related.includes(card.id)) {
-              this.firstcard.desc.related.push(card.id)
-              Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
-                card.color = 'blue-grey darken-2'
-                card.hover = true
-              })
-            } else {
-              let index = this.firstcard.desc.related.indexOf(card.id);
-              if (index !== -1) this.firstcard.desc.related.splice(index, 1);
-              Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
-                card.color = list.color
-                card.hover = false
-              })
-            }
+          if (this.firstcard.column == 1) {
+            if (this.firstcard.column + 1 == list.column || this.firstcard.column == list.column ) {
+              if (!this.firstcard.desc.related.includes(card.id)) {
+                this.firstcard.desc.related.push(card.id)
+                Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
+                  card.color = 'blue-grey darken-2'
+                  card.hover = true
+                })
+              } else {
+                let index = this.firstcard.desc.related.indexOf(card.id);
+                if (index !== -1) this.firstcard.desc.related.splice(index, 1);
+                Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
+                  card.color = list.color
+                  card.hover = false
+                })
+              }
+            } 
+          } else {
+            if (this.firstcard.column + 1 == list.column) {
+              if (!this.firstcard.desc.related.includes(card.id)) {
+                this.firstcard.desc.related.push(card.id)
+                Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
+                  card.color = 'blue-grey darken-2'
+                  card.hover = true
+                })
+              } else {
+                let index = this.firstcard.desc.related.indexOf(card.id);
+                if (index !== -1) this.firstcard.desc.related.splice(index, 1);
+                Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
+                  card.color = list.color
+                  card.hover = false
+                })
+              }
+            } 
           }
         }
       }
