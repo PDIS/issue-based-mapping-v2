@@ -9,7 +9,9 @@ import VueKonva from 'vue-konva'
 import Vuex from 'vuex'
 import vuexI18n from 'vuex-i18n';
 import store from './store'
+import Vue2Filters from 'vue2-filters'
 
+Vue.use(Vue2Filters)
 Vue.use(Vuex)
 Vue.use(vuexI18n.plugin, store )
 Vue.use(VueKonva)

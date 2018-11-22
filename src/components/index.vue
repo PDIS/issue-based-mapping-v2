@@ -29,7 +29,7 @@
           </v-container>
         </v-card>
       </v-flex>
-        <v-flex xs12 sm6 md4 lg3 v-for="board in filteredList" :key="board.id" >
+        <v-flex xs12 sm6 md4 lg3 v-for="board in orderBy(filteredList,'desc.date',-1) " :key="board.id" >
           <v-card color="white" :to="{name:'board', params:{id:board.id}}" hover height="20em">
             <v-list subheader style="background-color:white">
               <v-subheader class="grey lighten-3" style="color:black"># <div class="ml-2">{{ board.title }}</div>
