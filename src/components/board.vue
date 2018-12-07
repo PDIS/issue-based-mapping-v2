@@ -24,7 +24,7 @@
         <v-btn :to="{name:'mindmap', params:{id:board.id}}">{{ $t("Mind Mapping") }}</v-btn>
         <v-btn @click="relationmode = true" v-if="relationmode == false">關聯卡片</v-btn>
         <v-btn @click="endrelationmode()" v-if="relationmode == true">結束關聯卡片</v-btn>
-        <v-btn target="_blank" :href="board.desc.link">共筆連結</v-btn>
+        <v-btn target="_blank" :href="board.desc.link">會議記錄連結</v-btn>
       </v-flex>
       <v-flex xs3>
         <v-text-field color="grey darken-4" class="mt-3 mb-0" prepend-icon="search" label="搜尋卡片關鍵字" value="Input text" v-model="search"></v-text-field>
