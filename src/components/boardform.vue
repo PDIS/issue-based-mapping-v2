@@ -12,8 +12,8 @@
       <v-card>
         <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit" class="pa-3">
           <v-container>
-            <v-text-field label="看版名稱" prepend-icon="assignment" v-model="board.name" :counter="20" :rules="nameRules" color="grey-blue darken-2"></v-text-field>
-            <v-text-field label="議題名稱" prepend-icon="announcement" v-model="board.desc.title" :rules="requiredRules" color="grey-blue darken-2"></v-text-field>
+            <v-text-field label="議題名稱" prepend-icon="assignment" v-model="board.name" :counter="20" :rules="nameRules" color="grey-blue darken-2"></v-text-field>
+            <v-text-field label="Join平台原始提案名稱" prepend-icon="announcement" v-model="board.desc.title" :rules="requiredRules" color="grey-blue darken-2"></v-text-field>
             <v-text-field label="提案人" prepend-icon="person" v-model="board.desc.person" :rules="requiredRules" color="grey-blue darken-2"></v-text-field>
             <v-menu ref="date" lazy :close-on-content-click="false" v-model="picker" transition="scale-transition" offset-y full-width :nudge-right="40" min-width="290px" :return-value.sync="date">
               <v-text-field slot="activator" label="提案日期" v-model="board.desc.date" prepend-icon="event" :rules="requiredRules" readonly color="grey-blue darken-2"></v-text-field>
@@ -86,12 +86,12 @@ export default {
         }
         else {
           Trello.post('boards',{'name':this.board.name,'idOrganization':'5ad56d6d96cb269a7a2aaa0a','idBoardSource':'5ab49c39f2917ad1cff1a3de','prefs_permissionLevel':'public','keepFromSource':'none'},function(res) {
-            Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.board.desc)},function() {
+            Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.board.desc)},function(res) {
               that.success = '新增成功!'
               that.snackbar = true
-              that.$router.push('/')
-              that.$store.dispatch('changeboardform','')
-              that.$store.dispatch('getboards')
+              that.$router.push('board/' + res.id)
+              /* that.$store.dispatch('changeboardform','')
+              that.$store.dispatch('getboards') */
             })
           })
         }
