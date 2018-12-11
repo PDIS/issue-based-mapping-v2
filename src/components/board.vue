@@ -16,7 +16,11 @@
       <v-flex xs3 >
         <v-card flat class="mt-2">
           <v-card-text>
-            <div class="headline"># {{board.name}} </div>
+            <div class="headline"># {{board.name}} 
+              <v-btn color="primary" icon flat @click="boardtitledialog = true" v-if="board.admin.includes(user.id)">
+                <v-icon>edit</v-icon>
+              </v-btn> 
+            </div>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -24,7 +28,7 @@
         <v-btn :to="{name:'mindmap', params:{id:board.id}}">{{ $t("Mind Mapping") }}</v-btn>
         <v-btn @click="relationmode = true" v-if="relationmode == false">關聯卡片</v-btn>
         <v-btn color="blue-grey darken-2" dark @click="endrelationmode()" v-if="relationmode == true">關聯卡片</v-btn>
-        <v-btn target="_blank" :href="board.desc.link">共筆連結</v-btn>
+        <v-btn target="_blank" :href="board.desc.link">會議記錄連結</v-btn>
       </v-flex>
       <v-flex xs3>
         <v-text-field color="grey darken-4" class="mt-3 mb-0" prepend-icon="search" label="搜尋卡片關鍵字" value="Input text" v-model="search"></v-text-field>
@@ -359,7 +363,7 @@
       top="top"
       v-model="snackbar"
     >
-      新增成功!
+      <span>{{success}}!</span>
       <v-btn flat color="pink" @click.native="snackbar = false">關閉</v-btn>
     </v-snackbar>
     <v-snackbar
@@ -370,6 +374,26 @@
       請先刪除附件再重新上傳!
       <v-btn flat color="pink" @click.native="attsnackbar = false">關閉</v-btn>
     </v-snackbar>
+    <v-dialog v-model="boardtitledialog" max-width="500px">
+      <v-card>
+        <v-card-text>
+          <v-form>
+            <v-container>
+              <v-layout>
+                <v-flex>
+                  <v-text-field color="grey darken-4" v-model="board.name"></v-text-field> 
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat class="subheading" @click="getboard();boardtitledialog = false">取消</v-btn>
+          <v-btn flat color="cyan" type="submit" class="subheading" @click="editboardtitle()">確認</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -402,6 +426,7 @@ export default {
       dialog: false,
       selectedlist: {},
       snackbar: false,
+      success: '',
       valid: false,
       show_new_member: false,
       titleRules: [
@@ -455,7 +480,8 @@ export default {
       uploadfile: FormData,
       responsestring: '',
       newmemberdialog: false,
-      attsnackbar: false
+      attsnackbar: false,
+      boardtitledialog: false,
     }
   },
   methods: {
@@ -1031,6 +1057,7 @@ export default {
           Trello.post('cards', {'name': this.newperson, 'idList': l.id,'desc': JSON.stringify(this.newpersondesc) } , function() {
             that.newperson = ''
             that.getlists()
+            that.success = '新增成功！'
             that.snackbar = true
           })
         }
@@ -1105,6 +1132,15 @@ export default {
     deleteattachment: function(card) {
       Trello.delete('cards/' + card.id + '/attachments/' + card.attachments.id, function() {
         window.location.reload(true);
+      })
+    },
+    editboardtitle: function() {
+      let that = this
+      Trello.put('boards/' + this.board.id,{'name':this.board.name},function(res) {
+        that.success = '修改成功!'
+        that.snackbar = true
+        that.boardtitledialog = false
+        that.getboard()
       })
     }
   },
