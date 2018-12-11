@@ -143,6 +143,7 @@
                       autocomplete
                       deletable-chips
                       no-data-text="目前尚無資料"
+                      :disabled="card.desc.peopleto.length != 0"
                     >
                       <template slot="item" slot-scope="data">
                         <template v-if="typeof data.item !== 'object'">                   
@@ -173,6 +174,7 @@
                       autocomplete
                       deletable-chips
                       no-data-text="目前尚無資料"
+                      :disabled="card.desc.peoplefrom.length != 0"
                     >
                       <template slot="item" slot-scope="data">
                         <template v-if="typeof data.item !== 'object'">                   
