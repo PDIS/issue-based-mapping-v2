@@ -1,6 +1,6 @@
 <template>
   <v-container grid-list-md>
-    <v-layout row wrap v-if="board.admin.includes(user.id)">
+    <!-- <v-layout row wrap v-if="board.admin.includes(user.id)">
       <v-btn icon small fab btn disabled v-for="a in avatar" :key="a">
           <img :src="a+'/50.png'" style="border-radius:50%"/> 
       </v-btn>
@@ -11,28 +11,44 @@
           <v-flex xs3 v-if="show_new_member">
             <v-btn top color="info" @click="newmember()">新增</v-btn>
           </v-flex>
-    </v-layout>
+    </v-layout> -->
     <v-layout row>
-      <v-flex xs3 >
+      <v-flex xs9>
         <v-card flat class="mt-2">
           <v-card-text>
             <div class="headline"># {{board.name}} 
               <v-btn color="primary" icon flat @click="boardtitledialog = true" v-if="board.admin.includes(user.id)">
                 <v-icon>edit</v-icon>
-              </v-btn> 
+              </v-btn>
+              <v-btn icon small fab disabled v-for="a in avatar" :key="a">
+                <img :src="a+'/50.png'" style="border-radius:50%"/> 
+              </v-btn>
+              <v-icon  @click="new_member()" medium fab btn outline class=" dark ml-2">person_add</v-icon>
+                <v-flex xs5 v-if="show_new_member">
+                  <v-text-field  color="grey darken-4" class="mt-0 mb-0" label="新增議題成員" value="Input text" v-model="email"></v-text-field> 
+                </v-flex>
+              <v-flex xs3 v-if="show_new_member">
+                <v-btn top color="info" @click="newmember()">新增</v-btn>
+              </v-flex>
             </div>
           </v-card-text>
         </v-card>
       </v-flex>
-      <v-flex xs6 class="mt-3">
+      <!-- <v-flex xs6 class="mt-3">
         <v-btn :to="{name:'mindmap', params:{id:board.id}}">{{ $t("Mind Mapping") }}</v-btn>
         <v-btn @click="relationmode = true" v-if="relationmode == false">關聯卡片</v-btn>
         <v-btn color="blue-grey darken-2" dark @click="endrelationmode()" v-if="relationmode == true">關聯卡片</v-btn>
         <v-btn target="_blank" :href="board.desc.link">會議記錄連結</v-btn>
-      </v-flex>
+      </v-flex> -->
       <v-flex xs3>
         <v-text-field color="grey darken-4" class="mt-3 mb-0" prepend-icon="search" label="搜尋卡片關鍵字" value="Input text" v-model="search"></v-text-field>
       </v-flex>
+    </v-layout>
+    <v-layout align-center justify-start row reverse fill-height class="mb-2">
+      <v-btn :to="{name:'mindmap', params:{id:board.id}}">{{ $t("Mind Mapping") }}</v-btn>
+      <v-btn @click="relationmode = true" v-if="relationmode == false">關聯卡片</v-btn>
+      <v-btn color="blue-grey darken-2" dark @click="endrelationmode()" v-if="relationmode == true">關聯卡片</v-btn>
+      <v-btn target="_blank" :href="board.desc.link">會議記錄連結</v-btn>
     </v-layout>
     <v-layout row>
       <v-flex xs12 md4 lg3 v-for="(list) in lists" :key="list.id">
