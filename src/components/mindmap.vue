@@ -1,13 +1,29 @@
 <template>
   <div id="mindmap">
-    <v-card flat style="position:absolute;z-index:5000" class="mt-3 ml-3">
+    <v-card flat style="position:absolute;z-index:200" class="mt-3 ml-3">
       <v-card-title primary-title>
         <div class="headline"># {{board.name}} </div>
       </v-card-title>
     </v-card>
-    <v-btn absolute dark fab bottom right color="pink" style="bottom:1em" @click="dialog = true">
+    <v-card style="position:absolute;z-index:200;margin-top:8em" class="ml-4">
+      <v-list>
+        <v-list-tile>
+          <v-icon v-if="noteicon == false" color="black" @click="dialog = true; noteicon = true">note</v-icon>
+          <v-icon v-if="noteicon == true" color="blue" @click="dialog = true; noteicon = false">note</v-icon>
+        </v-list-tile>
+        <v-list-tile>
+          <v-icon v-if="linkicon == false" color="black" @click="pressshift = true; linkicon = true">call_made</v-icon>
+          <v-icon v-if="linkicon == true" color="blue" @click="pressshift = false; linkicon = false">call_made</v-icon>
+        </v-list-tile>
+        <v-list-tile>
+          <v-icon v-if="unlinkicon == false" color="black" @click="pressshift = true; unlinkicon = true">strikethrough_s</v-icon>
+          <v-icon v-if="unlinkicon == true" color="blue" @click="pressshift = false; unlinkicon = false">strikethrough_s</v-icon>
+        </v-list-tile>
+      </v-list>
+    </v-card>
+    <!-- <v-btn absolute dark fab bottom right color="pink" style="bottom:1em" @click="dialog = true">
       <v-icon medium>add</v-icon>
-    </v-btn>
+    </v-btn> -->
     <v-btn absolute dark fab bottom left color="blue" style="bottom:1em" :to="{name:'board', params:{id:board.id}}">
       <v-icon medium>arrow_back</v-icon>
     </v-btn>
@@ -93,8 +109,8 @@
               <!--  <v-btn :disabled="!formIsValid" flat color="primary" type="submit" class="subheading">確認</v-btn> -->
               <v-btn flat color="grey lighten-1" class="subheading" @click="resetForm">重新填寫</v-btn>
               <v-spacer></v-spacer>
-              <v-btn flat @click.native="dialog = false" class="subheading">取消</v-btn>
-              <v-btn flat color="cyan" type="submit" class="subheading">確認</v-btn>
+              <v-btn flat @click.native="dialog = false; noteicon = false" class="subheading">取消</v-btn>
+              <v-btn flat color="cyan" type="submit" class="subheading" @click.native="noteicon = false">確認</v-btn>
             </v-card-actions>
           </v-container>
         </v-form>
@@ -203,7 +219,10 @@ export default {
         },
       },
       responsestring: '',
-      isexplain: false
+      isexplain: false,
+      noteicon: false,
+      linkicon: false,
+      unlinkicon: false,
     }
   },
   created: function() {
@@ -710,6 +729,13 @@ export default {
     },
     showexplain: function(card, show) {
       card.showexplain = show
+    },
+    changeiconcolor: function(icon) {
+      if (icon == 'black') {
+        icon = 'blue'
+      } else {
+        icon = 'black'
+      }
     },
     submit: function() {
       let that = this

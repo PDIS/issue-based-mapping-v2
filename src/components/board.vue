@@ -23,7 +23,7 @@
       <v-flex xs6 class="mt-3">
         <v-btn :to="{name:'mindmap', params:{id:board.id}}">{{ $t("Mind Mapping") }}</v-btn>
         <v-btn @click="relationmode = true" v-if="relationmode == false">關聯卡片</v-btn>
-        <v-btn @click="endrelationmode()" v-if="relationmode == true">結束關聯卡片</v-btn>
+        <v-btn color="blue-grey darken-2" dark @click="endrelationmode()" v-if="relationmode == true">關聯卡片</v-btn>
         <v-btn target="_blank" :href="board.desc.link">共筆連結</v-btn>
       </v-flex>
       <v-flex xs3>
@@ -38,7 +38,8 @@
         <v-card >
           <v-container fluid grid-list-lg align-center wrap>
             <draggable ml-0 :id="list.id" :options="{group:'cards',animation:200}" @add="movecard" style="min-height:1em" >
-              <v-card :color="card.color" :dark="card.hover" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mouseup="editcard(card,list)" @mouseover="hover = true;changecolor(card,list)" @mouseout="hover = false;changecolor(card,list)">
+              <!-- <v-card :color="card.color" :dark="card.hover" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mouseup="editcard(card,list)" @mouseover="hover = true;changecolor(card,list)" @mouseout="hover = false;changecolor(card,list)"> -->
+                <v-card :color="card.color" :dark="card.hover" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mouseup="editcard(card,list)">
                 <v-card-title primary-title>
                   <div class="body-2">{{card.name}}</div>
                 </v-card-title> 
@@ -596,7 +597,7 @@ export default {
         /* } */
       }
       else {
-        if (Object.keys(this.firstcard).length == 0) {
+        /* if (Object.keys(this.firstcard).length == 0) {
           this.lists.map(l => {
             l.cards.map(c => {
               if (c.column == 1) {
@@ -659,7 +660,7 @@ export default {
               }
             } 
           }
-        }
+        } */
       }
     },
     searchcards: function(list) {
