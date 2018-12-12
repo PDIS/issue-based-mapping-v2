@@ -93,14 +93,14 @@
                     <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain" ></v-text-field>
                   </v-flex>
                 </v-layout >
-                <v-layout row wrap  v-if="selectedlist.name == '解法'">
+                <v-layout row wrap  v-if="selectedlist.name == '現有解法'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="解法" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="現有解法" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                 </v-layout>
-                <v-layout row wrap  v-if="selectedlist.name == '回應'">
+                <v-layout row wrap  v-if="selectedlist.name == '政府回應'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="回應" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="政府回應" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
                     <v-radio-group prepend-icon="schedule" v-model="card.desc.responsetime" row @change="changeresponsetime(card)">
