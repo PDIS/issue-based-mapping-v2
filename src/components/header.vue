@@ -31,14 +31,6 @@
             <v-list-tile-title>{{ $t("Instruction") }}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile>
-          <v-list-tile-action>
-            <v-icon >pan_tool</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ $t("FAQ") }}</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
       </v-list>
       <v-divider></v-divider>
       <v-list v-if="this.$route.params.id != undefined">
