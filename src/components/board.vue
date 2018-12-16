@@ -74,7 +74,7 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <v-dialog v-model="dialog" max-width="50em">
+    <v-dialog v-model="dialog" persistent max-width="50em">
       <v-card>
         <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
           <v-container>
@@ -120,9 +120,9 @@
                     <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
                   </v-flex>
                 </v-layout>
-                <v-layout row wrap v-if="selectedlist.name == '利害關係人'">
+                <v-layout row wrap v-if="selectedlist.name == '和此議題有關的人'">
                   <v-flex d-flex xs12>
-                    <v-text-field  color="blue-grey darken-2" label="利害關係人" prepend-icon="person" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field  color="blue-grey darken-2" label="和此議題有關的人" prepend-icon="person" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="單位" prepend-icon="work" v-model="card.desc.department" ></v-text-field>
@@ -145,7 +145,7 @@
               </v-flex>
               <v-divider></v-divider>
               <v-flex d-flex md12>
-                <v-layout row wrap v-if="selectedlist.name != '利害關係人'">
+                <v-layout row wrap v-if="selectedlist.name != '和此議題有關的人'">
                   <v-flex d-flex xs12 >
                     <v-select
                       v-model="card.desc.peoplefrom"
@@ -153,10 +153,9 @@
                       item-text="name"
                       item-value="id"
                       prepend-icon="people"
-                      label="關聯利害關係人(資料來源)"                     
+                      label="關聯和此議題有關的人(資料來源)"                     
                       chips
                       multiple
-                      autocomplete
                       deletable-chips
                       no-data-text="目前尚無資料"
                       :disabled="card.desc.peopleto.length != 0"
@@ -176,7 +175,7 @@
                 </v-layout>
               </v-flex>
               <v-flex d-flex md12>
-                <v-layout row wrap v-if="selectedlist.name != '利害關係人'">
+                <v-layout row wrap v-if="selectedlist.name != '和此議題有關的人'">
                   <v-flex d-flex xs12 >
                     <v-select
                       v-model="card.desc.peopleto"
@@ -184,10 +183,9 @@
                       item-text="name"
                       item-value="id"
                       prepend-icon="people"
-                      label="關聯利害關係人(要向誰提問)"                     
+                      label="關聯和此議題有關的人(要向誰提問)"                     
                       chips
                       multiple
-                      autocomplete
                       deletable-chips
                       no-data-text="目前尚無資料"
                       :disabled="card.desc.peoplefrom.length != 0"
@@ -207,19 +205,18 @@
                 </v-layout>
               </v-flex>
               <v-flex d-flex md12>
-                <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '利害關係人'">
+                <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '和此議題有關的人'">
                   <v-flex d-flex xs12 >
                     <v-select
                       v-model="card.desc.data"
                       :items="datalist"
                       item-text="name"
                       item-value="id"
-                      prepend-icon="picture_as_pdf"
+                      prepend-icon="file_copy"
                       label="佐證文件"
                       color="blue-grey darken-2"
                       chips
                       multiple
-                      autocomplete
                       deletable-chips
                       no-data-text="目前尚無資料"
                     >
@@ -303,11 +300,11 @@
                 </v-card>
               </v-flex>
               <v-flex d-flex md12 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
-                <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '利害關係人'">
+                <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '和此議題有關的人'">
                   <v-flex d-flex xs6>
                     <v-btn color="blue-grey" class="white--text" @click.native="newpersondialog=true">
                       <v-icon small>add</v-icon>
-                      新增利害關係人
+                      新增和此議題有關的人
                     </v-btn>
                   </v-flex>
                 </v-layout>
@@ -337,7 +334,7 @@
     </v-dialog>
     <v-dialog v-model="newpersondialog" max-width="290">
       <v-card>
-        <v-card-title class="headline">新增利害關係人</v-card-title>
+        <v-card-title class="headline">新增和此議題有關的人</v-card-title>
         <v-form>
           <v-container>
             <v-layout>
@@ -574,7 +571,7 @@ export default {
     },
     getpeople: function() {
       this.lists.map(list => {
-        if (list.name == '利害關係人') {
+        if (list.name == '和此議題有關的人') {
           list.cards.map( people => {
             this.peoplelist.push({
               'id': people.id,
@@ -769,7 +766,7 @@ export default {
           list.color = 'red accent-1'
           list.column = 5
           break
-          case '利害關係人':
+          case '和此議題有關的人':
           list.color = 'cyan darken-2'
           list.column = 6
           break
@@ -853,7 +850,7 @@ export default {
           case '困難':
           return  'red accent-1'
           break
-          case '利害關係人':
+          case '和此議題有關的人':
           return  'cyan darken-2'
           break
           case '資料/文件/連結':
@@ -868,7 +865,7 @@ export default {
     changecolor: function(card,list) {
       if (this.relationmode == false) {
         if (this.hover == true) {
-          if (list.name == '利害關係人') {
+          if (list.name == '和此議題有關的人') {
             card.color = 'black'
             card.hover = true
             this.lists.map( l => {
@@ -966,7 +963,7 @@ export default {
           }
         }
         else {
-          if (list.name == '利害關係人') {
+          if (list.name == '和此議題有關的人') {
             card.color = list.color
             card.hover = false
             this.lists.map( l => {
@@ -1071,7 +1068,7 @@ export default {
     addperson: function() {
       let that = this;
       this.lists.map( l => {
-        if (l.name == '利害關係人') {
+        if (l.name == '和此議題有關的人') {
           Trello.post('cards', {'name': this.newperson, 'idList': l.id,'desc': JSON.stringify(this.newpersondesc) } , function() {
             that.newperson = ''
             that.getlists()

@@ -13,14 +13,14 @@
         <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit" class="pa-3">
           <v-container>
             <v-text-field label="議題名稱" prepend-icon="assignment" v-model="board.name" :counter="20" :rules="nameRules" color="grey-blue darken-2"></v-text-field>
-            <v-text-field label="Join平台原始提案名稱" prepend-icon="announcement" v-model="board.desc.title" :rules="requiredRules" color="grey-blue darken-2"></v-text-field>
-            <v-text-field label="提案人" prepend-icon="person" v-model="board.desc.person" :rules="requiredRules" color="grey-blue darken-2"></v-text-field>
+            <v-text-field label="Join平台原始提案名稱" prepend-icon="announcement" v-model="board.desc.title" color="grey-blue darken-2"></v-text-field>
+            <v-text-field label="專案負責人" prepend-icon="person" v-model="board.desc.person" :rules="requiredRules" color="grey-blue darken-2"></v-text-field>
             <v-menu ref="date" lazy :close-on-content-click="false" v-model="picker" transition="scale-transition" offset-y full-width :nudge-right="40" min-width="290px" :return-value.sync="date">
               <v-text-field slot="activator" label="提案日期" v-model="board.desc.date" prepend-icon="event" :rules="requiredRules" readonly color="grey-blue darken-2"></v-text-field>
               <v-date-picker color="cyan darken-4" v-model="board.desc.date" @input="$refs.date.save(date)" locale="zh-tw"></v-date-picker>
             </v-menu>
             <v-text-field label="負責單位" prepend-icon="supervised_user_circle" v-model="board.desc.department" :rules="requiredRules" color="grey-blue darken-2"></v-text-field>
-            <v-text-field label="會議筆記連結" prepend-icon="supervised_user_circle" v-model="board.desc.link"  color="grey-blue darken-2"></v-text-field>
+            <v-text-field label="會議筆記連結" prepend-icon="supervised_user_circle" v-model="board.desc.link" placeholder="建議您開一份線上筆記，紀錄跟此案相關的細節" color="grey-blue darken-2"></v-text-field>
           </v-container>
           <v-divider></v-divider>
           <v-card-actions>
