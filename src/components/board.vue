@@ -67,12 +67,12 @@
               <v-flex d-flex md12 class="">
                 <v-layout row wrap v-if="selectedlist.name =='問題面向'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="問題面向" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="內容" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap v-if="selectedlist.name == '問題細節'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="問題細節" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="內容" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain" ></v-text-field>
@@ -80,12 +80,12 @@
                 </v-layout >
                 <v-layout row wrap  v-if="selectedlist.name == '現有解法'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="現有解法" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="內容" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap  v-if="selectedlist.name == '政府回應'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="政府回應" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="內容" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
                     <v-radio-group prepend-icon="schedule" v-model="card.desc.responsetime" row @change="changeresponsetime(card)">
@@ -99,7 +99,7 @@
                 </v-layout>
                 <v-layout row wrap v-if="selectedlist.name == '困難'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="困難" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="內容" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
@@ -107,7 +107,7 @@
                 </v-layout>
                 <v-layout row wrap v-if="selectedlist.name == '和此議題有關的人'">
                   <v-flex d-flex xs12>
-                    <v-text-field  color="blue-grey darken-2" label="和此議題有關的人" prepend-icon="person" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field  color="blue-grey darken-2" label="名稱" prepend-icon="person" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="單位" prepend-icon="work" v-model="card.desc.department" ></v-text-field>
@@ -121,7 +121,7 @@
                 </v-layout>
                 <v-layout row wrap v-if="selectedlist.name == '資料/文件/連結'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="資料/文件/連結" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="名稱" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="文件連結" prepend-icon="announcement" v-model="card.desc.attachment"></v-text-field>
