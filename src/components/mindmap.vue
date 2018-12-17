@@ -76,12 +76,12 @@
                     <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="newcard.desc.explain" ></v-text-field>
                   </v-flex>
                 </v-layout>
-                <v-layout row wrap  v-if="newcard.type == '解法'">
+                <v-layout row wrap  v-if="newcard.type == '現有解法'">
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                 </v-layout>
-                <v-layout row wrap  v-if="newcard.type == '回應'">
+                <v-layout row wrap  v-if="newcard.type == '政府回應'">
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
@@ -301,7 +301,7 @@ export default {
       let id = this.$route.params.id
       let listarray = await Trello.boards.get(id + '/lists',{cards: 'open'})
       listarray.map( await (l => {
-        if (l.name != '利害關係人' && l.name != '資料/文件/連結') {
+        if (l.name != '和此議題有關的人' && l.name != '資料/文件/連結') {
           let list = {}
           list.id = l.id
           list.name = l.name
@@ -316,11 +316,11 @@ export default {
             list.color = '#FFE082'
             list.column = 2
             break
-            case '解法':
+            case '現有解法':
             list.color = '#689F38'
             list.column = 3
             break
-            case '回應':
+            case '政府回應':
             list.color = '#F4511E'
             list.column = 4
             break
@@ -328,7 +328,7 @@ export default {
             list.color = '#FF8A80'
             list.column = 5
             break
-            case '利害關係人':
+            case '和此議題有關的人':
             list.color = '#0097A7'
             list.column = 6
             break
@@ -655,7 +655,7 @@ export default {
         if (list.id == this.newcard.typeid) {
           this.newcard.type = list.name
           this.resetForm()
-          if (this.newcard.type == '回應') {
+          if (this.newcard.type == '政府回應') {
             if (this.newcard.desc.responsetime == 'nowadays') {
               this.newcard.title = '[現在]'
             } else {

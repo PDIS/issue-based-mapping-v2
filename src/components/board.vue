@@ -27,21 +27,23 @@
       </v-flex>
     </v-layout>
     <v-layout align-center justify-start row reverse fill-height class="mb-2">
-      <v-btn :to="{name:'mindmap', params:{id:board.id}}">{{ $t("Mind Mapping") }}</v-btn>
       <!-- <v-btn @click="relationmode = true" v-if="relationmode == false">關聯卡片</v-btn>
       <v-btn color="blue-grey darken-2" dark @click="endrelationmode()" v-if="relationmode == true">關聯卡片</v-btn> -->
-      <v-btn target="_blank" :href="board.desc.link">會議記錄連結</v-btn>
+      <v-btn flat target="_blank" :href="board.desc.link">會議記錄連結</v-btn>
+      <v-btn flat >輸出文件</v-btn>
+      <v-btn flat >專有名詞字典</v-btn>
+      <v-btn flat :to="{name:'mindmap', params:{id:board.id}}">{{ $t("Mind Mapping") }}</v-btn>
     </v-layout>
     <v-layout row>
       <v-flex xs12 md4 lg3 v-for="(list) in lists" :key="list.id">
-        <v-toolbar dense dark flat text-ms-center color="blue-grey darken-4" >
+        <v-toolbar dense flat text-ms-center :color="list.color" >
           <v-toolbar-title class="subheading">{{list.name}}</v-toolbar-title>
         </v-toolbar>
         <v-card >
           <v-container fluid grid-list-lg align-center wrap>
             <draggable ml-0 :id="list.id" :options="{group:'cards',animation:200}" @add="movecard" style="min-height:1em" >
               <!-- <v-card :color="card.color" :dark="card.hover" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mouseup="editcard(card,list)" @mouseover="hover = true;changecolor(card,list)" @mouseout="hover = false;changecolor(card,list)"> -->
-                <v-card :color="card.color" :dark="card.hover" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mouseup="editcard(card,list)">
+                <v-card :dark="card.hover" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%; background-color:#FBF0D3" :id="card.id" @mouseup="editcard(card,list)">
                 <v-card-title primary-title>
                   <div class="body-2">{{card.name}}</div>
                 </v-card-title> 
@@ -138,21 +140,17 @@
                   <v-icon>people</v-icon>
                   <h3 class="ml-2 mt-2 font-weight-regular" style="color:rgba(0,0,0,.54)">關聯和此議題有關的人</h3>
                   <v-btn flat color="primary" v-if="newpersonmode == false" @click.native="newpersonmode = true">+新增和此議題有關的人</v-btn>
-                  <v-layout row wrap v-if="newpersonmode == true">
-                    <v-flex md6>
-                      <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱" prepend-icon="people" v-model="newperson" ></v-text-field>
-                    </v-flex>
-                    <v-flex md6>
-                      <v-btn color="black" class="mt-3" small flat  @click.native="newpersonmode = false; newperson = ''" >取消</v-btn>
-                      <v-btn color="blue" class="mt-3"  small flat  @click.native="newpersonmode = false; addperson()">確定</v-btn>
-                    </v-flex>
-                  </v-layout>
-                  <!-- <v-flex d-flex xs6>
-                    <v-btn color="blue-grey" class="white--text" @click.native="newpersondialog=true">
-                      <v-icon small>add</v-icon>
-                      新增和此議題有關的人
-                    </v-btn>
-                  </v-flex> -->
+                </v-layout>
+              </v-flex>
+              <v-flex md12 v-if="newpersonmode == true">
+                <v-layout row wrap>
+                  <v-flex md6>
+                    <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱" prepend-icon="people" v-model="newperson" ></v-text-field>
+                  </v-flex>
+                  <v-flex md6>
+                    <v-btn color="black" class="mt-3" small flat  @click.native="newpersonmode = false; newperson = ''" >取消</v-btn>
+                    <v-btn color="blue" class="mt-3"  small flat  @click.native="newpersonmode = false; addperson()">確定</v-btn>
+                  </v-flex>
                 </v-layout>
               </v-flex>
               <v-flex d-flex md12>
@@ -215,6 +213,38 @@
                   </v-flex>
                 </v-layout>
               </v-flex>
+              <v-flex md12 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
+                <v-layout align-center justify-start row fill-height v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '和此議題有關的人'">
+                  <v-icon>file_copy</v-icon>
+                  <h3 class="mx-2 mt-2 font-weight-regular" style="color:rgba(0,0,0,.54)">佐證文件</h3>
+                  <v-tooltip bottom>
+                    <v-icon slot="activator">info</v-icon>
+                    <span>1.既有資料是否可以先提供？這些資料包含：<br/>
+                    -過去各項會議(內部會議、跨部會協調會議、專家學者會議等)討論的相關內參資料<br/>
+                    -是否有推薦相關的研究論文<br/>
+                    -其他不同意立場的陳述或是好文章<br/>
+                    2.相關法制規定為何？過去相關規定的修正有沒有討論記錄？<br/>
+                    3.有沒有立委曾經關心過此議題？立法院有沒有討論過此議題？有沒有會議記錄與部會當時的文書？<br/>
+                    4.有沒有民間關心過此議題?<br/>
+                    -有沒有NGO關心過此議題？有沒有相關的資料？<br/>
+                    -有沒有陳抗過？收過陳情書？<br/>
+                    -部長信箱有沒有收過類似的問題？<br/>
+                    </span>
+                  </v-tooltip>
+                  <v-btn flat color="primary" v-if="newattachmentmode == false" @click.native="newattachmentmode = true">+新增佐證文件</v-btn>
+                </v-layout>  
+              </v-flex>
+              <v-flex md12  v-if="newattachmentmode == true">
+                <v-layout row wrap>
+                  <v-flex md6>
+                    <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱" prepend-icon="people" v-model="newperson" ></v-text-field>
+                  </v-flex>
+                  <v-flex md6>
+                    <v-btn color="black" class="mt-3" small flat  @click.native="newattachmentmode = false; newperson = ''" >取消</v-btn>
+                    <v-btn color="blue" class="mt-3"  small flat  @click.native="newattachmentmode = false; addperson()">確定</v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
               <v-flex d-flex md12>
                 <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '和此議題有關的人'">
                   <v-flex d-flex xs12 >
@@ -224,7 +254,7 @@
                       item-text="name"
                       item-value="id"
                       prepend-icon="file_copy"
-                      label="佐證文件"
+                      label="選取佐證文件"
                       color="blue-grey darken-2"
                       chips
                       multiple
@@ -500,6 +530,7 @@ export default {
       titlecolor: '',
       titlestyle: 'border-bottom: 0.75vh solid ' ,
       newpersonmode: false,
+      newattachmentmode: false,
     }
   },
   methods: {
@@ -605,7 +636,7 @@ export default {
       this.selectedlist.column = list.column
       this.editable = false
       this.resetForm()
-      if (this.selectedlist.name == '回應') {
+      if (this.selectedlist.name == '政府回應') {
         if (this.card.desc.responsetime == 'nowadays') {
           this.card.title = '[現在]'
         } else {
@@ -757,11 +788,11 @@ export default {
           list.color = 'amber lighten-3'
           list.column = 2
           break
-          case '解法':
+          case '現有解法':
           list.color = 'light-green darken-2'
           list.column = 3
           break
-          case '回應':
+          case '政府回應':
           list.color = 'deep-orange lighten-1'
           list.column = 4
           break
@@ -844,10 +875,10 @@ export default {
           case '問題細節':
           return  'amber lighten-3'
           break
-          case '解法':
+          case '現有解法':
           return  'light-green darken-2'
           break
-          case '回應':
+          case '政府回應':
           return  'deep-orange lighten-1'
           break
           case '困難':
