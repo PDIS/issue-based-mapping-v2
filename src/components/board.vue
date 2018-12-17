@@ -40,7 +40,7 @@
           <v-toolbar-title class="subheading">{{list.name}}</v-toolbar-title>
         </v-toolbar>
         <v-card >
-          <v-container fluid grid-list-lg align-center wrap>
+          <v-container fluid grid-list-xs align-center class="pa-2">
             <draggable ml-0 :id="list.id" :options="{group:'cards',animation:200}" @add="movecard" style="min-height:1em" >
               <!-- <v-card :color="card.color" :dark="card.hover" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mouseup="editcard(card,list)" @mouseover="hover = true;changecolor(card,list)" @mouseout="hover = false;changecolor(card,list)"> -->
                 <v-card :dark="card.hover" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%; background-color:#FBF0D3" :id="card.id" @mouseup="editcard(card,list)">
