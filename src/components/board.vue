@@ -1,17 +1,5 @@
 <template>
   <v-container grid-list-md>
-    <!-- <v-layout row wrap v-if="board.admin.includes(user.id)">
-      <v-btn icon small fab btn disabled v-for="a in avatar" :key="a">
-          <img :src="a+'/50.png'" style="border-radius:50%"/> 
-      </v-btn>
-      <v-icon  @click="new_member()" medium fab btn outline class=" dark ml-2">person_add</v-icon>
-          <v-flex xs5 v-if="show_new_member">
-            <v-text-field  color="grey darken-4" class="mt-0 mb-0" label="新增議題成員" value="Input text" v-model="email"></v-text-field> 
-          </v-flex>
-          <v-flex xs3 v-if="show_new_member">
-            <v-btn top color="info" @click="newmember()">新增</v-btn>
-          </v-flex>
-    </v-layout> -->
     <v-layout row>
       <v-flex xs9>
         <v-card flat class="mt-2">
@@ -34,12 +22,6 @@
           </v-card-text>
         </v-card>
       </v-flex>
-      <!-- <v-flex xs6 class="mt-3">
-        <v-btn :to="{name:'mindmap', params:{id:board.id}}">{{ $t("Mind Mapping") }}</v-btn>
-        <v-btn @click="relationmode = true" v-if="relationmode == false">關聯卡片</v-btn>
-        <v-btn color="blue-grey darken-2" dark @click="endrelationmode()" v-if="relationmode == true">關聯卡片</v-btn>
-        <v-btn target="_blank" :href="board.desc.link">會議記錄連結</v-btn>
-      </v-flex> -->
       <v-flex xs3>
         <v-text-field color="grey darken-4" class="mt-3 mb-0" prepend-icon="search" label="搜尋卡片關鍵字" value="Input text" v-model="search"></v-text-field>
       </v-flex>
@@ -76,10 +58,13 @@
     </v-layout>
     <v-dialog v-model="dialog" persistent max-width="50em">
       <v-card>
+        <v-card-title>
+          <h2 :style="bindtitlestyle(selectedlist.name)">{{selectedlist.name}}</h2>
+        </v-card-title>
         <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
           <v-container>
-            <v-layout row wrap class="ma-3">
-              <v-flex d-flex md12 class="pt-5">
+            <v-layout row wrap class="mx-3">
+              <v-flex d-flex md12 class="">
                 <v-layout row wrap v-if="selectedlist.name =='問題面向'">
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="問題面向" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
@@ -497,6 +482,10 @@ export default {
       newmemberdialog: false,
       attsnackbar: false,
       boardtitledialog: false,
+      titlecolor: '',
+      titlestyle: 
+        'border-bottom: 0.75vh solid ' ,
+      
     }
   },
   methods: {
@@ -1157,6 +1146,24 @@ export default {
         that.boardtitledialog = false
         that.getboard()
       })
+    },
+    bindtitlestyle: function(title) {
+      if (title == '問題面向') {
+        this.titlecolor = '#FFCD13'
+      } else if (title == '問題細節') { 
+        this.titlecolor = '#FFE276'
+      } else if (title == '現有解法') { 
+        this.titlecolor = '#91AD70'
+      } else if (title == '政府回應') { 
+        this.titlecolor = '#F08B8B'
+      } else if (title == '困難') { 
+        this.titlecolor = '#C85938'
+      } else if (title == '和此議題有關的人') { 
+        this.titlecolor = '#21B5C2'
+      } else if (title == '資料/文件/連結') { 
+        this.titlecolor = '#D8CAC4'
+      } 
+      return this.titlestyle + this.titlecolor
     }
   },
   created: function() {
