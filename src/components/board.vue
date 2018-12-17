@@ -60,6 +60,11 @@
       <v-card>
         <v-card-title>
           <h2 :style="bindtitlestyle(selectedlist.name)">{{selectedlist.name}}</h2>
+          <v-spacer></v-spacer>
+          <div v-if="(board.admin.includes(user.id) || board.members.includes(user.id)) && editable == true">
+            <v-btn flat color="grey lighten-1" class="subheading" @click="resetForm">重新填寫</v-btn>
+            <v-btn flat color="red lighten-1" class="subheading"  @click.native.stop="deletedialog=true;selectedid=card.id">刪除便利貼</v-btn>
+          </div>
         </v-card-title>
         <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
           <v-container>
@@ -128,7 +133,28 @@
                   </v-flex>
                 </v-layout>
               </v-flex>
-              <v-divider></v-divider>
+              <v-flex md12 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
+                <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '和此議題有關的人'">
+                  <v-icon>people</v-icon>
+                  <h3 class="ml-2 mt-2 font-weight-regular" style="color:rgba(0,0,0,.54)">關聯和此議題有關的人</h3>
+                  <v-btn flat color="primary" v-if="newpersonmode == false" @click.native="newpersonmode = true">+新增和此議題有關的人</v-btn>
+                  <v-layout row wrap v-if="newpersonmode == true">
+                    <v-flex md6>
+                      <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱" prepend-icon="people" v-model="newperson" ></v-text-field>
+                    </v-flex>
+                    <v-flex md6>
+                      <v-btn color="black" class="mt-3" small flat  @click.native="newpersonmode = false; newperson = ''" >取消</v-btn>
+                      <v-btn color="blue" class="mt-3"  small flat  @click.native="newpersonmode = false; addperson()">確定</v-btn>
+                    </v-flex>
+                  </v-layout>
+                  <!-- <v-flex d-flex xs6>
+                    <v-btn color="blue-grey" class="white--text" @click.native="newpersondialog=true">
+                      <v-icon small>add</v-icon>
+                      新增和此議題有關的人
+                    </v-btn>
+                  </v-flex> -->
+                </v-layout>
+              </v-flex>
               <v-flex d-flex md12>
                 <v-layout row wrap v-if="selectedlist.name != '和此議題有關的人'">
                   <v-flex d-flex xs12 >
@@ -284,21 +310,10 @@
                   </v-card-actions>
                 </v-card>
               </v-flex>
-              <v-flex d-flex md12 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
-                <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '和此議題有關的人'">
-                  <v-flex d-flex xs6>
-                    <v-btn color="blue-grey" class="white--text" @click.native="newpersondialog=true">
-                      <v-icon small>add</v-icon>
-                      新增和此議題有關的人
-                    </v-btn>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
             </v-layout>
-            <v-card-actions class="pa-3" v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
-              <!--  <v-btn :disabled="!formIsValid" flat color="primary" type="submit" class="subheading">確認</v-btn> -->
-              <v-btn flat color="red lighten-1" class="subheading"  @click.native.stop="deletedialog=true;selectedid=card.id">刪除便利貼</v-btn>
-              <v-btn flat color="grey lighten-1" class="subheading" @click="resetForm">重新填寫</v-btn>
+            <v-card-actions class="px-3" v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
+              <!-- <v-btn flat color="red lighten-1" class="subheading"  @click.native.stop="deletedialog=true;selectedid=card.id">刪除便利貼</v-btn>
+              <v-btn flat color="grey lighten-1" class="subheading" @click="resetForm">重新填寫</v-btn> -->
               <v-spacer></v-spacer>
               <v-btn flat @click.native="closeDialog" class="subheading">取消</v-btn>
               <v-btn flat color="cyan" type="submit" class="subheading" :disabled="!valid" >確認</v-btn>
@@ -483,9 +498,8 @@ export default {
       attsnackbar: false,
       boardtitledialog: false,
       titlecolor: '',
-      titlestyle: 
-        'border-bottom: 0.75vh solid ' ,
-      
+      titlestyle: 'border-bottom: 0.75vh solid ' ,
+      newpersonmode: false,
     }
   },
   methods: {
