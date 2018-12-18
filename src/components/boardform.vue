@@ -8,7 +8,7 @@
       <span>{{success}}!</span>
       <v-icon dark>check_circle</v-icon>
     </v-snackbar>
-    <v-dialog v-model="boardform" persistent  max-width="50em">
+    <v-dialog v-model="boardform" persistent  max-width="50vw">
       <v-card>
         <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit" class="pa-3">
           <v-container>

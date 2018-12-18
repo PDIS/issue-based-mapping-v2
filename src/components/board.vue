@@ -12,12 +12,12 @@
                 <img :src="a+'/50.png'" style="border-radius:50%"/> 
               </v-btn>
               <v-icon  @click="new_member()" medium fab btn outline class=" dark ml-2">person_add</v-icon>
-                <v-flex xs5 v-if="show_new_member">
+               <!--  <v-flex xs5 v-if="show_new_member">
                   <v-text-field  color="grey darken-4" class="mt-0 mb-0" label="新增議題成員" value="Input text" v-model="email"></v-text-field> 
                 </v-flex>
               <v-flex xs3 v-if="show_new_member">
                 <v-btn top color="info" @click="newmember()">新增</v-btn>
-              </v-flex>
+              </v-flex> -->
             </div>
           </v-card-text>
         </v-card>
@@ -58,7 +58,7 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <v-dialog v-model="dialog" persistent max-width="50em">
+    <v-dialog v-model="dialog" persistent max-width="50vw">
       <v-card>
         <v-card-title>
           <h2 :style="bindtitlestyle(selectedlist.name)">{{selectedlist.name}}</h2>
@@ -114,7 +114,7 @@
                 </v-layout>
                 <v-layout row wrap v-if="selectedlist.name == '和此議題有關的人'">
                   <v-flex d-flex xs12>
-                    <v-text-field  color="blue-grey darken-2" label="名稱" prepend-icon="person" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱" prepend-icon="person" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
                     <v-text-field color="blue-grey darken-2" label="單位" prepend-icon="work" v-model="card.desc.department" ></v-text-field>
@@ -128,10 +128,10 @@
                 </v-layout>
                 <v-layout row wrap v-if="selectedlist.name == '資料/文件/連結'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="名稱" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="佐證文件名稱" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="文件連結" prepend-icon="announcement" v-model="card.desc.attachment"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="文件連結" prepend-icon="attach_file" v-model="card.desc.attachment"></v-text-field>
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -145,11 +145,11 @@
               <v-flex md12 v-if="newpersonmode == true">
                 <v-layout row wrap>
                   <v-flex md6>
-                    <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱" prepend-icon="people" v-model="newperson" ></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱" prepend-icon="people" v-model="newperson.title" ></v-text-field>
                   </v-flex>
                   <v-flex md6>
-                    <v-btn color="black" class="mt-3" small flat  @click.native="newpersonmode = false; newperson = ''" >取消</v-btn>
-                    <v-btn color="blue" class="mt-3"  small flat  @click.native="newpersonmode = false; addperson()">確定</v-btn>
+                    <v-btn color="black" class="mt-3" small outline @click.native="newpersonmode = false; newperson.title = ''" >取消</v-btn>
+                    <v-btn color="black" class="mt-3" small dark @click.native="newpersonmode = false; addperson()">確定</v-btn>
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -234,14 +234,42 @@
                   <v-btn flat color="primary" v-if="newattachmentmode == false" @click.native="newattachmentmode = true">+新增佐證文件</v-btn>
                 </v-layout>  
               </v-flex>
-              <v-flex md12  v-if="newattachmentmode == true">
+              <v-flex md12 v-if="newattachmentmode == true">
                 <v-layout row wrap>
-                  <v-flex md6>
-                    <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱" prepend-icon="people" v-model="newperson" ></v-text-field>
+                  <v-flex md12>
+                    <v-radio-group v-model="attachmentselection" row prepend-icon="attach_file">
+                      <v-radio label="新增連結" value="attachmentlink"></v-radio>
+                      <v-radio label="上傳檔案" value="attachmentupload"></v-radio>
+                    </v-radio-group>
                   </v-flex>
-                  <v-flex md6>
-                    <v-btn color="black" class="mt-3" small flat  @click.native="newattachmentmode = false; newperson = ''" >取消</v-btn>
-                    <v-btn color="blue" class="mt-3"  small flat  @click.native="newattachmentmode = false; addperson()">確定</v-btn>
+                  <v-layout row wrap v-if="attachmentselection == 'attachmentlink'">
+                    <v-flex md12>
+                      <v-text-field color="blue-grey darken-2" label="佐證文件名稱" prepend-icon="announcement" v-model="newattachment.title" :counter="30" :rules="titleRules"></v-text-field>
+                    </v-flex>
+                    <v-flex md12>
+                      <v-text-field color="blue-grey darken-2" label="文件連結" prepend-icon="attach_file" v-model="newattachment.desc.attachment"></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row wrap v-if="attachmentselection == 'attachmentupload'">
+                    <v-flex md6>
+                      <v-text-field color="blue-grey darken-2" label="佐證文件名稱" prepend-icon="announcement" v-model="newattachment.title" :counter="30" :rules="titleRules"></v-text-field>
+                    </v-flex>
+                    <v-flex md6>
+                      <upload-btn depressed outline title="附加檔案" :fileChangedCallback="fileChanged" class="mt-3">
+                        <template slot="icon-left">
+                          <v-icon left>attach_file</v-icon>
+                        </template>
+                      </upload-btn>
+                    </v-flex>
+                    <v-flex md12>
+
+                    </v-flex>
+                  </v-layout>
+                  <v-flex md12>
+                    <v-layout align-center justify-end row fill-height>
+                    <v-btn color="black" class="mt-3" small outline @click.native="newattachmentmode = false; newattachment.title = ''; newattachment.desc.attachment = '';" >取消</v-btn>
+                    <v-btn color="black" class="mt-3" small dark @click.native="newattachmentmode = false; addattachment()">確定</v-btn>
+                  </v-layout>
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -362,7 +390,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="newpersondialog" max-width="290">
+    <!-- <v-dialog v-model="newpersondialog" max-width="290">
       <v-card>
         <v-card-title class="headline">新增和此議題有關的人</v-card-title>
         <v-form>
@@ -379,30 +407,30 @@
           <v-btn color="black" flat="flat" @click.native="newpersondialog=false;newperson=''" >取消</v-btn>
         </v-card-actions>
       </v-card>
+    </v-dialog> -->
+    <v-dialog v-model="newmemberdialog" max-width="50vw">
+      <v-card>
+        <v-card-title>
+          新增議題成員
+        </v-card-title>
+        <v-card-text>
+        <v-form>
+        <v-container>
+          <v-layout>
+            <v-flex>
+          <v-text-field  color="grey darken-4" class="mt-0 mb-0" label="email address or name" value="Input text" v-model="email"></v-text-field> 
+          </v-flex>
+          </v-layout>
+        </v-container>
+      </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat class="subheading" @click="newmemberdialog = false">取消</v-btn>
+          <v-btn flat color="cyan" type="submit" class="subheading" @click="newmember()">確認</v-btn>
+        </v-card-actions>
+      </v-card>
     </v-dialog>
-    <v-dialog v-model="newmemberdialog" max-width="500px">
-        <v-card>
-          <v-card-title>
-            新增議題成員
-          </v-card-title>
-          <v-card-text>
-          <v-form>
-          <v-container>
-            <v-layout>
-              <v-flex>
-            <v-text-field  color="grey darken-4" class="mt-0 mb-0" label="email address or name" value="Input text" v-model="email"></v-text-field> 
-            </v-flex>
-            </v-layout>
-          </v-container>
-        </v-form>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn flat class="subheading">取消</v-btn>
-            <v-btn flat color="cyan" type="submit" class="subheading" @click="newmember()">確認</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     <v-snackbar
       :timeout="5000"
       top="top"
@@ -419,7 +447,7 @@
       請先刪除附件再重新上傳!
       <v-btn flat color="pink" @click.native="attsnackbar = false">關閉</v-btn>
     </v-snackbar>
-    <v-dialog v-model="boardtitledialog" max-width="500px">
+    <v-dialog v-model="boardtitledialog" max-width="50vw">
       <v-card>
         <v-card-text>
           <v-form>
@@ -445,9 +473,12 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import draggable from 'vuedraggable'
+import UploadButton from 'vuetify-upload-button';
+
 export default {
   components: {
     draggable,
+    'upload-btn': UploadButton
   },
   data () {
     return {
@@ -481,7 +512,7 @@ export default {
       card: {
         id: '',
         title: '',
-        desc:{
+        desc: {
           explain:'',
           responsetime: 'nowadays',
           department: '',
@@ -504,9 +535,10 @@ export default {
       deletedialog: false,
       email: '',
       hover: false,
-      newpersondialog: false,
-      newperson: '',
-      newpersondesc: {
+      /* newpersondialog: false, */
+      newperson: {
+        title: '',
+        desc: {
           explain:'',
           responsetime: 'nowadays',
           department: '',
@@ -519,6 +551,7 @@ export default {
           attachment: '',
           x: 0,
           y: 0
+        }
       },
       relationmode: false,
       firstcard: {},
@@ -531,6 +564,24 @@ export default {
       titlestyle: 'border-bottom: 0.75vh solid ' ,
       newpersonmode: false,
       newattachmentmode: false,
+      attachmentselection: 'attachmentlink',
+      newattachment: {
+        title: '',
+        desc: {
+          explain:'',
+          responsetime: 'nowadays',
+          department: '',
+          background: '',
+          role: '',
+          peopleto: [],
+          peoplefrom: [],
+          data: [],
+          related: [],
+          attachment: '',
+          x: 0,
+          y: 0
+        }
+      },
     }
   },
   methods: {
@@ -1103,8 +1154,8 @@ export default {
       let that = this;
       this.lists.map( l => {
         if (l.name == '和此議題有關的人') {
-          Trello.post('cards', {'name': this.newperson, 'idList': l.id,'desc': JSON.stringify(this.newpersondesc) } , function() {
-            that.newperson = ''
+          Trello.post('cards', {'name': this.newperson.title, 'idList': l.id,'desc': JSON.stringify(this.newperson.desc) } , function() {
+            that.newperson.title = ''
             that.getlists()
             that.success = '新增成功！'
             that.snackbar = true
@@ -1138,6 +1189,14 @@ export default {
           })
         })
       })
+    },
+    fileChanged: function(file) {
+      let formData = new FormData();
+      formData.append('key','fb8dab318e1888679f571104d8b36ac7')
+      formData.append('token',localStorage.trello_token)
+      formData.append("file", file)
+      formData.append("name", this.newattachment.title);
+      this.uploadfile = formData
     },
     onFileChange: function(e) {
       let files = e.target.files || e.dataTransfer.files;
@@ -1209,7 +1268,39 @@ export default {
         this.titlecolor = '#D8CAC4'
       } 
       return this.titlestyle + this.titlecolor
-    }
+    },
+    addattachment: function() {
+      let that = this;
+      this.lists.map( l => {
+        if (l.name == '資料/文件/連結') {
+          Trello.post('cards', {'name': this.newattachment.title, 'idList': l.id,'desc': JSON.stringify(this.newattachment.desc)} , function(res) {
+            if (that.newattachment.desc.attachment != '' && that.newattachment.desc.attachment != undefined) {
+              Trello.post('cards/' + res.id + '/attachments', {'url': that.newattachment.desc.attachment, 'name': that.newattachment.title}, function() {
+                that.newattachment.title = ''
+                that.newattachment.desc.attachment = ''
+                that.getlists()
+                that.success = '新增成功！'
+                that.snackbar = true
+              })
+            } else {
+              if (that.newattachment.attachments == undefined) {
+                let request = new XMLHttpRequest()
+                request.responseType = "json"
+                request.onreadystatechange = function() {
+                  if (request.readyState === 4) {
+                    window.location.reload(true)
+                  }
+                }
+                request.open("POST", 'https://api.trello.com/1/cards/' +  res.id + '/attachments/')
+                request.send(this.uploadfile)
+              } else {
+                /* this.attsnackbar = true */
+              }
+            }
+          })
+        }
+      })
+    },
   },
   created: function() {
     this.$store.dispatch('getuser')
