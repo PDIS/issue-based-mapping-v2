@@ -26,13 +26,28 @@
         <v-text-field color="grey darken-4" class="mt-3 mb-0" prepend-icon="search" label="搜尋卡片關鍵字" value="Input text" v-model="search"></v-text-field>
       </v-flex>
     </v-layout>
-    <v-layout align-center justify-start row reverse fill-height class="mb-2">
-      <!-- <v-btn @click="relationmode = true" v-if="relationmode == false">關聯卡片</v-btn>
-      <v-btn color="blue-grey darken-2" dark @click="endrelationmode()" v-if="relationmode == true">關聯卡片</v-btn> -->
-      <v-btn flat target="_blank" :href="board.desc.link">會議記錄連結</v-btn>
-      <v-btn flat >輸出文件</v-btn>
-      <v-btn flat >專有名詞字典</v-btn>
-      <v-btn flat :to="{name:'mindmap', params:{id:board.id}}">{{ $t("Mind Mapping") }}</v-btn>
+    <v-layout row wrap>
+      <v-flex md6>
+        <v-tabs left>
+          <v-tabs-slider color="indigo"></v-tabs-slider>
+          <v-tab href="#tab-1" color="red" style="font-size: 1.2rem">
+            心智圖
+          </v-tab>
+          <v-tab href="#tab-2" style="font-size: 1.2rem" :to="{name:'mindmap', params:{id:board.id}}">
+            議題分析表
+          </v-tab>
+        </v-tabs>
+      </v-flex>
+      <v-flex md6>
+        <v-layout align-center justify-start row reverse fill-height class="mb-2">
+          <!-- <v-btn @click="relationmode = true" v-if="relationmode == false">關聯卡片</v-btn>
+          <v-btn color="blue-grey darken-2" dark @click="endrelationmode()" v-if="relationmode == true">關聯卡片</v-btn> -->
+          <v-btn flat target="_blank" :href="board.desc.link">會議記錄連結</v-btn>
+          <v-btn flat disabled>輸出文件</v-btn>
+          <v-btn flat disabled>專有名詞字典</v-btn>
+          <!-- <v-btn flat :to="{name:'mindmap', params:{id:board.id}}">{{ $t("Mind Mapping") }}</v-btn> -->
+        </v-layout>
+      </v-flex>
     </v-layout>
     <v-layout row>
       <v-flex xs12 md4 lg3 v-for="(list) in lists" :key="list.id">
@@ -254,12 +269,15 @@
                     <v-flex md6>
                       <v-text-field color="blue-grey darken-2" label="佐證文件名稱" prepend-icon="announcement" v-model="newattachment.title" :counter="30" :rules="titleRules"></v-text-field>
                     </v-flex>
-                    <v-flex md6>
+                    <v-flex md3>
                       <upload-btn depressed outline title="附加檔案" :fileChangedCallback="fileChanged" class="mt-3">
                         <template slot="icon-left">
                           <v-icon left>attach_file</v-icon>
                         </template>
                       </upload-btn>
+                    </v-flex>
+                    <v-flex md3>
+                      <h3 class="mt-4">{{filename}}</h3>
                     </v-flex>
                     <v-flex md12>
 
@@ -582,6 +600,7 @@ export default {
           y: 0
         }
       },
+      filename: '',
     }
   },
   methods: {
@@ -1196,6 +1215,7 @@ export default {
       formData.append('token',localStorage.trello_token)
       formData.append("file", file)
       formData.append("name", this.newattachment.title);
+      this.filename = file.name
       this.uploadfile = formData
     },
     onFileChange: function(e) {
@@ -1207,6 +1227,7 @@ export default {
       formData.append('token',localStorage.trello_token)
       formData.append("file", files[0])
       formData.append("name", this.card.title);
+      this.filename = file.name
       this.uploadfile = formData
     },
     upload: function(card) {
@@ -1288,11 +1309,14 @@ export default {
                 request.responseType = "json"
                 request.onreadystatechange = function() {
                   if (request.readyState === 4) {
-                    window.location.reload(true)
+                    that.newattachment.title = ''
+                    that.getlists()
+                    that.success = '新增成功！'
+                    that.snackbar = true
                   }
                 }
                 request.open("POST", 'https://api.trello.com/1/cards/' +  res.id + '/attachments/')
-                request.send(this.uploadfile)
+                request.send(that.uploadfile)
               } else {
                 /* this.attsnackbar = true */
               }
