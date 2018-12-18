@@ -12,11 +12,11 @@
           <v-icon v-if="noteicon == true" color="blue" @click="dialog = true; noteicon = false">note</v-icon>
         </v-list-tile>
         <v-list-tile>
-          <v-icon v-if="linkicon == false" color="black" @click="pressshift = true; linkicon = true">call_made</v-icon>
+          <v-icon v-if="linkicon == false" color="black" @click="pressshift = true; linkicon = true; unlinkicon = false">call_made</v-icon>
           <v-icon v-if="linkicon == true" color="blue" @click="pressshift = false; linkicon = false">call_made</v-icon>
         </v-list-tile>
         <v-list-tile>
-          <v-icon v-if="unlinkicon == false" color="black" @click="pressshift = true; unlinkicon = true">strikethrough_s</v-icon>
+          <v-icon v-if="unlinkicon == false" color="black" @click="pressshift = true; unlinkicon = true; linkicon = false">strikethrough_s</v-icon>
           <v-icon v-if="unlinkicon == true" color="blue" @click="pressshift = false; unlinkicon = false">strikethrough_s</v-icon>
         </v-list-tile>
       </v-list>
