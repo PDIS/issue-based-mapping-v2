@@ -252,7 +252,7 @@
               <v-flex md12 v-if="newattachmentmode == true">
                 <v-layout row wrap>
                   <v-flex md12>
-                    <v-radio-group v-model="attachmentselection" row prepend-icon="attach_file">
+                    <v-radio-group v-model="attachmentselection" row prepend-icon="attach_f">
                       <v-radio label="新增連結" value="attachmentlink"></v-radio>
                       <v-radio label="上傳檔案" value="attachmentupload"></v-radio>
                     </v-radio-group>
@@ -269,14 +269,14 @@
                     <v-flex md6>
                       <v-text-field color="blue-grey darken-2" label="佐證文件名稱" prepend-icon="announcement" v-model="newattachment.title" :counter="30" :rules="titleRules"></v-text-field>
                     </v-flex>
-                    <v-flex md3>
+                    <v-flex md4>
                       <upload-btn depressed outline title="附加檔案" :fileChangedCallback="fileChanged" class="mt-3">
                         <template slot="icon-left">
                           <v-icon left>attach_file</v-icon>
                         </template>
                       </upload-btn>
                     </v-flex>
-                    <v-flex md3>
+                    <v-flex md2>
                       <h3 class="mt-4">{{filename}}</h3>
                     </v-flex>
                     <v-flex md12>
