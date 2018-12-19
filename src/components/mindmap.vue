@@ -1,10 +1,36 @@
 <template>
+<div>
+<v-container grid-list-md>
+    <v-layout row>
+      <v-flex xs9>
+        <v-card flat class="mt-2">
+          <v-card-text>
+            <div class="headline"># {{board.name}} 
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+    </v-layout>
+    <v-layout row wrap>
+      <v-flex md6>
+        <v-tabs v-model="tab" left>
+          <v-tabs-slider color="indigo"></v-tabs-slider>
+          <v-tab href="#tab-2" style="font-size: 1.2rem" :to="{name:'board', params:{id:board.id}}">
+            議題分析表
+          </v-tab>
+          <v-tab href="#tab-1" style="font-size: 1.2rem">
+            心智圖
+          </v-tab>
+        </v-tabs>
+      </v-flex>
+    </v-layout>
+</v-container>
   <div id="mindmap">
-    <v-card flat style="position:absolute;z-index:200" class="mt-3 ml-3">
+   <!--  <v-card flat style="position:absolute;z-index:200" class="mt-3 ml-3">
       <v-card-title primary-title>
         <div class="headline"># {{board.name}} </div>
       </v-card-title>
-    </v-card>
+    </v-card> -->
     <v-card style="position:absolute;z-index:200;margin-top:8em" class="ml-4">
       <v-list>
         <v-list-tile>
@@ -35,6 +61,10 @@
           <v-group v-for="(card, index) in list.cards" :ref="card.id" :key="card.id" @click="linkcard(card)" @dragmove="adjustPoint(card.id)" @dragend="changeposition(card,list)" :config="getgroupconfig(card)">
             <v-rect :config="getrectconfig(card)" ></v-rect>
             <v-text :config="gettextconfig(card)" @dblclick="edittext(card, index)" :ref="'text' + card.id"></v-text>
+             <v-group>
+              <v-tag :config="getcategoryconfig(card)"></v-tag>
+              <v-text :config="getcategorytextconfig(list)"></v-text>
+            </v-group>
             <v-group v-if="card.showexplain && card.desc.explain !== ''">
               <v-rect :config="getexplainrectconfig(card)"></v-rect>  
               <v-text :config="getexplainconfig(card)"></v-text>
@@ -138,6 +168,7 @@
       </v-card>
     </v-dialog>
   </div>
+</div>
 </template>
 
 <script>
@@ -223,6 +254,7 @@ export default {
       noteicon: false,
       linkicon: false,
       unlinkicon: false,
+      tab: 'tab-1'
     }
   },
   created: function() {
@@ -309,23 +341,23 @@ export default {
           switch (list.name)
           {
             case '問題面向':
-            list.color = '#FBC02D'
+            list.color = '#FFCD13'
             list.column = 1
             break
             case '問題細節':
-            list.color = '#FFE082'
+            list.color = '#FFE276'
             list.column = 2
             break
             case '現有解法':
-            list.color = '#689F38'
+            list.color = '#91AD70'
             list.column = 3
             break
             case '政府回應':
-            list.color = '#F4511E'
+            list.color = '#F08B8B'
             list.column = 4
             break
             case '困難':
-            list.color = '#FF8A80'
+            list.color = '#C85938'
             list.column = 5
             break
             case '和此議題有關的人':
@@ -411,8 +443,8 @@ export default {
       let tags = card.desc.peoplefrom.length + card.desc.peopleto.length + card.desc.data.length
       if (tags < 2) { tags = 2 }
       return {
-        fill: card.color,
-        width: 180,
+        fill: "#FBF0D3",
+        width: 160,
         height: 130 + ((tags - 2) * 30),
         shadowColor: 'black',
         shadowOffset: {
@@ -423,13 +455,36 @@ export default {
       }
     },
     gettextconfig: function(card) {
-      return { 
+      return {
+        x: 0,
+        y: 15, 
         text: card.name, 
         fontSize: 18, 
-        width: 180, 
+        width: 160, 
         padding: 15, 
         fontFamily:  "Roboto, 'Noto Sans TC'" ,
         lineHeight: 1.5,
+      }
+    },
+    getcategoryconfig: function(card) {
+      return {
+        x: 0,
+        y: 10,
+        fill: card.color,
+        width: 70,
+        height: 20,
+        lineJoin: 'round',
+      }
+    },
+    getcategorytextconfig: function(list) {
+      return {
+        x: 5,
+        y: 8,
+        width: 70,
+        text: list.name,
+        fontSize: 12,
+        fontFamily: "Roboto, 'Noto Sans TC'",
+        padding: 5,
       }
     },
     gettagconfig: function(text, i, color, tags) {
