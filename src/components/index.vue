@@ -43,7 +43,8 @@
                   <v-icon color="grey lighten-1">announcement</v-icon>
                 </v-list-tile-avatar>
                 <v-list-tile-content>
-                  <v-list-tile-sub-title>{{ $t("Name of Topic") }}</v-list-tile-sub-title>
+                  <v-list-tile-sub-title v-if="board.desc.issuesource == 'join'">{{ $t("Name of Topic") }}</v-list-tile-sub-title>
+                  <v-list-tile-sub-title v-if="board.desc.issuesource == 'other' || board.desc.issuesource == 'dep'">提案來源</v-list-tile-sub-title>
                   <v-list-tile-title v-html="board.desc.title"></v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
@@ -118,13 +119,9 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-snackbar
-      :timeout="5000"
-      top="top"
-      v-model="snackbar"
-    >
+    <v-snackbar top="top" v-model="snackbar" color="success">
       刪除成功!
-      <v-btn flat color="pink" @click.native="snackbar = false">關閉</v-btn>
+      <v-btn flat @click.native="snackbar = false">關閉</v-btn>
     </v-snackbar>
     <boardform></boardform>
   </v-container>

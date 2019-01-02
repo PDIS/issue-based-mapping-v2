@@ -79,88 +79,95 @@
           <h2 :style="bindtitlestyle(selectedlist.name)">{{selectedlist.name}}</h2>
           <v-spacer></v-spacer>
           <div v-if="(board.admin.includes(user.id) || board.members.includes(user.id)) && editable == true">
-            <v-btn flat color="grey lighten-1" class="subheading" @click="resetForm">重新填寫</v-btn>
+            <v-btn flat color="grey" class="subheading" @click="resetForm">重新填寫</v-btn>
             <v-btn flat color="red lighten-1" class="subheading"  @click.native.stop="deletedialog=true;selectedid=card.id">刪除便利貼</v-btn>
           </div>
         </v-card-title>
         <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
           <v-container>
             <v-layout row wrap class="mx-3">
-              <v-flex d-flex md12 class="">
+              <v-flex xs12>
+                <v-layout align-center justify-start row fill-height>
+                  <v-icon>announcement</v-icon>
+                  <h3 class="mx-2" style="color:rgba(0,0,0,.54)">內容</h3>
+                </v-layout>
+              </v-flex>
+              <v-flex md12 mx-4>
                 <v-layout row wrap v-if="selectedlist.name =='問題面向'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="內容" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap v-if="selectedlist.name == '問題細節'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="內容" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain" ></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="補充說明" v-model="card.desc.explain" ></v-text-field>
                   </v-flex>
                 </v-layout >
                 <v-layout row wrap  v-if="selectedlist.name == '現有解法'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="內容" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap  v-if="selectedlist.name == '政府回應'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="內容" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
-                    <v-radio-group prepend-icon="schedule" v-model="card.desc.responsetime" row @change="changeresponsetime(card)">
+                    <v-radio-group v-model="card.desc.responsetime" row @change="changeresponsetime(card)">
                       <v-radio label="現在" value="nowadays" selected ></v-radio>
                       <v-radio label="未來" color="orange" value="future"></v-radio>
                     </v-radio-group>
                   </v-flex>
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="補充說明"  v-model="card.desc.explain"  ></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap v-if="selectedlist.name == '困難'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="內容" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2"   v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="card.desc.explain"  ></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="補充說明"  v-model="card.desc.explain"  ></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap v-if="selectedlist.name == '和此議題有關的人'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱" prepend-icon="person" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="單位" prepend-icon="work" v-model="card.desc.department" ></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="單位"  v-model="card.desc.department" ></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="背景" prepend-icon="folder" v-model="card.desc.background"  ></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="背景"  v-model="card.desc.background"  ></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="角色（此人與議題的關聯）" prepend-icon="folder" v-model="card.desc.role"  ></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="角色（此人與議題的關聯）"  v-model="card.desc.role"  ></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap v-if="selectedlist.name == '資料/文件/連結'">
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="佐證文件名稱" prepend-icon="announcement" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="佐證文件名稱" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="文件連結" prepend-icon="attach_file" v-model="card.desc.attachment"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="文件連結"  v-model="card.desc.attachment"></v-text-field>
                   </v-flex>
                 </v-layout>
               </v-flex>
-              <v-flex md12 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
+              <v-flex md12 mx-2 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
                 <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '和此議題有關的人'">
-                  <v-icon>people</v-icon>
-                  <h3 class="ml-2 mt-2 font-weight-regular" style="color:rgba(0,0,0,.54)">關聯和此議題有關的人</h3>
+                 <!--  <v-icon>people</v-icon>
+                  <h3 class="ml-2 mt-2 font-weight-regular" style="color:rgba(0,0,0,.54)">關聯和此議題有關的人</h3> -->
                   <v-btn flat color="primary" v-if="newpersonmode == false" @click.native="newpersonmode = true">+新增和此議題有關的人</v-btn>
+                  <v-btn flat color="primary" v-if="newattachmentmode == false" @click.native="newattachmentmode = true">+新增佐證文件</v-btn>
                 </v-layout>
               </v-flex>
               <v-flex md12 v-if="newpersonmode == true">
                 <v-layout row wrap>
                   <v-flex md6>
-                    <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱" prepend-icon="people" v-model="newperson.title" ></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱"  v-model="newperson.title" ></v-text-field>
                   </v-flex>
                   <v-flex md6>
                     <v-btn color="black" class="mt-3" small outline @click.native="newpersonmode = false; newperson.title = ''" >取消</v-btn>
@@ -176,7 +183,6 @@
                       :items="peoplelist"
                       item-text="name"
                       item-value="id"
-                      prepend-icon="people"
                       label="關聯和此議題有關的人(資料來源)"                     
                       chips
                       multiple
@@ -206,7 +212,6 @@
                       :items="peoplelist"
                       item-text="name"
                       item-value="id"
-                      prepend-icon="people"
                       label="關聯和此議題有關的人(要向誰提問)"                     
                       chips
                       multiple
@@ -252,22 +257,22 @@
               <v-flex md12 v-if="newattachmentmode == true">
                 <v-layout row wrap>
                   <v-flex md12>
-                    <v-radio-group v-model="attachmentselection" row prepend-icon="attach_f">
+                    <v-radio-group v-model="attachmentselection" row >
                       <v-radio label="新增連結" value="attachmentlink"></v-radio>
                       <v-radio label="上傳檔案" value="attachmentupload"></v-radio>
                     </v-radio-group>
                   </v-flex>
                   <v-layout row wrap v-if="attachmentselection == 'attachmentlink'">
                     <v-flex md12>
-                      <v-text-field color="blue-grey darken-2" label="佐證文件名稱" prepend-icon="announcement" v-model="newattachment.title" :counter="30" :rules="titleRules"></v-text-field>
+                      <v-text-field color="blue-grey darken-2" label="佐證文件名稱"  v-model="newattachment.title" :counter="30" :rules="titleRules"></v-text-field>
                     </v-flex>
                     <v-flex md12>
-                      <v-text-field color="blue-grey darken-2" label="文件連結" prepend-icon="attach_file" v-model="newattachment.desc.attachment"></v-text-field>
+                      <v-text-field color="blue-grey darken-2" label="文件連結"  v-model="newattachment.desc.attachment"></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap v-if="attachmentselection == 'attachmentupload'">
                     <v-flex md6>
-                      <v-text-field color="blue-grey darken-2" label="佐證文件名稱" prepend-icon="announcement" v-model="newattachment.title" :counter="30" :rules="titleRules"></v-text-field>
+                      <v-text-field color="blue-grey darken-2" label="佐證文件名稱"  v-model="newattachment.title" :counter="30" :rules="titleRules"></v-text-field>
                     </v-flex>
                     <v-flex md4>
                       <upload-btn depressed outline title="附加檔案" :fileChangedCallback="fileChanged" class="mt-3">
@@ -299,7 +304,6 @@
                       :items="datalist"
                       item-text="name"
                       item-value="id"
-                      prepend-icon="file_copy"
                       label="選取佐證文件"
                       color="blue-grey darken-2"
                       chips
@@ -508,6 +512,7 @@ export default {
           'person': '',
           'date': null,
           'department': '',
+          'codepartment': '',
           'link': ''
         },
         admin: [],
