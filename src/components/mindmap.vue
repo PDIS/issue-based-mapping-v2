@@ -38,8 +38,8 @@
           <v-icon v-if="noteicon == true" color="blue" @click="dialog = true; noteicon = false">note</v-icon>
         </v-list-tile>
         <v-list-tile>
-          <v-icon v-if="linkicon == false" color="black" @click="pressshift = true; linkicon = true; unlinkicon = false">call_made</v-icon>
-          <v-icon v-if="linkicon == true" color="blue" @click="pressshift = false; linkicon = false">call_made</v-icon>
+          <v-icon v-if="linkicon == false" color="black" @click="pressshift = true; linkicon = true; unlinkicon = false">link</v-icon>
+          <v-icon v-if="linkicon == true" color="blue" @click="pressshift = false; linkicon = false">link</v-icon>
         </v-list-tile>
         <v-list-tile>
           <v-icon v-if="unlinkicon == false" color="black" @click="pressshift = true; unlinkicon = true; linkicon = false">strikethrough_s</v-icon>
@@ -60,7 +60,7 @@
           <!-- <v-group v-for="(card, index) in list.cards" :ref="card.id" :key="card.id" @click="linkcard(card)" @dragmove="adjustPoint(card.id)" @dragend="changeposition(card,list)" @mouseenter="showexplain(card,true)" @mouseleave="showexplain(card,false)" :config="getgroupconfig(card)"> -->
           <v-group v-for="(card, index) in list.cards" :ref="card.id" :key="card.id" @click="linkcard(card)" @dragmove="adjustPoint(card.id)" @dragend="changeposition(card,list)" :config="getgroupconfig(card)">
             <v-rect :config="getrectconfig(card)" ></v-rect>
-            <v-text :config="gettextconfig(card)" @dblclick="edittext(card, index)" :ref="'text' + card.id"></v-text>
+            <v-text :config="gettextconfig(card)" @dblclick="edittext(card, list, index)" :ref="'text' + card.id"></v-text>
              <v-group>
               <v-tag :config="getcategoryconfig(card)"></v-tag>
               <v-text :config="getcategorytextconfig(list)"></v-text>
@@ -86,51 +86,211 @@
         <v-arrow v-for="arrow in arrows" :key="arrow" ref="arrow" :config="arrowconfig[arrow]"></v-arrow>
       </v-layer>
     </v-stage>
-    <v-dialog v-model="dialog" persistent max-width="50em">
+    <v-dialog v-model="dialog" persistent max-width="50vw">
       <v-card>
+      <!--   <v-card-title>
+          <h2 :style="bindtitlestyle(selectedlist.name)">{{selectedlist.name}}</h2>
+          <v-spacer></v-spacer>
+          <div v-if="(board.admin.includes(user.id) || board.members.includes(user.id))">
+            <v-btn flat color="grey" class="subheading" @click="resetForm">重新填寫</v-btn>
+            <v-btn flat color="red lighten-1" class="subheading"  @click.native.stop="deletedialog=true;selectedid=card.id">刪除便利貼</v-btn>
+          </div>
+        </v-card-title> -->
         <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
           <v-container>
             <v-layout row wrap class="ma-5">
               <v-flex flex xs12 class="pt-5">
-                <v-select v-model="newcard.typeid" :items="lists" label="卡片類型" item-text="name" item-value="id" prepend-icon="category" @change="changetype"></v-select>
+                <v-select v-model="newcard.typeid" :items="lists" label="卡片類型" item-text="name" item-value="id" @change="changetype"></v-select>
                 <v-layout row wrap v-if="newcard.type == '問題面向'">
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="30" :rules="titleRules"></v-text-field>
+                   <v-flex flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="內容" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap v-if="newcard.type == '問題細節'">
-                  <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="30" :rules="titleRules"></v-text-field>
+                  <v-flex flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="內容"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
-                  <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="newcard.desc.explain" ></v-text-field>
+                  <v-flex flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="補充說明" v-model="card.desc.explain" ></v-text-field>
                   </v-flex>
-                </v-layout>
+                </v-layout >
                 <v-layout row wrap  v-if="newcard.type == '現有解法'">
-                  <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="30" :rules="titleRules"></v-text-field>
+                  <v-flex flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="內容"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap  v-if="newcard.type == '政府回應'">
-                  <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="30" :rules="titleRules"></v-text-field>
+                  <v-flex flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="內容"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
-                  <v-flex d-flex xs12>
-                    <v-radio-group prepend-icon="schedule" v-model="newcard.desc.responsetime" row @change="changeresponsetime(newcard)">
+                  <v-flex flex xs12>
+                    <v-radio-group v-model="card.desc.responsetime" row @change="changeresponsetime(card)">
                       <v-radio label="現在" value="nowadays" selected ></v-radio>
                       <v-radio label="未來" color="orange" value="future"></v-radio>
                     </v-radio-group>
                   </v-flex>
-                  <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="newcard.desc.explain"  ></v-text-field>
+                  <v-flex flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="補充說明"  v-model="card.desc.explain"  ></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap v-if="newcard.type == '困難'">
-                  <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="標題" prepend-icon="announcement" v-model="newcard.title" :counter="30" :rules="titleRules"></v-text-field>
+                  <v-flex flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="內容"   v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
-                  <v-flex d-flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="補充說明" prepend-icon="people" v-model="newcard.desc.explain"  ></v-text-field>
+                  <v-flex flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="補充說明"  v-model="card.desc.explain"  ></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <!-- <v-layout row wrap v-if="selectedlist.name == '和此議題有關的人'">
+                  <v-flex flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                  </v-flex>
+                  <v-flex flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="單位"  v-model="card.desc.department" ></v-text-field>
+                  </v-flex>
+                  <v-flex flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="背景"  v-model="card.desc.background"  ></v-text-field>
+                  </v-flex>
+                  <v-flex flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="角色（此人與議題的關聯）"  v-model="card.desc.role"  ></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap v-if="selectedlist.name == '佐證文件'">
+                  <v-flex flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="佐證文件名稱" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                  </v-flex>
+                  <v-flex flex xs12>
+                    <v-text-field color="blue-grey darken-2" label="文件連結"  v-model="card.desc.attachment"></v-text-field>
+                  </v-flex>
+                </v-layout> -->
+              </v-flex>
+              <v-flex md12 v-if="(board.admin.includes(user.id) || board.members.includes(user.id)) && card.title != ''">
+                <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '和此議題有關的人'">
+                  <v-flex>
+                    <v-btn flat color="primary" v-if="newpersonmode == false && newattachmentmode == false" @click.native="newpersonmode = true">+新增和此議題有關的人</v-btn>
+                    <v-btn flat color="primary" v-if="newattachmentmode == false && newpersonmode == false" @click.native="newattachmentmode = true">+新增佐證文件
+                      <v-tooltip bottom>
+                        <v-icon slot="activator" class="ml-1">info</v-icon>
+                        <span>1.既有資料是否可以先提供？這些資料包含：<br/>
+                        -過去各項會議(內部會議、跨部會協調會議、專家學者會議等)討論的相關內參資料<br/>
+                        -是否有推薦相關的研究論文<br/>
+                        -其他不同意立場的陳述或是好文章<br/>
+                        2.相關法制規定為何？過去相關規定的修正有沒有討論記錄？<br/>
+                        3.有沒有立委曾經關心過此議題？立法院有沒有討論過此議題？有沒有會議記錄與部會當時的文書？<br/>
+                        4.有沒有民間關心過此議題?<br/>
+                        -有沒有NGO關心過此議題？有沒有相關的資料？<br/>
+                        -有沒有陳抗過？收過陳情書？<br/>
+                        -部長信箱有沒有收過類似的問題？<br/>
+                        </span>
+                      </v-tooltip>
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
+              <v-flex md12 v-if="newpersonmode == true">
+                <v-layout row wrap>
+                  <v-flex md6>
+                    <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱"  v-model="newperson.title" ></v-text-field>
+                  </v-flex>
+                  <v-flex md6>
+                    <v-btn color="black" class="mt-3" small outline @click.native="newpersonmode = false; newperson.title = ''" >取消</v-btn>
+                    <v-btn color="black" class="mt-3" small dark @click.native="newpersonmode = false; addperson()">確定</v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
+              <v-flex flex md12 v-if="newpersonmode == false && newattachmentmode == false && card.title != ''">
+                <v-layout row wrap v-if="selectedlist.name != '和此議題有關的人'">
+                  <v-flex flex xs12 >
+                    <v-select
+                      v-model="card.desc.peoplefrom"
+                      :items="peoplelist"
+                      item-text="name"
+                      item-value="id"
+                      label="關聯和此議題有關的人(資料來源)"                     
+                      chips
+                      multiple
+                      deletable-chips
+                      no-data-text="目前尚無資料"
+                      :disabled="card.desc.peopleto.length != 0"
+                    >
+                      <template slot="item" slot-scope="data">
+                        <template v-if="typeof data.item !== 'object'">                   
+                        </template>
+                        <template v-else>
+                          <v-list-tile-avatar>
+                            <v-checkbox v-model="card.desc.peoplefrom" :value="data.item.id"></v-checkbox>
+                          </v-list-tile-avatar>
+                          <v-list-tile-content v-text="data.item.name"></v-list-tile-content> 
+                        </template>
+                      </template>                                        
+                    </v-select>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
+               <v-flex md12 v-if="newattachmentmode == true">
+                <v-layout row wrap>
+                  <v-flex md12>
+                    <v-radio-group v-model="attachmentselection" row >
+                      <v-radio label="新增連結" value="attachmentlink"></v-radio>
+                      <v-radio label="上傳檔案" value="attachmentupload"></v-radio>
+                    </v-radio-group>
+                  </v-flex>
+                  <v-layout row wrap v-if="attachmentselection == 'attachmentlink'">
+                    <v-flex md12>
+                      <v-text-field color="blue-grey darken-2" label="佐證文件名稱"  v-model="newattachment.title" :counter="30" :rules="titleRules"></v-text-field>
+                    </v-flex>
+                    <v-flex md12>
+                      <v-text-field color="blue-grey darken-2" label="文件連結"  v-model="newattachment.desc.attachment"></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row wrap v-if="attachmentselection == 'attachmentupload'">
+                    <v-flex md6>
+                      <v-text-field color="blue-grey darken-2" label="佐證文件名稱"  v-model="newattachment.title" :counter="30" :rules="titleRules"></v-text-field>
+                    </v-flex>
+                    <v-flex md4>
+                      <upload-btn depressed outline title="附加檔案" :fileChangedCallback="fileChanged" class="mt-3">
+                        <template slot="icon-left">
+                          <v-icon left>attach_file</v-icon>
+                        </template>
+                      </upload-btn>
+                    </v-flex>
+                    <v-flex md2>
+                      <h3 class="mt-4">{{filename}}</h3>
+                    </v-flex>
+                    <v-flex md12>
+
+                    </v-flex>
+                  </v-layout>
+                  <v-flex md12>
+                    <v-layout align-center justify-end row fill-height>
+                    <v-btn color="black" class="mt-3" small outline @click.native="newattachmentmode = false; newattachment.title = ''; newattachment.desc.attachment = '';" >取消</v-btn>
+                    <v-btn color="black" class="mt-3" small dark @click.native="newattachmentmode = false; addattachment()">確定</v-btn>
+                  </v-layout>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
+              <v-flex flex md12 v-if="newpersonmode == false && newattachmentmode == false && card.title != ''">
+                <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '和此議題有關的人'">
+                  <v-flex flex xs12 >
+                    <v-select
+                      v-model="card.desc.data"
+                      :items="datalist"
+                      item-text="name"
+                      item-value="id"
+                      label="選取佐證文件"
+                      color="blue-grey darken-2"
+                      chips
+                      multiple
+                      deletable-chips
+                      no-data-text="目前尚無資料"
+                    >
+                      <template slot="item" slot-scope="data">
+                        <v-list-tile-avatar>
+                          <v-checkbox v-model="card.desc.data" :value="data.item.id"></v-checkbox>
+                        </v-list-tile-avatar>
+                        <v-list-tile-content v-text="data.item.name"></v-list-tile-content>
+                      </template>
+                    </v-select>
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -146,7 +306,7 @@
         </v-form>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="editdialog" max-width="50em" persistent>
+    <!-- <v-dialog v-model="editdialog" max-width="50em" persistent>
       <v-card>
         <v-card-title class="headline">修改便利貼</v-card-title>
         <v-card-text>
@@ -166,14 +326,19 @@
           <v-btn flat color="cyan" type="submit" class="subheading" @click="edittextsubmit()">確認</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
   </div>
 </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import UploadButton from 'vuetify-upload-button';
+
 export default {
+  components: {
+    'upload-btn': UploadButton
+  },
   data() {
     return {
       lists: [],
@@ -254,7 +419,45 @@ export default {
       noteicon: false,
       linkicon: false,
       unlinkicon: false,
-      tab: 'tab-1'
+      tab: 'tab-1',
+      newpersonmode: false,
+      newattachmentmode: false,
+      attachmentselection: 'attachmentlink',
+      newattachment: {
+        title: '',
+        desc: {
+          explain:'',
+          responsetime: 'nowadays',
+          department: '',
+          background: '',
+          role: '',
+          peopleto: [],
+          peoplefrom: [],
+          data: [],
+          related: [],
+          attachment: '',
+          x: 0,
+          y: 0
+        }
+      },
+      filename: '',
+      newperson: {
+        title: '',
+        desc: {
+          explain:'',
+          responsetime: 'nowadays',
+          department: '',
+          background: '',
+          role: '',
+          peopleto: [],
+          peoplefrom: [],
+          data: [],
+          related: [],
+          attachment: '',
+          x: 0,
+          y: 0
+        }
+      },
     }
   },
   created: function() {
@@ -333,7 +536,7 @@ export default {
       let id = this.$route.params.id
       let listarray = await Trello.boards.get(id + '/lists',{cards: 'open'})
       listarray.map( await (l => {
-        if (l.name != '和此議題有關的人' && l.name != '資料/文件/連結') {
+        if (l.name != '和此議題有關的人' && l.name != '佐證文件') {
           let list = {}
           list.id = l.id
           list.name = l.name
@@ -364,7 +567,7 @@ export default {
             list.color = '#0097A7'
             list.column = 6
             break
-            case '資料/文件/連結':
+            case '佐證文件':
             list.color = '#CFD8DC'
             list.column = 7
             break
@@ -445,7 +648,7 @@ export default {
       return {
         fill: "#FBF0D3",
         width: 160,
-        height: 130 + ((tags - 2) * 30),
+        height: 130 + ((tags - 2) * 20),
         shadowColor: 'black',
         shadowOffset: {
           x: 5,
@@ -503,9 +706,9 @@ export default {
         k = (tagslength + i) % 2
       }
       return {
-        x: 20 + k * 85,
+        x: 20 + k * 75,
         y: 100 + j * 30,
-        width: 70,
+        width: 60,
         height: 20,
         fill: color,
         pointerDirection: 'left',
@@ -530,7 +733,7 @@ export default {
         k = (tagslength + i) % 2
       }
       return {
-        x: 25 + k * 85,
+        x: 25 + k * 75,
         y: 103 + j * 30,
         width: textlength * 15,
         text: text,
@@ -664,10 +867,28 @@ export default {
          }
       }) */
     },
-    edittext: function(card,index) {
-      this.editdialog = true
+    edittext: function(card, list, index) {
+      this.dialog = true
+      this.newcard.type = list.name;
+      this.newcard.typeid = list.id;
+     /*  this.selectedlist.color = list.color
+      this.selectedlist.cards = list.cards
+      this.selectedlist.column = list.column */
       this.card.id = card.id
       this.card.title = card.name
+      this.card.desc.responsetime = card.desc.responsetime
+      this.card.desc.peopleto = card.desc.peopleto
+      this.card.desc.peoplefrom = card.desc.peoplefrom
+      this.card.desc.data = card.desc.data
+      this.card.desc.related = card.desc.related
+      this.card.desc.explain = card.desc.explain
+      this.card.desc.role = card.desc.role
+      this.card.desc.department = card.desc.department
+      this.card.desc.background = card.desc.background
+      this.card.desc.attachment = card.desc.attachment 
+      this.card.desc.x = card.desc.x
+      this.card.desc.y = card.desc.y
+      this.card.attachments = card.attachments
       
       /* let x = this.$refs[card.id][0].getStage().getX()
       let y = this.$refs[card.id][0].getStage().getY()
@@ -800,7 +1021,34 @@ export default {
         that.dialog = false
         that.getcards()
       })
-    }
+    },
+    bindtitlestyle: function(title) {
+      if (title == '問題面向') {
+        this.titlecolor = '#FFCD13'
+      } else if (title == '問題細節') { 
+        this.titlecolor = '#FFE276'
+      } else if (title == '現有解法') { 
+        this.titlecolor = '#91AD70'
+      } else if (title == '政府回應') { 
+        this.titlecolor = '#F08B8B'
+      } else if (title == '困難') { 
+        this.titlecolor = '#C85938'
+      } else if (title == '和此議題有關的人') { 
+        this.titlecolor = '#21B5C2'
+      } else if (title == '佐證文件') { 
+        this.titlecolor = '#D8CAC4'
+      } 
+      return this.titlestyle + this.titlecolor
+    },
+    fileChanged: function(file) {
+      let formData = new FormData();
+      formData.append('key','fb8dab318e1888679f571104d8b36ac7')
+      formData.append('token',localStorage.trello_token)
+      formData.append("file", file)
+      formData.append("name", this.newattachment.title);
+      this.filename = file.name
+      this.uploadfile = formData
+    },
     /* handlescroll: function() {
       console.log(window.scrollY)
       let stage = this.$refs.stage.getStage()

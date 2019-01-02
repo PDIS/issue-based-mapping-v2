@@ -72,7 +72,7 @@ export default {
           'department': '',
           'codepartment': '',
           'link': '',
-          'issuesource': ''
+          'issuesource': 'dep'
         },
       },
       success: '',
@@ -101,7 +101,7 @@ export default {
             Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.board.desc)},function(res) {
               that.success = '新增成功'
               that.snackbar = true
-              that.$router.push('mindmap/' + res.id)
+              that.$router.push('board/' + res.id)
               /* that.$store.dispatch('changeboardform','')
               that.$store.dispatch('getboards') */
             })

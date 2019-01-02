@@ -30,7 +30,7 @@
         </v-card>
       </v-flex>
         <v-flex xs12 sm6 md4 lg3 v-for="board in orderBy(filteredList,'desc.date',-1) " :key="board.id" >
-          <v-card color="white" :to="{name:'mindmap', params:{id:board.id}}" hover height="20em">
+          <v-card color="white" :to="{name:'board', params:{id:board.id}}" hover height="20em">
             <v-list subheader style="background-color:white">
               <v-subheader class="grey lighten-3" style="color:black"># <div class="ml-2">{{ board.title }}</div>
                 <v-spacer></v-spacer>
@@ -69,7 +69,7 @@
             </v-list>
           <v-divider></v-divider> 
           <v-card-actions class="mt-1" style="background-color:white">  
-            <v-btn class="blue-grey darken-4 white--text" :to="{name:'mindmap', params:{id:board.id}}"><v-icon>arrow_right</v-icon>{{ $t("Enter") }}</v-btn>
+            <v-btn class="blue-grey darken-4 white--text" :to="{name:'board', params:{id:board.id}}"><v-icon>arrow_right</v-icon>{{ $t("Enter") }}</v-btn>
             <v-spacer></v-spacer> 
             <div v-if="board.admin.includes(user.id)">
               <v-btn icon flat color="teal" :to="{name:'index'}" active-class @click="changeboardform(board.id)"><v-icon>edit</v-icon></v-btn>
