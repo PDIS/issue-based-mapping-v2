@@ -58,10 +58,10 @@
           <v-container fluid grid-list-xs align-center class="pa-2">
             <draggable ml-0 :id="list.id" :options="{group:'cards',animation:200}" @add="movecard" style="min-height:1em" >
               <!-- <v-card :color="card.color" :dark="card.hover" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mouseup="editcard(card,list)" @mouseover="hover = true;changecolor(card,list)" @mouseout="hover = false;changecolor(card,list)"> -->
-                <v-card :dark="card.hover" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%; background-color:#FBF0D3" :id="card.id" @mouseup="editcard(card,list)">
-                <v-card-title primary-title>
-                  <div class="body-2">{{card.name}}</div>
-                </v-card-title> 
+                <v-card :dark="card.hover" :color="card.color" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%; background-color:#FBF0D3" :id="card.id" @mouseup="editcard(card,list)" @mouseover="hover = true; changecolor(card,list)" @mouseout="hover = false; changecolor(card,list)">
+                  <v-card-title primary-title>
+                    <div class="body-2">{{card.name}}</div>
+                  </v-card-title> 
               </v-card>
             </draggable>
           </v-container>
@@ -147,7 +147,7 @@
                     <v-text-field color="blue-grey darken-2" label="角色（此人與議題的關聯）"  v-model="card.desc.role"  ></v-text-field>
                   </v-flex>
                 </v-layout>
-                <v-layout row wrap v-if="selectedlist.name == '資料/文件/連結'">
+                <v-layout row wrap v-if="selectedlist.name == '佐證文件'">
                   <v-flex flex xs12>
                     <v-text-field color="blue-grey darken-2" label="佐證文件名稱" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
@@ -157,7 +157,7 @@
                 </v-layout>
               </v-flex>
               <v-flex md12 mx-2 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
-                <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '和此議題有關的人'">
+                <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '和此議題有關的人'">
                  <!--  <v-icon>people</v-icon>
                   <h3 class="ml-2 mt-2 font-weight-regular" style="color:rgba(0,0,0,.54)">關聯和此議題有關的人</h3> -->
                   <v-flex>
@@ -266,7 +266,7 @@
                 </v-layout>
               </v-flex> -->
               <!-- <v-flex md12 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
-                <v-layout align-center justify-start row fill-height v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '和此議題有關的人'">
+                <v-layout align-center justify-start row fill-height v-if="selectedlist.name != '佐證文件' && selectedlist.name != '和此議題有關的人'">
                   <v-icon>file_copy</v-icon>
                   <h3 class="mx-2 mt-2 font-weight-regular" style="color:rgba(0,0,0,.54)">佐證文件</h3>
                   <v-tooltip bottom>
@@ -329,7 +329,7 @@
                 </v-layout>
               </v-flex>
               <v-flex flex md12 mx-4 v-if="newpersonmode == false && newattachmentmode == false">
-                <v-layout row wrap v-if="selectedlist.name != '資料/文件/連結' && selectedlist.name != '和此議題有關的人'">
+                <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '和此議題有關的人'">
                   <v-flex flex xs12 >
                     <v-select
                       v-model="card.desc.data"
@@ -376,7 +376,7 @@
                   </v-flex>
                 </v-layout>
               </v-flex>
-              <v-flex flex xs12 v-if="selectedlist.name == '資料/文件/連結' && (board.admin.includes(user.id) || board.members.includes(user.id)) && editable == true && card.attachments == undefined">
+              <v-flex flex xs12 v-if="selectedlist.name == '佐證文件' && (board.admin.includes(user.id) || board.members.includes(user.id)) && editable == true && card.attachments == undefined">
                 <input type="file" @change="onFileChange">
                 <v-btn color="blue-grey" class="white--text" @click.prevent="upload(card)">
                   上傳檔案
@@ -389,7 +389,7 @@
                   刪除附件
                 </v-btn> -->
               </v-flex>
-              <v-flex flex xs12 v-if="selectedlist.name == '資料/文件/連結' && editable == true && card.attachments != undefined && card.attachments.preview != undefined">
+              <v-flex flex xs12 v-if="selectedlist.name == '佐證文件' && editable == true && card.attachments != undefined && card.attachments.preview != undefined">
                 <v-card>
                   <v-card-media
                     :src="card.attachments.preview.url"
@@ -408,7 +408,7 @@
                   </v-card-actions>
                 </v-card>
               </v-flex>
-              <v-flex flex xs12 v-if="selectedlist.name == '資料/文件/連結' && editable == true && card.attachments != undefined && card.attachments.preview == undefined">
+              <v-flex flex xs12 v-if="selectedlist.name == '佐證文件' && editable == true && card.attachments != undefined && card.attachments.preview == undefined">
                  <v-card>
                   <v-card-title primary-title>
                     <div>
@@ -726,7 +726,7 @@ export default {
     },
     getdata: function() {
       this.lists.map(list => {
-        if (list.name == '資料/文件/連結') {
+        if (list.name == '佐證文件') {
           list.cards.map( data => {
             this.datalist.push({
               'id': data.id,
@@ -913,7 +913,7 @@ export default {
           list.color = 'cyan darken-2'
           list.column = 6
           break
-          case '資料/文件/連結':
+          case '佐證文件':
           list.color = 'blue-grey lighten-4'
           list.column = 7
           break
@@ -924,7 +924,7 @@ export default {
         list.cards.map( async (card) => {
           let desc = JSON.parse(card.desc)
           card.desc = desc
-          card.color = list.color
+          card.color = '#FBF0D3'
           card.column = list.column
           card.hover = false
           let attach = await Trello.cards.get(card.id,{fields: 'attachments',attachments: true})
@@ -996,7 +996,7 @@ export default {
           case '和此議題有關的人':
           return  'cyan darken-2'
           break
-          case '資料/文件/連結':
+          case '佐證文件':
           return  'blue-grey lighten-4'
           break
           default:
@@ -1009,7 +1009,7 @@ export default {
       if (this.relationmode == false) {
         if (this.hover == true) {
           if (list.name == '和此議題有關的人') {
-            card.color = 'black'
+            card.color = 'blue-grey darken-2'
             card.hover = true
             this.lists.map( l => {
               l.cards.map( c => {
@@ -1036,8 +1036,8 @@ export default {
               })
             })
           }
-          else if (list.name == '資料/文件/連結') {
-            card.color = 'black'
+          else if (list.name == '佐證文件') {
+            card.color = 'blue-grey darken-2'
             card.hover = true
             this.lists.map( l => {
               l.cards.map( c => {
@@ -1053,7 +1053,7 @@ export default {
             })
           }
           else {
-            card.color = 'black'
+            card.color = 'blue-grey darken-2'
             card.hover = true
             if (card.desc.peoplefrom != undefined) {
               for (let p of card.desc.peoplefrom) {
@@ -1107,14 +1107,14 @@ export default {
         }
         else {
           if (list.name == '和此議題有關的人') {
-            card.color = list.color
+            card.color = '#FBF0D3'
             card.hover = false
             this.lists.map( l => {
               l.cards.map( c => {
                 if (c.desc.peoplefrom != undefined) {
                   c.desc.peoplefrom.map( p => {
                     if (p == card.id) {
-                      c.color = l.color
+                      c.color = '#FBF0D3'
                       c.hover = false
                     }
                   })
@@ -1122,7 +1122,7 @@ export default {
                 if (c.desc.peopleto != undefined) {
                   c.desc.peopleto.map( p => {
                     if (p == card.id) {
-                      c.color = l.color
+                      c.color = '#FBF0D3'
                       c.hover = false
                     }
                   })
@@ -1130,8 +1130,8 @@ export default {
               })
             })
           }
-          else if (list.name == '資料/文件/連結') {
-            card.color = list.color
+          else if (list.name == '佐證文件') {
+            card.color = '#FBF0D3'
             card.hover = false
             this.lists.map( l => {
               l.cards.map( c => {
@@ -1147,14 +1147,14 @@ export default {
             })
           }
           else {
-            card.color = list.color
+            card.color = '#FBF0D3'
             card.hover = false
             if (card.desc.peopleto != undefined) {
               for (let p of card.desc.peopleto) {
                 for (let l of this.lists) {
                   for (let c of l.cards) {
                     if (c.id == p) {
-                      c.color = l.color
+                      c.color = '#FBF0D3'
                       c.hover = false
                     }
                   }
@@ -1166,7 +1166,7 @@ export default {
                 for (let l of this.lists) {
                   for (let c of l.cards) {
                     if (c.id == p) {
-                      c.color = l.color
+                      c.color = '#FBF0D3'
                       c.hover = false
                     }
                   }
@@ -1178,7 +1178,7 @@ export default {
                 for (let l of this.lists) {
                   for (let c of l.cards) {
                     if (c.id == p) {
-                      c.color = l.color
+                      c.color = '#FBF0D3'
                       c.hover = false
                     }
                   }
@@ -1190,7 +1190,7 @@ export default {
                 this.lists.map(l => {
                   l.cards.map(c => {
                     if (c.id == r) {
-                      c.color = l.color
+                      c.color = '#FBF0D3'
                       c.hover = false
                     }
                   })
@@ -1324,7 +1324,7 @@ export default {
         this.titlecolor = '#C85938'
       } else if (title == '和此議題有關的人') { 
         this.titlecolor = '#21B5C2'
-      } else if (title == '資料/文件/連結') { 
+      } else if (title == '佐證文件') { 
         this.titlecolor = '#D8CAC4'
       } 
       return this.titlestyle + this.titlecolor
@@ -1332,7 +1332,7 @@ export default {
     addattachment: function() {
       let that = this;
       this.lists.map( l => {
-        if (l.name == '資料/文件/連結') {
+        if (l.name == '佐證文件') {
           Trello.post('cards', {'name': this.newattachment.title, 'idList': l.id,'desc': JSON.stringify(this.newattachment.desc)} , function(res) {
             if (that.newattachment.desc.attachment != '' && that.newattachment.desc.attachment != undefined) {
               Trello.post('cards/' + res.id + '/attachments', {'url': that.newattachment.desc.attachment, 'name': that.newattachment.title}, function() {
