@@ -671,7 +671,7 @@ export default {
               that.success = '新增成功'
               that.snackbar = true
               that.dialog = false
-              that.getcards()
+              that.getlists()
             }
           })
         }
@@ -691,7 +691,7 @@ export default {
               that.success = '修改成功'
               that.snackbar = true
               that.dialog = false
-              that.getcards()
+              that.getlists()
             }
           })
         }
