@@ -601,7 +601,7 @@ export default {
       attsnackbar: false,
       boardtitledialog: false,
       titlecolor: '',
-      titlestyle: 'border-bottom: 0.75vh solid ' ,
+      titlestyle: 'border-bottom: solid ' ,
       newpersonmode: false,
       newattachmentmode: false,
       attachmentselection: 'attachmentlink',
