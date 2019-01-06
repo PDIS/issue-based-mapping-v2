@@ -470,10 +470,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-snackbar v-model="snackbar" top color="success">
-      <span>{{success}}!</span>
-      <v-btn flat @click.native="snackbar = false">關閉</v-btn>
-    </v-snackbar>
+    <snackbar></snackbar>
     <v-snackbar
       :timeout="5000"
       top="top"
@@ -509,11 +506,13 @@
 import { mapActions, mapGetters } from 'vuex'
 import draggable from 'vuedraggable'
 import UploadButton from 'vuetify-upload-button';
+import snackbar from './snackbar'
 
 export default {
   components: {
     draggable,
-    'upload-btn': UploadButton
+    'upload-btn': UploadButton,
+    snackbar
   },
   data () {
     return {
@@ -537,7 +536,6 @@ export default {
       avatar: [],
       dialog: false,
       selectedlist: {},
-      snackbar: false,
       success: '',
       valid: false,
       show_new_member: false,
@@ -622,6 +620,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['getsnackbar']),
     getcards: function(id) {
       let newcards = []
       for (let c of this.cards) {
@@ -668,8 +667,12 @@ export default {
                 that.attsnackbar = true
               }
             } else {
-              that.success = '新增成功'
-              that.snackbar = true
+              let snackbar = {
+                state: true,
+                color: 'success',
+                text: '新增'
+              }
+              that.$store.dispatch('getsnackbar', snackbar)
               that.dialog = false
               that.getlists()
             }
@@ -688,8 +691,12 @@ export default {
                 that.attsnackbar = true
               }
             } else {
-              that.success = '修改成功'
-              that.snackbar = true
+              let snackbar = {
+                state: true,
+                color: 'success',
+                text: '修改'
+              }
+              that.$store.dispatch('getsnackbar', snackbar)
               that.dialog = false
               that.getlists()
             }
@@ -840,7 +847,14 @@ export default {
     closecard: function(id) {
       let that = this
       Trello.put('cards/' + id ,{'closed':true},function(res) {
-        window.location.reload(true);
+        that.getlists()
+        let snackbar = {
+          state: true,
+          color: 'success',
+          text: '刪除'
+        }
+        that.closeDialog()
+        that.$store.dispatch('getsnackbar', snackbar)
       })
     },
     getboard: function() {
@@ -1200,8 +1214,12 @@ export default {
           Trello.post('cards', {'name': this.newperson.title, 'idList': l.id,'desc': JSON.stringify(this.newperson.desc) } , function() {
             that.newperson.title = ''
             that.getlists()
-            that.success = '新增成功！'
-            that.snackbar = true
+            let snackbar = {
+              state: true,
+              color: 'success',
+              text: '新增'
+            }
+            that.$store.dispatch('getsnackbar', snackbar)
           })
         }
       })
@@ -1290,8 +1308,12 @@ export default {
     editboardtitle: function() {
       let that = this
       Trello.put('boards/' + this.board.id,{'name':this.board.name},function(res) {
-        that.success = '修改成功!'
-        that.snackbar = true
+        let snackbar = {
+          state: true,
+          color: 'success',
+          text: '修改'
+        }
+        that.$store.dispatch('getsnackbar', snackbar)
         that.boardtitledialog = false
         that.getboard()
       })
@@ -1324,8 +1346,12 @@ export default {
                 that.newattachment.title = ''
                 that.newattachment.desc.attachment = ''
                 that.getlists()
-                that.success = '新增成功！'
-                that.snackbar = true
+                let snackbar = {
+                  state: true,
+                  color: 'success',
+                  text: '新增'
+                }
+                that.$store.dispatch('getsnackbar', snackbar)
               })
             } else {
               if (that.newattachment.attachments == undefined) {
@@ -1335,8 +1361,12 @@ export default {
                   if (request.readyState === 4) {
                     that.newattachment.title = ''
                     that.getlists()
-                    that.success = '新增成功！'
-                    that.snackbar = true
+                    let snackbar = {
+                      state: true,
+                      color: 'success',
+                      text: '新增'
+                    }
+                    that.$store.dispatch('getsnackbar', snackbar)
                   }
                 }
                 request.open("POST", 'https://api.trello.com/1/cards/' +  res.id + '/attachments/')

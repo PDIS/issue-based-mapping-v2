@@ -119,20 +119,19 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-snackbar top="top" v-model="snackbar" color="success">
-      刪除成功!
-      <v-btn flat @click.native="snackbar = false">關閉</v-btn>
-    </v-snackbar>
+    <snackbar></snackbar>
     <boardform></boardform>
   </v-container>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import boardform from './boardform'
+import boardform from './form/board'
+import snackbar from './snackbar'
 export default {
   components: {
-    boardform
+    boardform,
+    snackbar
   },
   data () {
     return {
@@ -154,16 +153,20 @@ export default {
         { text: '', value:''}
       ],
       dialog: false,
-      snackbar: false
     }
   },
   methods: {
-    ...mapActions(['changeboardform']),
+    ...mapActions(['changeboardform', 'getsnackbar']),
     closeboard: function(id) {
       let that = this
       Trello.put('boards/' + id ,{'closed':true},function(res) {
         that.dialog = false
-        that.snackbar = true
+        let snackbar = {
+          state: true,
+          color: 'success',
+          text: '刪除'
+        }
+        that.$store.dispatch('getsnackbar', snackbar)
         that.$store.dispatch('getboards')
       })
     },
@@ -177,7 +180,7 @@ export default {
     ...mapGetters({
       user: 'user',
       members: 'members',
-      boards: 'boards'
+      boards: 'boards',
     }), 
     filteredList() {
       return this.boards.filter(board => {
