@@ -87,7 +87,7 @@
       <v-switch class='mt-4' color="primary" label="English"  :true-value="'en'" :false-value="'zh-TW'" v-model="lang" @change="setlang(lang)"></v-switch> -->
       <v-spacer></v-spacer>
       <strong class="mr-3 title">Hi, {{user.name}}</strong>
-      <v-btn icon outline small fab btn disabled class="mr-3" v-if="user.avatar != ''">
+      <v-btn icon outline small fab btn disabled class="mr-3 mb-3" v-if="user.avatar != ''">
         <v-avatar>
           <img :src="user.avatar" alt="username">
         </v-avatar> 
