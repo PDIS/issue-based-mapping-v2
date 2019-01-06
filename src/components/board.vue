@@ -51,10 +51,16 @@
     </v-layout>
     <v-layout row>
       <v-flex xs12 md4 lg3 v-for="(list) in lists" :key="list.id">
-        <v-toolbar dense flat text-ms-center :color="list.color" >
+        <!-- <v-toolbar dense flat text-ms-center :color="list.color" >
           <v-toolbar-title class="subheading">{{list.name}}</v-toolbar-title>
-        </v-toolbar>
-        <v-card >
+        </v-toolbar> -->
+        <!-- <v-card :style="bindlistcolor(list.name)"> -->
+        <v-card :style="titlestyle + list.color">
+          <v-card-title class="subheading font-weight-medium">
+            {{list.name}}
+          </v-card-title>
+        </v-card>
+        <v-card>
           <v-container fluid grid-list-xs align-center class="pa-2">
             <draggable ml-0 :id="list.id" :options="{group:'cards',animation:200}" @add="movecard" style="min-height:1em" >
               <!-- <v-card :color="card.color" :dark="card.hover" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mouseup="editcard(card,list)" @mouseover="hover = true;changecolor(card,list)" @mouseout="hover = false;changecolor(card,list)"> -->
@@ -889,36 +895,36 @@ export default {
         switch (list.name)
         {
           case '問題面向':
-          list.color = 'yellow darken-2'
-          list.column = 1
-          break
-          case '問題細節':
-          list.color = 'amber lighten-3'
-          list.column = 2
-          break
-          case '現有解法':
-          list.color = 'light-green darken-2'
-          list.column = 3
-          break
-          case '政府回應':
-          list.color = 'deep-orange lighten-1'
-          list.column = 4
-          break
-          case '困難':
-          list.color = 'red accent-1'
-          list.column = 5
-          break
-          case '和此議題有關的人':
-          list.color = 'cyan darken-2'
-          list.column = 6
-          break
-          case '佐證文件':
-          list.color = 'blue-grey lighten-4'
-          list.column = 7
-          break
-          default:
-          list.color = 'teal'
-          break
+            list.color = '#FFCD13'
+            list.column = 1
+            break
+            case '問題細節':
+            list.color = '#FFE276'
+            list.column = 2
+            break
+            case '現有解法':
+            list.color = '#91AD70'
+            list.column = 3
+            break
+            case '政府回應':
+            list.color = '#F08B8B'
+            list.column = 4
+            break
+            case '困難':
+            list.color = '#C85938'
+            list.column = 5
+            break
+            case '和此議題有關的人':
+            list.color = '#0097A7'
+            list.column = 6
+            break
+            case '佐證文件':
+            list.color = '#CFD8DC'
+            list.column = 7
+            break
+            default:
+            list.color = 'teal'
+            break
         }
         list.cards.map( async (card) => {
           let desc = JSON.parse(card.desc)
