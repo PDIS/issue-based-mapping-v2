@@ -43,7 +43,7 @@
                   <v-icon color="grey lighten-1">announcement</v-icon>
                 </v-list-tile-avatar>
                 <v-list-tile-content>
-                  <v-list-tile-sub-title v-if="board.desc.issuesource == 'join'">{{ $t("Name of Topic") }}</v-list-tile-sub-title>
+                  <v-list-tile-sub-title v-if="board.desc.issuesource == 'join'">{{ $t("Original Name of Topic") }}</v-list-tile-sub-title>
                   <v-list-tile-sub-title v-if="board.desc.issuesource == 'other' || board.desc.issuesource == 'dep'">提案來源</v-list-tile-sub-title>
                   <v-list-tile-title v-html="board.desc.title"></v-list-tile-title>
                 </v-list-tile-content>
@@ -146,7 +146,7 @@ export default {
           sortable: false,
           value: 'title'
         },
-        { text: this.$t("Name of Topic"), value: 'desc.title' },
+        { text: this.$t("Original Name of Topic"), value: 'desc.title' },
         { text: this.$t("Initiator"), value: 'desc.person' },
         { text: this.$t("Kick-off Date"), value: 'desc.date' },
         { text: this.$t("Responsible Bodies"), value: 'desc.department' },
