@@ -308,7 +308,7 @@
                   <v-flex md12>
                     <v-layout align-center justify-end row fill-height>
                     <v-btn color="black" class="mt-3" small outline @click.native="newattachmentmode = false; newattachment.title = ''; newattachment.desc.attachment = '';" >取消</v-btn>
-                    <v-btn color="black" class="mt-3" small dark @click.native="newattachmentmode = false; addattachment()">確定</v-btn>
+                    <v-btn color="black" class="mt-3" small dark @click.native="newattachmentmode = false; addattachment(card)">確定</v-btn>
                   </v-layout>
                   </v-flex>
                 </v-layout>
@@ -1341,7 +1341,7 @@ export default {
       } 
       return this.titlestyle + this.titlecolor
     },
-    addattachment: function() {
+    addattachment: function(card) {
       let that = this;
       this.lists.map( l => {
         if (l.name == '佐證文件') {
@@ -1356,6 +1356,7 @@ export default {
                   color: 'success',
                   text: '新增'
                 }
+                card.desc.data.push(res.id)
                 that.$store.dispatch('getsnackbar', snackbar)
               })
             } else {
@@ -1371,6 +1372,7 @@ export default {
                       color: 'success',
                       text: '新增'
                     }
+                    card.desc.data.push(res.id)
                     that.$store.dispatch('getsnackbar', snackbar)
                   }
                 }
