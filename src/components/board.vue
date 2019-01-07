@@ -361,6 +361,32 @@
                   </v-flex>
                 </v-layout>
               </v-flex>
+              <v-flex flex md12 v-if="newpersonmode == false && newattachmentmode == false">
+                <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '和此議題有關的人'">
+                  <v-flex flex xs12 >
+                    <v-select
+                      v-model="card.desc.related"
+                      :items="relatedlist"
+                      item-text="name"
+                      item-value="id"
+                      label="關聯卡片"
+                      color="blue-grey darken-2"
+                      chips
+                      multiple
+                      deletable-chips
+                      no-data-text="目前尚無資料"
+                      prepend-icon="fa-link"
+                    >
+                      <template slot="item" slot-scope="data">
+                        <v-list-tile-avatar>
+                          <v-checkbox v-model="card.desc.related" :value="data.item.id"></v-checkbox>
+                        </v-list-tile-avatar>
+                        <v-list-tile-content v-text="data.item.name"></v-list-tile-content>
+                      </template>
+                    </v-select>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
               <v-flex flex xs12 v-if="selectedlist.name == '佐證文件' && (board.admin.includes(user.id) || board.members.includes(user.id)) && editable == true && card.attachments == undefined">
                 <input type="file" @change="onFileChange">
                 <v-btn color="blue-grey" class="white--text" @click.prevent="upload(card)">
@@ -567,6 +593,7 @@ export default {
       },
       peoplelist: [],
       datalist: [],
+      relatedlist: [],
       fab: false,
       editable: false,
       search: '',
@@ -732,6 +759,48 @@ export default {
         }
       })
     },
+    getrelated: function(currentlist) {
+      this.relatedlist = []
+      this.lists.map(list => {
+        if (currentlist.name == '問題面向') {
+          if (list.name == '問題細節') {
+            list.cards.map( data => {
+              this.relatedlist.push({
+                'id': data.id,
+                'name': data.name
+              })
+            })
+          }
+        } else if (currentlist.name == '問題細節') {
+           if (list.name == '現有解法') {
+            list.cards.map( data => {
+              this.relatedlist.push({
+                'id': data.id,
+                'name': data.name
+              })
+            })
+          }
+        } else if (currentlist.name == '現有解法') {
+           if (list.name == '政府回應') {
+            list.cards.map( data => {
+              this.relatedlist.push({
+                'id': data.id,
+                'name': data.name
+              })
+            })
+          }
+        } else if (currentlist.name == '政府回應') {
+           if (list.name == '困難') {
+            list.cards.map( data => {
+              this.relatedlist.push({
+                'id': data.id,
+                'name': data.name
+              })
+            })
+          }
+        }
+      })
+    },
     newcard: function (list) {
       this.dialog = true; 
       this.selectedlist.name = list.name;
@@ -773,6 +842,7 @@ export default {
           this.card.desc.x = card.desc.x
           this.card.desc.y = card.desc.y
           this.card.attachments = card.attachments
+          this.getrelated(list)
           this.editable = true
         /* } */
       }
