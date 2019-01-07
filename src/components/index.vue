@@ -126,7 +126,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import boardform from './form/board'
+import boardform from './forms/board'
 import snackbar from './snackbar'
 export default {
   components: {

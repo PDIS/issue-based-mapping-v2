@@ -12,12 +12,6 @@
                 <img :src="a+'/50.png'" style="border-radius:50%"/> 
               </v-btn>
               <v-icon  @click="new_member()" medium fab btn outline class=" dark ml-2">person_add</v-icon>
-               <!--  <v-flex xs5 v-if="show_new_member">
-                  <v-text-field  color="grey darken-4" class="mt-0 mb-0" label="新增議題成員" value="Input text" v-model="email"></v-text-field> 
-                </v-flex>
-              <v-flex xs3 v-if="show_new_member">
-                <v-btn top color="info" @click="newmember()">新增</v-btn>
-              </v-flex> -->
             </div>
           </v-card-text>
         </v-card>
@@ -55,12 +49,12 @@
           <v-toolbar-title class="subheading">{{list.name}}</v-toolbar-title>
         </v-toolbar> -->
         <!-- <v-card :style="bindlistcolor(list.name)"> -->
-        <v-card :style="titlestyle + list.color">
-          <v-card-title class="subheading font-weight-medium">
+        <v-card :style="titlestyle + list.color" class="elevation-5 subheading font-weight-medium">
+          <v-card-title>
             {{list.name}}
           </v-card-title>
         </v-card>
-        <v-card>
+        <v-card class="elevation-5">
           <v-container fluid grid-list-xs align-center class="pa-2">
             <draggable ml-0 :id="list.id" :options="{group:'cards',animation:200}" @add="movecard" style="min-height:1em" >
               <!-- <v-card :color="card.color" :dark="card.hover" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mouseup="editcard(card,list)" @mouseover="hover = true;changecolor(card,list)" @mouseout="hover = false;changecolor(card,list)"> -->
@@ -421,6 +415,10 @@
               <v-btn flat @click.native="closeDialog" class="subheading">取消</v-btn>
               <v-btn flat color="cyan" type="submit" class="subheading" :disabled="!valid" >確認</v-btn>
             </v-card-actions>
+            <v-card-actions class="px-3" v-if="(!board.admin.includes(user.id) && !board.members.includes(user.id))">
+              <v-spacer></v-spacer>
+              <v-btn flat @click.native="closeDialog" class="subheading">關閉</v-btn>
+            </v-card-actions>
           </v-container>
         </v-form>
       </v-card>
@@ -601,7 +599,7 @@ export default {
       attsnackbar: false,
       boardtitledialog: false,
       titlecolor: '',
-      titlestyle: 'border-bottom: solid ' ,
+      titlestyle: 'border-bottom: 0.5vh solid ' ,
       newpersonmode: false,
       newattachmentmode: false,
       attachmentselection: 'attachmentlink',
