@@ -188,7 +188,7 @@
                   </v-flex>
                   <v-flex md6>
                     <v-btn color="black" class="mt-3" small outline @click.native="newpersonmode = false; newperson.title = ''" >取消</v-btn>
-                    <v-btn color="black" class="mt-3" small dark @click.native="newpersonmode = false; addperson()">確定</v-btn>
+                    <v-btn color="black" class="mt-3" small dark @click.native="newpersonmode = false; addperson(card)">確定</v-btn>
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -1211,11 +1211,11 @@ export default {
         that.cards = res
       })
     },
-    addperson: function() {
+    addperson: function(card) {
       let that = this;
       this.lists.map( l => {
         if (l.name == '和此議題有關的人') {
-          Trello.post('cards', {'name': this.newperson.title, 'idList': l.id,'desc': JSON.stringify(this.newperson.desc) } , function() {
+          Trello.post('cards', {'name': this.newperson.title, 'idList': l.id,'desc': JSON.stringify(this.newperson.desc) } , function(res) {
             that.newperson.title = ''
             that.getlists()
             let snackbar = {
@@ -1223,6 +1223,7 @@ export default {
               color: 'success',
               text: '新增'
             }
+            card.desc.peoplefrom.push(res.id)
             that.$store.dispatch('getsnackbar', snackbar)
           })
         }
