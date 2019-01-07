@@ -49,12 +49,12 @@
           <v-toolbar-title class="subheading">{{list.name}}</v-toolbar-title>
         </v-toolbar> -->
         <!-- <v-card :style="bindlistcolor(list.name)"> -->
-        <v-card :style="titlestyle + list.color" class="elevation-5 subheading font-weight-medium">
+        <v-card :style="titlestyle + list.color" class="elevation-5 subheading font-weight-medium" tile>
           <v-card-title>
             {{list.name}}
           </v-card-title>
         </v-card>
-        <v-card class="elevation-5">
+        <v-card class="elevation-5" tile>
           <v-container fluid grid-list-xs align-center class="pa-2">
             <draggable ml-0 :id="list.id" :options="{group:'cards',animation:200}" @add="movecard" style="min-height:1em" >
               <!-- <v-card :color="card.color" :dark="card.hover" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mouseup="editcard(card,list)" @mouseover="hover = true;changecolor(card,list)" @mouseout="hover = false;changecolor(card,list)"> -->
@@ -65,11 +65,11 @@
               </v-card>
             </draggable>
           </v-container>
-          <v-footer v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
-            <v-btn text-md-left color="grey lighten-3" style="margin:0;width:100%" @click.native.stop="newcard(list)" > 
+          <v-card tile v-if="board.admin.includes(user.id) || board.members.includes(user.id)" color="grey lighten-3">
+            <v-btn flat text-md-left style="margin:0;width:100%" @click.native.stop="newcard(list)" > 
               <v-icon small>add</v-icon>新增卡片<v-spacer></v-spacer> 
             </v-btn>
-          </v-footer>
+          </v-card>
         </v-card>
       </v-flex>
     </v-layout>
