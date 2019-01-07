@@ -4,7 +4,7 @@
       <v-flex xs9>
         <v-card flat class="mt-2">
           <v-card-text>
-            <div class="headline"># {{board.name}} 
+            <div class="headline board"># {{board.name}} 
               <v-btn color="primary" icon flat @click="boardtitledialog = true" v-if="board.admin.includes(user.id)">
                 <v-icon>edit</v-icon>
               </v-btn>

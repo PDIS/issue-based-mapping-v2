@@ -8,12 +8,8 @@
 </template>
 
 <style>
-/* @import url(https://fonts.googleapis.com/earlyaccess/cwtexhei.css);
-.application {
-  font-family: "cwTeXHei"!important
-} */
 @import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css);
-.application, .title, .headline{
+.application, .title, .headline board{
   font-family: Roboto, 'Noto Sans TC'!important
 }
 </style>
