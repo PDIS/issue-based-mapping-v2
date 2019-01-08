@@ -141,7 +141,7 @@
                     <v-text-field color="blue-grey darken-2" label="補充說明"  v-model="card.desc.explain"  ></v-text-field>
                   </v-flex>
                 </v-layout>
-                <!-- <v-layout row wrap v-if="selectedlist.name == '和此議題有關的人'">
+                <!-- <v-layout row wrap v-if="selectedlist.name == '利害關係人'">
                   <v-flex flex xs12>
                     <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
@@ -165,9 +165,9 @@
                 </v-layout> -->
               </v-flex>
               <v-flex md12 v-if="(board.admin.includes(user.id) || board.members.includes(user.id)) && card.title != ''">
-                <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '和此議題有關的人'">
+                <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '利害關係人'">
                   <v-flex>
-                    <v-btn flat color="primary" v-if="newpersonmode == false && newattachmentmode == false" @click.native="newpersonmode = true">+新增和此議題有關的人</v-btn>
+                    <v-btn flat color="primary" v-if="newpersonmode == false && newattachmentmode == false" @click.native="newpersonmode = true">+新增利害關係人</v-btn>
                     <v-btn flat color="primary" v-if="newattachmentmode == false && newpersonmode == false" @click.native="newattachmentmode = true">+新增佐證文件
                       <v-tooltip bottom>
                         <v-icon slot="activator" class="ml-1">info</v-icon>
@@ -199,14 +199,14 @@
                 </v-layout>
               </v-flex>
               <v-flex flex md12 v-if="newpersonmode == false && newattachmentmode == false && card.title != ''">
-                <v-layout row wrap v-if="selectedlist.name != '和此議題有關的人'">
+                <v-layout row wrap v-if="selectedlist.name != '利害關係人'">
                   <v-flex flex xs12 >
                     <v-select
                       v-model="card.desc.peoplefrom"
                       :items="peoplelist"
                       item-text="name"
                       item-value="id"
-                      label="關聯和此議題有關的人(資料來源)"                     
+                      label="關聯利害關係人(資料來源)"                     
                       chips
                       multiple
                       deletable-chips
@@ -270,7 +270,7 @@
                 </v-layout>
               </v-flex>
               <v-flex flex md12 v-if="newpersonmode == false && newattachmentmode == false && card.title != ''">
-                <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '和此議題有關的人'">
+                <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '利害關係人'">
                   <v-flex flex xs12 >
                     <v-select
                       v-model="card.desc.data"
@@ -536,7 +536,7 @@ export default {
       let id = this.$route.params.id
       let listarray = await Trello.boards.get(id + '/lists',{cards: 'open'})
       listarray.map( await (l => {
-        if (l.name != '和此議題有關的人' && l.name != '佐證文件') {
+        if (l.name != '利害關係人' && l.name != '佐證文件') {
           let list = {}
           list.id = l.id
           list.name = l.name
@@ -563,7 +563,7 @@ export default {
             list.color = '#C85938'
             list.column = 5
             break
-            case '和此議題有關的人':
+            case '利害關係人':
             list.color = '#0097A7'
             list.column = 6
             break
@@ -1033,7 +1033,7 @@ export default {
         this.titlecolor = '#F08B8B'
       } else if (title == '困難') { 
         this.titlecolor = '#C85938'
-      } else if (title == '和此議題有關的人') { 
+      } else if (title == '利害關係人') { 
         this.titlecolor = '#21B5C2'
       } else if (title == '佐證文件') { 
         this.titlecolor = '#D8CAC4'

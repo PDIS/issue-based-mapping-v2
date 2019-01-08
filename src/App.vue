@@ -9,7 +9,7 @@
 
 <style>
 @import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css);
-.application, .title, .headline board{
+.application, .title, .headline{
   font-family: Roboto, 'Noto Sans TC'!important
 }
 </style>
