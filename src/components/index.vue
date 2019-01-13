@@ -21,7 +21,7 @@
           <v-container fill-height>
             <v-layout align-center justify-center>
               <v-card-text >
-                <v-btn class="cyan darken-4" fab dark large @click="changeboardform('')">
+                <v-btn class="cyan darken-4" fab dark large @click="selectedboardid = ''; openboard = !openboard; ">
                   <v-icon large dark>add</v-icon>
                 </v-btn>
               </v-card-text>
@@ -72,8 +72,8 @@
             <v-btn class="blue-grey darken-4 white--text" :to="{name:'board', params:{id:board.id}}"><v-icon>arrow_right</v-icon>{{ $t("Enter") }}</v-btn>
             <v-spacer></v-spacer> 
             <div v-if="board.admin.includes(user.id)">
-              <v-btn icon flat color="teal" :to="{name:'index'}" active-class @click="changeboardform(board.id)"><v-icon>edit</v-icon></v-btn>
-              <v-btn icon flat color="pink" :to="{name:'index'}" active-class @click.native.stop="dialog=true;selectedid=board.id"><v-icon>delete</v-icon></v-btn>
+              <v-btn icon flat color="teal" :to="{name:'index'}" active-class @click="openboard = !openboard; selectedboardid = board.id"><v-icon>edit</v-icon></v-btn>
+              <v-btn icon flat color="pink" :to="{name:'index'}" active-class @click.native.stop="dialog = true; selectedboardid = board.id"><v-icon>delete</v-icon></v-btn>
             </div>
           </v-card-actions>
         </v-card>
@@ -81,7 +81,7 @@
     </v-layout>
     <template v-if="showtable">
       <div v-if="members.includes(user.id)">
-        <v-btn color="primary" dark class="mb-2" @click="changeboardform('')">{{ $t("New Topic") }}</v-btn>
+        <v-btn color="primary" dark class="mb-2" @click="openboard = !openboard">{{ $t("New Topic") }}</v-btn>
       </div>
       <v-data-table
         :headers="headers"
@@ -99,8 +99,8 @@
           <td class="text-xs-left">{{ props.item.desc.department }}</td>
           <td class="justify-center px-0">
             <div v-if="props.item.admin.includes(user.id)">
-              <v-icon color="teal" class="mr-2" @click="changeboardform(props.item.id)">edit</v-icon>
-              <v-icon color="pink" @click="dialog=true;selectedid=props.item.id">delete</v-icon>
+              <v-icon color="teal" class="mr-2" @click="editboard(props.item.id)">edit</v-icon>
+              <v-icon color="pink" @click="dialog=true;selectedboardid=props.item.id">delete</v-icon>
             </div>
           </td>
         </template>
@@ -114,29 +114,36 @@
         <v-card-title class="headline">確定刪除?</v-card-title>
         <v-card-text></v-card-text>
         <v-card-actions>
-          <v-btn color="blue" flat="flat" @click.native="closeboard(selectedid)">確定</v-btn>
           <v-btn color="black" flat="flat" @click.native="dialog=false" :to="{name:'index'}" active-class>取消</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color="blue" flat="flat" @click.native="closeboard(selectedboardid)">確定</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <snackbar></snackbar>
-    <boardform></boardform>
+    <form-board></form-board>
   </v-container>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import boardform from './forms/board'
+import { createHelpers } from 'vuex-map-fields';
+import form from './forms/board'
 import snackbar from './snackbar'
+
+const { mapFields } = createHelpers({
+  getterType: 'getBoardField',
+  mutationType: 'updateBoardField',
+});
+
 export default {
   components: {
-    boardform,
+    'form-board': form,
     snackbar
   },
   data () {
     return {
       search: '',
-      selectedid: '',
       canedit: true,
       showtable: false,
       headers: [
@@ -156,7 +163,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['changeboardform', 'getsnackbar']),
+    ...mapActions(['editboard', 'getsnackbar']),
     closeboard: function(id) {
       let that = this
       Trello.put('boards/' + id ,{'closed':true},function(res) {
@@ -180,8 +187,13 @@ export default {
     ...mapGetters({
       user: 'user',
       members: 'members',
-      boards: 'boards',
     }), 
+    ...mapFields ({
+      board: 'board',
+      boards: 'boards',
+      openboard: 'openboard',
+      selectedboardid: 'selectedboardid'
+    }),
     filteredList() {
       return this.boards.filter(board => {
         return board.title.toLowerCase().includes(this.search.toLowerCase())

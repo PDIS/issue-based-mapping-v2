@@ -11,7 +11,7 @@
               <v-btn icon small fab disabled v-for="a in avatar" :key="a">
                 <img :src="a+'/50.png'" style="border-radius:50%"/> 
               </v-btn>
-              <v-icon  @click="new_member()" medium fab btn outline class=" dark ml-2">person_add</v-icon>
+              <v-icon  @click="new_member()" medium fab btn outline class=" dark ml-2" v-if="board.admin.includes(user.id)">person_add</v-icon>
             </div>
           </v-card-text>
         </v-card>
@@ -73,382 +73,7 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <v-dialog v-model="dialog" persistent max-width="50vw">
-      <v-card>
-        <v-card-title>
-          <h2 :style="bindtitlestyle(selectedlist.name)">{{selectedlist.name}}</h2>
-          <v-spacer></v-spacer>
-          <div v-if="(board.admin.includes(user.id) || board.members.includes(user.id)) && editable == true">
-            <v-btn flat color="grey" class="subheading" @click="resetForm">重新填寫</v-btn>
-            <v-btn flat color="red lighten-1" class="subheading"  @click.native.stop="deletedialog=true;selectedid=card.id">刪除便利貼</v-btn>
-          </div>
-        </v-card-title>
-        <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
-          <v-container>
-            <v-layout row wrap mx-3>
-              <v-flex xs12>
-                <v-layout align-center justify-start row fill-height>
-                  <v-icon>announcement</v-icon>
-                  <h3 style="color:rgba(0,0,0,.54)">內容</h3>
-                </v-layout>
-              </v-flex>
-              <v-flex md12 mx-4>
-                <v-layout row wrap v-if="selectedlist.name =='問題面向'">
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
-                  </v-flex>
-                </v-layout>
-                <v-layout row wrap v-if="selectedlist.name == '問題細節'">
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
-                  </v-flex>
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="補充說明" v-model="card.desc.explain" ></v-text-field>
-                  </v-flex>
-                </v-layout >
-                <v-layout row wrap  v-if="selectedlist.name == '現有解法'">
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
-                  </v-flex>
-                </v-layout>
-                <v-layout row wrap  v-if="selectedlist.name == '政府回應'">
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
-                  </v-flex>
-                  <v-flex flex xs12>
-                    <v-radio-group v-model="card.desc.responsetime" row @change="changeresponsetime(card)">
-                      <v-radio label="現在" value="nowadays" selected ></v-radio>
-                      <v-radio label="未來" color="orange" value="future"></v-radio>
-                    </v-radio-group>
-                  </v-flex>
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="補充說明"  v-model="card.desc.explain"  ></v-text-field>
-                  </v-flex>
-                </v-layout>
-                <v-layout row wrap v-if="selectedlist.name == '困難'">
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2"   v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
-                  </v-flex>
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="補充說明"  v-model="card.desc.explain"  ></v-text-field>
-                  </v-flex>
-                </v-layout>
-                <v-layout row wrap v-if="selectedlist.name == '利害關係人'">
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
-                  </v-flex>
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="單位"  v-model="card.desc.department" ></v-text-field>
-                  </v-flex>
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="背景"  v-model="card.desc.background"  ></v-text-field>
-                  </v-flex>
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="角色（此人與議題的關聯）"  v-model="card.desc.role"  ></v-text-field>
-                  </v-flex>
-                </v-layout>
-                <v-layout row wrap v-if="selectedlist.name == '佐證文件'">
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="佐證文件名稱" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
-                  </v-flex>
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="文件連結"  v-model="card.desc.attachment"></v-text-field>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-              <v-flex md12 mx-2 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
-                <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '利害關係人'">
-                 <!--  <v-icon>people</v-icon>
-                  <h3 class="ml-2 mt-2 font-weight-regular" style="color:rgba(0,0,0,.54)">關聯利害關係人</h3> -->
-                  <v-flex>
-                    <v-btn flat color="primary" v-if="newpersonmode == false && newattachmentmode == false" @click.native="newpersonmode = true">+新增利害關係人</v-btn>
-                    <v-btn flat color="primary" v-if="newattachmentmode == false && newpersonmode == false" @click.native="newattachmentmode = true">+新增佐證文件
-                      <v-tooltip bottom>
-                        <v-icon slot="activator" class="ml-1">info</v-icon>
-                        <span>1.既有資料是否可以先提供？這些資料包含：<br/>
-                        -過去各項會議(內部會議、跨部會協調會議、專家學者會議等)討論的相關內參資料<br/>
-                        -是否有推薦相關的研究論文<br/>
-                        -其他不同意立場的陳述或是好文章<br/>
-                        2.相關法制規定為何？過去相關規定的修正有沒有討論記錄？<br/>
-                        3.有沒有立委曾經關心過此議題？立法院有沒有討論過此議題？有沒有會議記錄與部會當時的文書？<br/>
-                        4.有沒有民間關心過此議題?<br/>
-                        -有沒有NGO關心過此議題？有沒有相關的資料？<br/>
-                        -有沒有陳抗過？收過陳情書？<br/>
-                        -部長信箱有沒有收過類似的問題？<br/>
-                        </span>
-                      </v-tooltip>
-                    </v-btn>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-              <v-flex md12 mx-4 v-if="newpersonmode == true">
-                <v-layout row wrap>
-                  <v-flex md6>
-                    <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱"  v-model="newperson.title" ></v-text-field>
-                  </v-flex>
-                  <v-flex md6>
-                    <v-btn color="black" class="mt-3" small outline @click.native="newpersonmode = false; newperson.title = ''" >取消</v-btn>
-                    <v-btn color="black" class="mt-3" small dark @click.native="newpersonmode = false; addperson(card)">確定</v-btn>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-              <v-flex flex md12 mx-4 v-if="newpersonmode == false && newattachmentmode == false">
-                <v-layout row wrap v-if="selectedlist.name != '利害關係人'">
-                  <v-flex flex xs12 >
-                    <v-select
-                      v-model="card.desc.peoplefrom"
-                      :items="peoplelist"
-                      item-text="name"
-                      item-value="id"
-                      label="關聯利害關係人(資料來源)"                     
-                      chips
-                      multiple
-                      deletable-chips
-                      no-data-text="目前尚無資料"
-                      :disabled="card.desc.peopleto.length != 0"
-                    >
-                      <template slot="item" slot-scope="data">
-                        <template v-if="typeof data.item !== 'object'">                   
-                        </template>
-                        <template v-else>
-                          <v-list-tile-avatar>
-                            <v-checkbox v-model="card.desc.peoplefrom" :value="data.item.id"></v-checkbox>
-                          </v-list-tile-avatar>
-                          <v-list-tile-content v-text="data.item.name"></v-list-tile-content> 
-                        </template>
-                      </template>                                        
-                    </v-select>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-              <!-- <v-flex flex md12>
-                <v-layout row wrap v-if="selectedlist.name != '利害關係人'">
-                  <v-flex flex xs12 >
-                    <v-select
-                      v-model="card.desc.peopleto"
-                      :items="peoplelist"
-                      item-text="name"
-                      item-value="id"
-                      label="關聯利害關係人(要向誰提問)"                     
-                      chips
-                      multiple
-                      deletable-chips
-                      no-data-text="目前尚無資料"
-                      :disabled="card.desc.peoplefrom.length != 0"
-                    >
-                      <template slot="item" slot-scope="data">
-                        <template v-if="typeof data.item !== 'object'">                   
-                        </template>
-                        <template v-else>
-                          <v-list-tile-avatar>
-                            <v-checkbox v-model="card.desc.peopleto" :value="data.item.id"></v-checkbox>
-                          </v-list-tile-avatar>
-                          <v-list-tile-content v-text="data.item.name"></v-list-tile-content> 
-                        </template>
-                      </template>                                        
-                    </v-select>
-                  </v-flex>
-                </v-layout>
-              </v-flex> -->
-              <!-- <v-flex md12 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
-                <v-layout align-center justify-start row fill-height v-if="selectedlist.name != '佐證文件' && selectedlist.name != '利害關係人'">
-                  <v-icon>file_copy</v-icon>
-                  <h3 class="mx-2 mt-2 font-weight-regular" style="color:rgba(0,0,0,.54)">佐證文件</h3>
-                  <v-tooltip bottom>
-                    <v-icon slot="activator">info</v-icon>
-                    <span>1.既有資料是否可以先提供？這些資料包含：<br/>
-                    -過去各項會議(內部會議、跨部會協調會議、專家學者會議等)討論的相關內參資料<br/>
-                    -是否有推薦相關的研究論文<br/>
-                    -其他不同意立場的陳述或是好文章<br/>
-                    2.相關法制規定為何？過去相關規定的修正有沒有討論記錄？<br/>
-                    3.有沒有立委曾經關心過此議題？立法院有沒有討論過此議題？有沒有會議記錄與部會當時的文書？<br/>
-                    4.有沒有民間關心過此議題?<br/>
-                    -有沒有NGO關心過此議題？有沒有相關的資料？<br/>
-                    -有沒有陳抗過？收過陳情書？<br/>
-                    -部長信箱有沒有收過類似的問題？<br/>
-                    </span>
-                  </v-tooltip>
-                  <v-btn flat color="primary" v-if="newattachmentmode == false" @click.native="newattachmentmode = true">+新增佐證文件</v-btn>
-                </v-layout>  
-              </v-flex> -->
-              <v-flex md12 mx-4 v-if="newattachmentmode == true">
-                <v-layout row wrap>
-                  <v-flex md12>
-                    <v-radio-group v-model="attachmentselection" row >
-                      <v-radio label="新增連結" value="attachmentlink"></v-radio>
-                      <v-radio label="上傳檔案" value="attachmentupload"></v-radio>
-                    </v-radio-group>
-                  </v-flex>
-                  <v-layout row wrap v-if="attachmentselection == 'attachmentlink'">
-                    <v-flex md12>
-                      <v-text-field color="blue-grey darken-2" label="佐證文件名稱"  v-model="newattachment.title" :counter="30" :rules="titleRules"></v-text-field>
-                    </v-flex>
-                    <v-flex md12>
-                      <v-text-field color="blue-grey darken-2" label="文件連結"  v-model="newattachment.desc.attachment"></v-text-field>
-                    </v-flex>
-                  </v-layout>
-                  <v-layout row wrap v-if="attachmentselection == 'attachmentupload'">
-                    <v-flex md6>
-                      <v-text-field color="blue-grey darken-2" label="佐證文件名稱"  v-model="newattachment.title" :counter="30" :rules="titleRules"></v-text-field>
-                    </v-flex>
-                    <v-flex md4>
-                      <upload-btn depressed outline title="附加檔案" :fileChangedCallback="fileChanged" class="mt-3">
-                        <template slot="icon-left">
-                          <v-icon left>attach_file</v-icon>
-                        </template>
-                      </upload-btn>
-                    </v-flex>
-                    <v-flex md2>
-                      <h3 class="mt-4">{{filename}}</h3>
-                    </v-flex>
-                    <v-flex md12>
-
-                    </v-flex>
-                  </v-layout>
-                  <v-flex md12>
-                    <v-layout align-center justify-end row fill-height>
-                    <v-btn color="black" class="mt-3" small outline @click.native="newattachmentmode = false; newattachment.title = ''; newattachment.desc.attachment = '';" >取消</v-btn>
-                    <v-btn color="black" class="mt-3" small dark @click.native="newattachmentmode = false; addattachment(card)">確定</v-btn>
-                  </v-layout>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-              <v-flex flex md12 mx-4 v-if="newpersonmode == false && newattachmentmode == false">
-                <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '利害關係人'">
-                  <v-flex flex xs12 >
-                    <v-select
-                      v-model="card.desc.data"
-                      :items="datalist"
-                      item-text="name"
-                      item-value="id"
-                      label="選取佐證文件"
-                      color="blue-grey darken-2"
-                      chips
-                      multiple
-                      deletable-chips
-                      no-data-text="目前尚無資料"
-                    >
-                      <template slot="item" slot-scope="data">
-                        <v-list-tile-avatar>
-                          <v-checkbox v-model="card.desc.data" :value="data.item.id"></v-checkbox>
-                        </v-list-tile-avatar>
-                        <v-list-tile-content v-text="data.item.name"></v-list-tile-content>
-                      </template>
-                    </v-select>
-                    <!-- <v-select
-                      v-model="card.desc.data"
-                      :items="datalist"
-                      label="佐證文件"
-                      prepend-icon="picture_as_pdf"
-                      color="blue-grey darken-2" 
-                      chips
-                      tags
-                      item-text="name"
-                      multiple                          
-                    >
-                      <template slot="selection" slot-scope="data">
-                        <v-chip
-                          :selected="data.selected"
-                          :disabled="data.disabled"
-                          :key="JSON.stringify(data.item)"
-                          class="chip--select-multi"
-                          @input="data.parent.selectItem(data.item)"              
-                        >
-                          {{ data.item.name }}
-                        </v-chip>
-                      </template>
-                    </v-select> -->
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-              <v-flex flex md12 v-if="newpersonmode == false && newattachmentmode == false">
-                <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '利害關係人'">
-                  <v-flex flex xs12 >
-                    <v-select
-                      v-model="card.desc.related"
-                      :items="relatedlist"
-                      item-text="name"
-                      item-value="id"
-                      label="關聯卡片"
-                      color="blue-grey darken-2"
-                      chips
-                      multiple
-                      deletable-chips
-                      no-data-text="目前尚無資料"
-                      prepend-icon="fa-link"
-                    >
-                      <template slot="item" slot-scope="data">
-                        <v-list-tile-avatar>
-                          <v-checkbox v-model="card.desc.related" :value="data.item.id"></v-checkbox>
-                        </v-list-tile-avatar>
-                        <v-list-tile-content v-text="data.item.name"></v-list-tile-content>
-                      </template>
-                    </v-select>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-              <v-flex flex xs12 v-if="selectedlist.name == '佐證文件' && (board.admin.includes(user.id) || board.members.includes(user.id)) && editable == true && card.attachments == undefined">
-                <input type="file" @change="onFileChange">
-                <v-btn color="blue-grey" class="white--text" @click.prevent="upload(card)">
-                  上傳檔案
-                  <v-icon right dark >cloud_upload</v-icon>
-                </v-btn>
-                <!-- <v-btn color="warning" class="white--text" target="_blank" :href="card.attachments.url" v-if="card.attachments != undefined">
-                  {{card.attachments.name}}
-                </v-btn> -->
-                <!-- <v-btn color="error" class="white--text" @click="deleteattachment(card)">
-                  刪除附件
-                </v-btn> -->
-              </v-flex>
-              <v-flex flex xs12 v-if="selectedlist.name == '佐證文件' && editable == true && card.attachments != undefined && card.attachments.preview != undefined">
-                <v-card>
-                  <v-card-media
-                    :src="card.attachments.preview.url"
-                    :height="card.attachments.preview.height"
-                  ></v-card-media>
-
-                  <v-card-title primary-title>
-                    <div>
-                      <h3 class="headline mb-0">{{card.attachments.name}}</h3>
-                    </div>
-                  </v-card-title>
-
-                  <v-card-actions>
-                    <v-btn flat color="" target="_blank" :href="card.attachments.url">下載附件</v-btn>
-                    <v-btn flat color="error" @click="deleteattachment(card)">刪除附件</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-flex>
-              <v-flex flex xs12 v-if="selectedlist.name == '佐證文件' && editable == true && card.attachments != undefined && card.attachments.preview == undefined">
-                 <v-card>
-                  <v-card-title primary-title>
-                    <div>
-                      <h3 class="headline mb-0">{{card.attachments.name}}</h3>
-                    </div>
-                  </v-card-title>
-
-                  <v-card-actions>
-                    <v-btn flat color="" target="_blank" :href="card.attachments.url">下載附件</v-btn>
-                    <v-btn flat color="error" @click="deleteattachment(card)">刪除附件</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-flex>
-            </v-layout>
-            <v-card-actions class="px-3" v-if="(board.admin.includes(user.id) || board.members.includes(user.id)) && newpersonmode == false && newattachmentmode == false">
-              <!-- <v-btn flat color="red lighten-1" class="subheading"  @click.native.stop="deletedialog=true;selectedid=card.id">刪除便利貼</v-btn>
-              <v-btn flat color="grey lighten-1" class="subheading" @click="resetForm">重新填寫</v-btn> -->
-              <v-spacer></v-spacer>
-              <v-btn flat @click.native="closeDialog" class="subheading">取消</v-btn>
-              <v-btn flat color="cyan" type="submit" class="subheading" :disabled="!valid" >確認</v-btn>
-            </v-card-actions>
-            <v-card-actions class="px-3" v-if="(!board.admin.includes(user.id) && !board.members.includes(user.id))">
-              <v-spacer></v-spacer>
-              <v-btn flat @click.native="closeDialog" class="subheading">關閉</v-btn>
-            </v-card-actions>
-          </v-container>
-        </v-form>
-      </v-card>
-    </v-dialog>
+    <form-card></form-card>
     <v-dialog v-model="deletedialog" max-width="290">
       <v-card>
         <v-card-title class="headline">確定刪除?</v-card-title>
@@ -524,7 +149,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat class="subheading" @click="getboard();boardtitledialog = false">取消</v-btn>
+          <v-btn flat class="subheading" @click="getboardinfo();boardtitledialog = false">取消</v-btn>
           <v-btn flat color="cyan" type="submit" class="subheading" @click="editboardtitle()">確認</v-btn>
         </v-card-actions>
       </v-card>
@@ -534,74 +159,59 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { createHelpers } from 'vuex-map-fields';
 import draggable from 'vuedraggable'
 import UploadButton from 'vuetify-upload-button';
+import card from './forms/card'
 import snackbar from './snackbar'
+
+const { mapFields: mapBoardFields } = createHelpers({
+  getterType: 'getBoardField',
+  mutationType: 'updateBoardField',
+});
+
+const { mapFields: mapCardFields } = createHelpers({
+  getterType: 'getCardField',
+  mutationType: 'updateCardField',
+});
+
+const { mapFields: mapListFields } = createHelpers({
+  getterType: 'getListField',
+  mutationType: 'updateListField',
+});
 
 export default {
   components: {
     draggable,
     'upload-btn': UploadButton,
+    'form-card': card,
     snackbar
   },
   data () {
     return {
-      board: {
-        id: '',
-        name: '',
-        desc: {
-          'title': '',
-          'person': '',
-          'date': null,
-          'department': '',
-          'codepartment': '',
-          'link': ''
-        },
-        admin: [],
-        members: []
-      },
-      lists: [],
-      cards: [],
+/*       lists: [],
+      cards: [], */
       members: [],
       avatar: [],
       dialog: false,
-      selectedlist: {},
+      /* selectedlist: {}, */
       success: '',
-      valid: false,
       show_new_member: false,
-      titleRules: [
+     /*  titleRules: [
         v => !!v || '此欄位為必填!',
         v => v.length <= 30 || '此欄位不可超過30個字!'
-      ],
-      card: {
-        id: '',
-        title: '',
-        desc: {
-          explain:'',
-          responsetime: 'nowadays',
-          department: '',
-          background: '',
-          role: '',
-          peopleto: [],
-          peoplefrom: [],
-          data: [],
-          related: [],
-          attachment: '',
-          x: 0,
-          y: 0
-        },
-      },
-      peoplelist: [],
+      ], */
+/*       peoplelist: [],
       datalist: [],
-      relatedlist: [],
+      relatedlist: [], */
       fab: false,
-      editable: false,
+      /* editable: false, */
       search: '',
       deletedialog: false,
       email: '',
       hover: false,
       /* newpersondialog: false, */
-      newperson: {
+      /* newperson: {
         title: '',
         desc: {
           explain:'',
@@ -617,19 +227,18 @@ export default {
           x: 0,
           y: 0
         }
-      },
+      }, */
       relationmode: false,
       firstcard: {},
-      uploadfile: FormData,
-      responsestring: '',
+/*       uploadfile: FormData, */
       newmemberdialog: false,
       attsnackbar: false,
       boardtitledialog: false,
-      titlecolor: '',
-      titlestyle: 'border-bottom: 0.5vh solid ' ,
-      newpersonmode: false,
-      newattachmentmode: false,
-      attachmentselection: 'attachmentlink',
+/*       titlecolor: '',
+      titlestyle: 'border-bottom: 0.5vh solid ' , */
+/*       newpersonmode: false,
+      newattachmentmode: false, */
+/*       attachmentselection: 'attachmentlink',
       newattachment: {
         title: '',
         desc: {
@@ -647,11 +256,11 @@ export default {
           y: 0
         }
       },
-      filename: '',
+      filename: '', */
     }
   },
   methods: {
-    ...mapActions(['getsnackbar']),
+    ...mapActions(['getboardinfo', 'getlists', 'getsnackbar']),
     getcards: function(id) {
       let newcards = []
       for (let c of this.cards) {
@@ -679,7 +288,7 @@ export default {
       this.card.desc.peoplefrom = []
       this.card.desc.data = []
     },
-    submit: function() {
+    /* submit: function() {
       let that = this
       if (this.$refs.form.validate()) {
         if (this.editable == false) 
@@ -734,31 +343,7 @@ export default {
           })
         }
       }
-    },
-    getpeople: function() {
-      this.lists.map(list => {
-        if (list.name == '利害關係人') {
-          list.cards.map( people => {
-            this.peoplelist.push({
-              'id': people.id,
-              'name': people.name
-            })
-          })
-        }
-      })
-    },
-    getdata: function() {
-      this.lists.map(list => {
-        if (list.name == '佐證文件') {
-          list.cards.map( data => {
-            this.datalist.push({
-              'id': data.id,
-              'name': data.name
-            })
-          })
-        }
-      })
-    },
+    }, */
     getrelated: function(currentlist) {
       this.relatedlist = []
       this.lists.map(list => {
@@ -802,7 +387,7 @@ export default {
       })
     },
     newcard: function (list) {
-      this.dialog = true; 
+      this.opencard = true; 
       this.selectedlist.name = list.name;
       this.selectedlist.id = list.id;
       this.selectedlist.color = list.color
@@ -819,9 +404,9 @@ export default {
       }
     },
     editcard: function(card,list) {
+      this.opencard = true
       if (this.relationmode == false) {
         /* if (this.board.admin.includes(this.user.id) || this.board.members.includes(this.user.id)) { */
-          this.dialog = true
           this.selectedlist.name = list.name;
           this.selectedlist.id = list.id;
           this.selectedlist.color = list.color
@@ -830,8 +415,6 @@ export default {
           this.card.id = card.id
           this.card.title = card.name
           this.card.desc.responsetime = card.desc.responsetime
-          this.card.desc.peopleto = card.desc.peopleto
-          this.card.desc.peoplefrom = card.desc.peoplefrom
           this.card.desc.data = card.desc.data
           this.card.desc.related = card.desc.related
           this.card.desc.explain = card.desc.explain
@@ -842,8 +425,8 @@ export default {
           this.card.desc.x = card.desc.x
           this.card.desc.y = card.desc.y
           this.card.attachments = card.attachments
-          this.getrelated(list)
           this.editable = true
+          this.getrelated(list)
         /* } */
       }
       else {
@@ -920,8 +503,8 @@ export default {
     },
     closecard: function(id) {
       let that = this
-      Trello.put('cards/' + id ,{'closed':true},function(res) {
-        that.getlists()
+      Trello.put('cards/' + id ,{'closed':true}, function(res) {
+        that.getlists(that.board.id)
         let snackbar = {
           state: true,
           color: 'success',
@@ -931,7 +514,7 @@ export default {
         that.$store.dispatch('getsnackbar', snackbar)
       })
     },
-    getboard: function() {
+    /* getboard: function() {
       let that = this;
       this.board.id = this.$route.params.id
       Trello.boards.get(this.board.id,{'fields':'all'}, function(res) {
@@ -950,8 +533,8 @@ export default {
           }
         })
       })
-    },
-    getlists: async function() {
+    }, */
+    /* getlists: async function() {
       this.lists = []
       let id = this.$route.params.id
       let listarray = await Trello.boards.get(id + '/lists',{cards: 'open'})
@@ -1018,22 +601,29 @@ export default {
       })
       this.getpeople()
       this.getdata()
-    },
-    getavatar: function(usr){;
+    }, */
+    getavatar: function(){
       let that = this
-      Trello.get('/members/'+usr,function(e){
-          that.avatar.push(e.avatarUrl);
+      this.board.admin.map( a => {
+        Trello.get('/members/' + a, (res) => {
+          that.avatar.push(res.avatarUrl);
+        })
+      })
+      this.board.members.map( a => {
+        Trello.get('/members/' + a, (res) => {
+          that.avatar.push(res.avatarUrl);
+        })
       })
     },
-    getmembers: function(){
+    getmembers: function() {
       let that = this
+      let id = this.$route.params.id
       let heremembers = []
-      this.board.id = this.$route.params.id
-      Trello.boards.get(this.board.id+'/members', function(e){
-          for (let i of e) {
-            heremembers.push(i.username);
-            that.getavatar(i.username);
-          }
+      Trello.boards.get(id + '/members', function(e){
+        for (let i of e) {
+          heremembers.push(i.username);
+          that.getavatar(i.username);
+        }
       })
       this.members = heremembers
     },
@@ -1276,12 +866,12 @@ export default {
     },
     getcards: function() {
       let that = this;
-      this.board.id = this.$route.params.id
-      Trello.boards.get(this.board.id + '/cards',{'fields':'all'}, function(res) {
+      let id = this.$route.params.id
+      Trello.boards.get(id + '/cards',{'fields':'all'}, function(res) {
         that.cards = res
       })
     },
-    addperson: function(card) {
+/*     addperson: function(card) {
       let that = this;
       this.lists.map( l => {
         if (l.name == '利害關係人') {
@@ -1298,7 +888,7 @@ export default {
           })
         }
       })
-    },
+    }, */
     endrelationmode: function() {
       this.relationmode = false
       this.firstcard = {}
@@ -1362,7 +952,7 @@ export default {
         this.attsnackbar = true
       }
     },
-    changeresponsetime: function(card) {
+/*     changeresponsetime: function(card) {
       card.title = card.title.replace('[現在]','').replace('[未來]','')
       if (card.desc.responsetime == 'nowadays') {
         this.responsestring = '[現在]'
@@ -1370,7 +960,7 @@ export default {
         this.responsestring = '[未來]'
       }
       card.title = this.responsestring + card.title
-    },
+    }, */
     new_member: function(){
       this.newmemberdialog = true;  
       // this.show_new_member = add_member!this.show_new_member;
@@ -1390,10 +980,10 @@ export default {
         }
         that.$store.dispatch('getsnackbar', snackbar)
         that.boardtitledialog = false
-        that.getboard()
+        that.$store.dispatch('getboardinfo', that.$route.params.id)
       })
     },
-    bindtitlestyle: function(title) {
+    /* bindtitlestyle: function(title) {
       if (title == '問題面向') {
         this.titlecolor = '#FFCD13'
       } else if (title == '問題細節') { 
@@ -1410,7 +1000,7 @@ export default {
         this.titlecolor = '#D8CAC4'
       } 
       return this.titlestyle + this.titlecolor
-    },
+    }, */
     addattachment: function(card) {
       let that = this;
       this.lists.map( l => {
@@ -1420,7 +1010,7 @@ export default {
               Trello.post('cards/' + res.id + '/attachments', {'url': that.newattachment.desc.attachment, 'name': that.newattachment.title}, function() {
                 that.newattachment.title = ''
                 that.newattachment.desc.attachment = ''
-                that.getlists()
+                that.getlists(that.board.id)
                 let snackbar = {
                   state: true,
                   color: 'success',
@@ -1436,7 +1026,7 @@ export default {
                 request.onreadystatechange = function() {
                   if (request.readyState === 4) {
                     that.newattachment.title = ''
-                    that.getlists()
+                    that.getlists(that.board.id)
                     let snackbar = {
                       state: true,
                       color: 'success',
@@ -1459,25 +1049,33 @@ export default {
   },
   created: function() {
     this.$store.dispatch('getuser')
-    this.getboard()
-    this.getlists()
-    this.getcards()
-    this.getmembers()
+    this.$store.dispatch('getboardinfo', this.$route.params.id)
+    this.$store.dispatch('getlists', this.$route.params.id)
+    /* this.getcards() */
+    this.getavatar()
+    /* this.getmembers() */
     /* this.getattachments() */
   },
   computed: {
     ...mapGetters({
       user: 'user',
     }),
-    formIsValid () {
-      return (
-        this.card.title
-      )
-    }
+    ...mapBoardFields({
+      board: 'board',
+    }),
+    ...mapCardFields({
+      card: 'card',
+      opencard: 'opencard',
+      selectedlist: 'selectedlist',
+      editable: 'editable',
+      titlestyle: 'titlestyle',
+      titlecolor: 'titlecolor',
+      relatedlist: 'relatedlist'
+    }),
+    ...mapListFields({
+      lists: 'lists',
+    }),
   }
-  /* mounted: function() {
-    this.getattachments()
-  } */
 }
 </script>
 

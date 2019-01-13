@@ -1,30 +1,42 @@
+import { createHelpers } from 'vuex-map-fields';
+
+const { getBoardField, updateBoardField } = createHelpers({
+  getterType: 'getBoardField',
+  mutationType: 'updateBoardField',
+});
+
 const state = {
   boards: [],
   board: {
     id: '',
     name: '',
-    desc: {
+    desc:{
       'title': '',
       'person': '',
       'date': null,
       'department': '',
-      'link': ''
+      'codepartment': '',
+      'link': '',
+      'issuesource': 'dep'
     },
+    admin: [],
+    members: []
   },
-  boardform: false,
-  selectedboardid: ''
+  openboard: false,
+  selectedboardid: '',
 }
 
 const getters = {
-  board: state => state.board,
+  /* board: state => state.board,
   boards: state => state.boards,
-  boardform: state => state.boardform,
-  selectedboardid: state => state.selectedboardid
+  openboard: state => state.openboard,
+  selectedboardid: state => state.selectedboardid, */
+  getBoardField
 }
 
 const actions = {
   getboardinfo ({ commit }, route) {
-    Trello.boards.get(route, function(res) {
+    Trello.boards.get(route, {'fields':'all'}, function(res) {
       commit('getboardinfo', res)
     })
   },
@@ -33,16 +45,26 @@ const actions = {
       commit('getboards', res)
     })
   },
-  changeboardform ({ commit }, id) {
-    commit('changeboardform', id)
+  editboard ({ commit }, id) {
+    commit('editboard', id)
   },
 }
 
 const mutations = {
   getboardinfo (state, res) {
+    state.board.admin = []
+    state.board.members = []
     state.board.id = res.id
     state.board.name = res.name
     state.board.desc = JSON.parse(res.desc)
+    res.memberships.map( m => {
+      if (m.memberType == 'admin') {
+        state.board.admin.push(m.idMember)
+      }
+      else {
+        state.board.members.push(m.idMember)
+      }
+    })
   },
   getboards (state, res) {
     state.boards = []
@@ -60,10 +82,11 @@ const mutations = {
       state.boards.push(board)
     })
   },
-  changeboardform (state, id) {
-    state.boardform = !state.boardform
+  editboard (state, id) {
+    state.openboard = !state.openboard
     state.selectedboardid = id
   },
+  updateBoardField
 }
 
 export default {

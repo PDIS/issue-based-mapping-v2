@@ -1,7 +1,7 @@
 <template>
   <div>
     <snackbar></snackbar>
-    <v-dialog v-model="boardform" persistent  max-width="50vw">
+    <v-dialog v-model="openboard" persistent  max-width="50vw">
       <v-card>
         <v-card-title>
           <v-spacer></v-spacer>
@@ -30,7 +30,7 @@
           <v-card-actions>
             <!-- <v-btn flat color="grey lighten-1" @click="resetForm" class="subheading">重新填寫</v-btn> -->
             <v-spacer></v-spacer>
-            <v-btn flat class="subheading" @click="changeboardform('')">取消</v-btn>
+            <v-btn flat class="subheading" @click="editboard('')">取消</v-btn>
             <v-btn flat color="cyan" type="submit" class="subheading" :disabled="!valid">確認</v-btn>
           </v-card-actions>
         </v-form>
@@ -39,13 +39,16 @@
   </div>
 </template>
 
-<style scoped>
-
-</style>
-
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { createHelpers } from 'vuex-map-fields';
 import snackbar from '../snackbar'
+
+const { mapFields } = createHelpers({
+  getterType: 'getBoardField',
+  mutationType: 'updateBoardField',
+});
+
 export default {
   components: {
     snackbar,
@@ -62,24 +65,10 @@ export default {
       requiredRules: [
         v => !!v || '此欄位為必填!',
       ],
-      board: {
-        id:'',
-        name:'',
-        desc:{
-          'title': '',
-          'person': '',
-          'date': null,
-          'department': '',
-          'codepartment': '',
-          'link': '',
-          'issuesource': 'dep'
-        },
-      },
-      success: '',
     }
   },
   methods: {
-    ...mapActions(['changeboardform', 'getsnackbar']),
+    ...mapActions(['editboard', 'getsnackbar']),
     submit: function() {
       let that = this
       if (this.$refs.form.validate()) {
@@ -95,7 +84,7 @@ export default {
                 text: '修改'
               }
               that.$store.dispatch('getsnackbar', snackbar)
-              that.$store.dispatch('changeboardform','')
+              that.$store.dispatch('editboard','')
               that.$store.dispatch('getboards')
             })
           })
@@ -110,8 +99,6 @@ export default {
               }
               that.$store.dispatch('getsnackbar', snackbar)
               that.$router.push('board/' + res.id)
-              /* that.$store.dispatch('changeboardform','')
-              that.$store.dispatch('getboards') */
             })
           })
         }
@@ -135,9 +122,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters ({
-      boardform: 'boardform',
-      selectedboardid: 'selectedboardid'
+    ...mapFields ({
+      openboard: 'openboard',
+      selectedboardid: 'selectedboardid',
+      board: 'board',
     }),
     formIsValid () {
       return (
@@ -152,7 +140,7 @@ export default {
     }
   },
   watch: {
-    selectedboardid: function() {
+    openboard: function() {
       this.getstatus()
     }
   },
