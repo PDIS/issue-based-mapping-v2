@@ -79,7 +79,8 @@
       tabs
       flat
       light 
-      color="grey lighten-3" 
+      color="#2A396D" 
+      dark
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title >{{$t("Issue Mapping Instruction")}}</v-toolbar-title>

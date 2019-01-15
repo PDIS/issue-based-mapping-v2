@@ -106,6 +106,7 @@ export default {
     },
     resetForm: function() {
       this.$refs.form.reset()
+      this.board.desc.issuesource = 'dep'
     },
     getstatus: function() {
       let that = this
@@ -117,7 +118,7 @@ export default {
         })
       }
       else {
-        this.resetForm()
+        /* this.resetForm() */
       }
     }
   },

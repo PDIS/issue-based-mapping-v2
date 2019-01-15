@@ -37,7 +37,7 @@
           <!-- <v-btn @click="relationmode = true" v-if="relationmode == false">關聯卡片</v-btn>
           <v-btn color="blue-grey darken-2" dark @click="endrelationmode()" v-if="relationmode == true">關聯卡片</v-btn> -->
           <v-btn flat target="_blank" :href="board.desc.link">會議記錄連結</v-btn>
-          <v-btn flat disabled>輸出文件</v-btn>
+          <v-btn flat :to="{name:'printout', params:{id:board.id}}">輸出文件</v-btn>
           <v-btn flat disabled>專有名詞字典</v-btn>
           <!-- <v-btn flat :to="{name:'mindmap', params:{id:board.id}}">{{ $t("Mind Mapping") }}</v-btn> -->
         </v-layout>
@@ -189,161 +189,28 @@ export default {
   },
   data () {
     return {
-/*       lists: [],
-      cards: [], */
       members: [],
       avatar: [],
-      dialog: false,
-      /* selectedlist: {}, */
       success: '',
       show_new_member: false,
-     /*  titleRules: [
-        v => !!v || '此欄位為必填!',
-        v => v.length <= 30 || '此欄位不可超過30個字!'
-      ], */
-/*       peoplelist: [],
-      datalist: [],
-      relatedlist: [], */
-      fab: false,
-      /* editable: false, */
       search: '',
       deletedialog: false,
       email: '',
       hover: false,
-      /* newpersondialog: false, */
-      /* newperson: {
-        title: '',
-        desc: {
-          explain:'',
-          responsetime: 'nowadays',
-          department: '',
-          background: '',
-          role: '',
-          peopleto: [],
-          peoplefrom: [],
-          data: [],
-          related: [],
-          attachment: '',
-          x: 0,
-          y: 0
-        }
-      }, */
       relationmode: false,
       firstcard: {},
-/*       uploadfile: FormData, */
       newmemberdialog: false,
       attsnackbar: false,
       boardtitledialog: false,
-/*       titlecolor: '',
-      titlestyle: 'border-bottom: 0.5vh solid ' , */
-/*       newpersonmode: false,
-      newattachmentmode: false, */
-/*       attachmentselection: 'attachmentlink',
-      newattachment: {
-        title: '',
-        desc: {
-          explain:'',
-          responsetime: 'nowadays',
-          department: '',
-          background: '',
-          role: '',
-          peopleto: [],
-          peoplefrom: [],
-          data: [],
-          related: [],
-          attachment: '',
-          x: 0,
-          y: 0
-        }
-      },
-      filename: '', */
     }
   },
   methods: {
     ...mapActions(['getboardinfo', 'getlists', 'getsnackbar']),
-    getcards: function(id) {
-      let newcards = []
-      for (let c of this.cards) {
-        if (c.idList == id) {
-          newcards.push(c)
-        }
-      }
-      return newcards
-    },
     movecard: function(event) {
       let that = this
       Trello.put('cards/' + event.item.id,{'idList':event.to.id},function(res) {
       })
     },
-    closeDialog: function() {
-      this.dialog = false
-    },
-    resetForm: function() {
-      this.card.title = ''
-      this.card.desc.explain = ''
-      this.card.desc.department= ''
-      this.card.desc.background= ''
-      this.card.desc.role= ''
-      this.card.desc.peopleto = []
-      this.card.desc.peoplefrom = []
-      this.card.desc.data = []
-    },
-    /* submit: function() {
-      let that = this
-      if (this.$refs.form.validate()) {
-        if (this.editable == false) 
-        {
-          this.card.desc.x = 100 + this.selectedlist.cards.length * 150
-          this.card.desc.y = this.selectedlist.column * 150 
-          Trello.post('cards', {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc)} , function(res) {
-            if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
-              if (that.card.attachments == undefined) {
-                Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
-                  window.location.reload(true);
-                })
-              } else if (that.card.desc.attachment == that.card.attachments.url) {
-                window.location.reload(true);
-              } else {
-                that.attsnackbar = true
-              }
-            } else {
-              let snackbar = {
-                state: true,
-                color: 'success',
-                text: '新增'
-              }
-              that.$store.dispatch('getsnackbar', snackbar)
-              that.dialog = false
-              that.getlists()
-            }
-          })
-        }
-        else {
-          Trello.put('cards/' + this.card.id, {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function(res) {
-            if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
-              if (that.card.attachments == undefined) {
-                Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
-                  window.location.reload(true);
-                })
-              } else if (that.card.desc.attachment == that.card.attachments.url) {
-                window.location.reload(true);
-              } else {
-                that.attsnackbar = true
-              }
-            } else {
-              let snackbar = {
-                state: true,
-                color: 'success',
-                text: '修改'
-              }
-              that.$store.dispatch('getsnackbar', snackbar)
-              that.dialog = false
-              that.getlists()
-            }
-          })
-        }
-      }
-    }, */
     getrelated: function(currentlist) {
       this.relatedlist = []
       this.lists.map(list => {
@@ -514,94 +381,6 @@ export default {
         that.$store.dispatch('getsnackbar', snackbar)
       })
     },
-    /* getboard: function() {
-      let that = this;
-      this.board.id = this.$route.params.id
-      Trello.boards.get(this.board.id,{'fields':'all'}, function(res) {
-        that.board.name = res.name
-        if (res.desc != '') {
-          that.board.desc = JSON.parse(res.desc)
-        }
-        that.board.admin = []
-        that.board.members = []
-        res.memberships.map( m => {
-          if (m.memberType == 'admin') {
-            that.board.admin.push(m.idMember)
-          }
-          else {
-            that.board.members.push(m.idMember)
-          }
-        })
-      })
-    }, */
-    /* getlists: async function() {
-      this.lists = []
-      let id = this.$route.params.id
-      let listarray = await Trello.boards.get(id + '/lists',{cards: 'open'})
-      listarray.map( async (l) => {
-        let list = {}
-        list.id = l.id
-        list.name = l.name
-        list.cards = l.cards
-        switch (list.name)
-        {
-          case '問題面向':
-            list.color = '#FFCD13'
-            list.column = 1
-            break
-            case '問題細節':
-            list.color = '#FFE276'
-            list.column = 2
-            break
-            case '現有解法':
-            list.color = '#91AD70'
-            list.column = 3
-            break
-            case '政府回應':
-            list.color = '#F08B8B'
-            list.column = 4
-            break
-            case '困難':
-            list.color = '#C85938'
-            list.column = 5
-            break
-            case '利害關係人':
-            list.color = '#0097A7'
-            list.column = 6
-            break
-            case '佐證文件':
-            list.color = '#CFD8DC'
-            list.column = 7
-            break
-            default:
-            list.color = 'teal'
-            break
-        }
-        list.cards.map( async (card) => {
-          let desc = JSON.parse(card.desc)
-          card.desc = desc
-          card.color = '#FBF0D3'
-          card.column = list.column
-          card.hover = false
-          let attach = await Trello.cards.get(card.id,{fields: 'attachments',attachments: true})
-          if (attach.attachments.length != 0) {
-            attach.attachments.map( async (att) => {
-              let attachment = {}
-              attachment.id = att.id
-              attachment.name = att.name
-              attachment.url = att.url
-              if (att.previews.length != 0) {
-                attachment.preview = att.previews[4]
-              }
-              card.attachments = await attachment
-            })
-          }
-        })
-        this.lists.push(list)
-      })
-      this.getpeople()
-      this.getdata()
-    }, */
     getavatar: function(){
       let that = this
       this.board.admin.map( a => {

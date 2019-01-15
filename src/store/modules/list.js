@@ -7,6 +7,7 @@ const { getListField, updateListField } = createHelpers({
 
 const state = {
   lists: [],
+  cards: [],
   stakeholderslist: [],
   evidenceslist: [],
 }
@@ -64,6 +65,7 @@ const actions = {
         card.color = '#FBF0D3'
         card.column = list.column
         card.hover = false
+        state.cards.push(card)
         let attach = await Trello.cards.get(card.id,{fields: 'attachments',attachments: true})
         if (attach.attachments.length != 0) {
           attach.attachments.map( async (att) => {
@@ -80,6 +82,7 @@ const actions = {
       })
       state.lists.push(list)
     })
+    console.log(state.cards)
     dispatch('getstakeholders')
     dispatch('getevidences')
   },
