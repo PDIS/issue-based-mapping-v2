@@ -38,7 +38,7 @@
           <v-btn color="blue-grey darken-2" dark @click="endrelationmode()" v-if="relationmode == true">關聯卡片</v-btn> -->
           <v-btn flat target="_blank" :href="board.desc.link">會議記錄連結</v-btn>
           <v-btn flat :to="{name:'printout', params:{id:board.id}}">輸出文件</v-btn>
-          <v-btn flat disabled>專有名詞字典</v-btn>
+          <v-btn flat @click.stop="opendictionary = !opendictionary">專有名詞字典</v-btn>
           <!-- <v-btn flat :to="{name:'mindmap', params:{id:board.id}}">{{ $t("Mind Mapping") }}</v-btn> -->
         </v-layout>
       </v-flex>
@@ -154,6 +154,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <dictionary></dictionary>
   </v-container>
 </template>
 
@@ -163,6 +164,7 @@ import { createHelpers } from 'vuex-map-fields';
 import draggable from 'vuedraggable'
 import UploadButton from 'vuetify-upload-button';
 import card from './forms/card'
+import dictionary from './dictionary'
 import snackbar from './snackbar'
 
 const { mapFields: mapBoardFields } = createHelpers({
@@ -180,11 +182,17 @@ const { mapFields: mapListFields } = createHelpers({
   mutationType: 'updateListField',
 });
 
+const { mapFields: mapDictionaryFields } = createHelpers({
+  getterType: 'getDictionaryField',
+  mutationType: 'updateDictionaryField',
+});
+
 export default {
   components: {
     draggable,
     'upload-btn': UploadButton,
     'form-card': card,
+    dictionary,
     snackbar
   },
   data () {
@@ -854,6 +862,9 @@ export default {
     ...mapListFields({
       lists: 'lists',
     }),
+    ...mapDictionaryFields({
+      opendictionary: 'opendictionary',
+    })
   }
 }
 </script>
