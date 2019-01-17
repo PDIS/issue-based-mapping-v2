@@ -6,11 +6,9 @@
     disable-route-watcher
     temporary
   >
-    <v-card color="#FFCD13">
-      <v-card-title>
-        <h2 class="font-weight-regular">專有名詞字典/筆記</h2>
-      </v-card-title>
-    </v-card>
+    <v-toolbar color="#FFCD13">
+       <v-toolbar-title>專有名詞字典/筆記</v-toolbar-title>
+    </v-toolbar>
     <v-card color="#FBF0D3">
       <v-card-title>
         <p>你可以於此新增議題相關專有名詞及其解釋，以利同仁間建立共同語言</p>
@@ -51,11 +49,22 @@
         </v-list-tile-content>
         <v-list-tile-action>
           <v-btn icon ripple>
-            <v-icon @click.stop="deleteDictionary(dic)">fa-times</v-icon>
+            <v-icon @click.stop="deletedialog = true; selectedid = dic.id">fa-times</v-icon>
           </v-btn>
         </v-list-tile-action>
       </v-list-tile>
     </v-list>
+    <!-- <v-text-field single-line color="blue-grey darken-4" prepend-inner-icon="search" label="搜尋關鍵字" v-model="search"></v-text-field> -->
+    <v-dialog v-model="deletedialog" max-width="290">
+      <v-card>
+        <v-card-title class="headline">確定刪除?</v-card-title>
+        <v-card-text></v-card-text>
+        <v-card-actions>
+          <v-btn color="blue" flat="flat" @click.native="deletedialog = false; deleteDictionary(selectedid)">確定</v-btn>
+          <v-btn color="black" flat="flat" @click.native="deletedialog = false" >取消</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-navigation-drawer>
 </template>
 
@@ -83,6 +92,9 @@ export default {
       },
       newdictionarymode: false,
       edit: false,
+      search: '',
+      deletedialog: false,
+      selectedid: '',
     }
   },
   methods: {
@@ -129,9 +141,9 @@ export default {
       this.newdictionarymode = true
       this.edit = true
     },
-    deleteDictionary: function(dic) {
+    deleteDictionary: function(id) {
       let that = this
-      Trello.put('cards/' + dic.id ,{'closed':true}, function(res) {
+      Trello.put('cards/' + id ,{'closed':true}, function(res) {
         let snackbar = {
           state: true,
           color: 'success',
@@ -148,7 +160,12 @@ export default {
   computed: {
     ...mapDictionaryFields({
       opendictionary: 'opendictionary',
-    })
+    }),
+    filteredList() {
+      return this.dictionaries.filter(dic => {
+        return dic.name.toLowerCase().includes(this.search.toLowerCase())
+      })
+    },
   }
 }
 </script>
