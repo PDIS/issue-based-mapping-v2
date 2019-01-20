@@ -54,7 +54,9 @@
         </v-list-tile-action>
       </v-list-tile>
     </v-list>
-    <!-- <v-text-field single-line color="blue-grey darken-4" prepend-inner-icon="search" label="搜尋關鍵字" v-model="search"></v-text-field> -->
+<!--     <v-footer absolute height="auto">
+      <v-text-field single-line color="blue-grey darken-4" prepend-inner-icon="search" label="搜尋關鍵字" v-model="search"></v-text-field>
+    </v-footer> -->
     <v-dialog v-model="deletedialog" max-width="290">
       <v-card>
         <v-card-title class="headline">確定刪除?</v-card-title>
@@ -171,5 +173,7 @@ export default {
 </script>
 
 <style>
-
+/* .v-navigation-drawer {
+  overflow: hidden;
+} */
 </style>

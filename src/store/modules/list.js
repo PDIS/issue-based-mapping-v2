@@ -61,12 +61,16 @@ const actions = {
             break
         }
         list.cards.map( async (card) => {
-          let desc = JSON.parse(card.desc)
-          card.desc = desc
+          card.desc = JSON.parse(card.desc)
           card.color = '#FBF0D3'
+          card.categorycolor = list.color
           card.column = list.column
           card.hover = false
           state.cards.push(card)
+          card.desc.stakeholders.map( async (personid) => {
+            let person = await Trello.cards.get(personid)
+            card.tagsfrom.push(person.name)
+          })
           let attach = await Trello.cards.get(card.id,{fields: 'attachments',attachments: true})
           if (attach.attachments.length != 0) {
             attach.attachments.map( async (att) => {

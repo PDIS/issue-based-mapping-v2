@@ -34,8 +34,8 @@
     <v-card style="position:absolute;z-index:200;margin-top:8em" class="ml-4">
       <v-list>
         <v-list-tile>
-          <v-icon v-if="noteicon == false" color="black" @click="dialog = true; noteicon = true">note</v-icon>
-          <v-icon v-if="noteicon == true" color="blue" @click="dialog = true; noteicon = false">note</v-icon>
+          <v-icon v-if="noteicon == false" color="black" @click="opencard = true; noteicon = true">note</v-icon>
+          <v-icon v-if="noteicon == true" color="blue" @click="opencard = true; noteicon = false">note</v-icon>
         </v-list-tile>
         <v-list-tile>
           <v-icon v-if="linkicon == false" color="black" @click="pressshift = true; linkicon = true; unlinkicon = false">fa-link</v-icon>
@@ -86,16 +86,9 @@
         <v-arrow v-for="arrow in arrows" :key="arrow" ref="arrow" :config="arrowconfig[arrow]"></v-arrow>
       </v-layer>
     </v-stage>
-    <v-dialog v-model="dialog" persistent max-width="50vw">
+    <form-card></form-card>
+    <!-- <v-dialog v-model="dialog" persistent max-width="50vw">
       <v-card>
-      <!--   <v-card-title>
-          <h2 :style="bindtitlestyle(selectedlist.name)">{{selectedlist.name}}</h2>
-          <v-spacer></v-spacer>
-          <div v-if="(board.admin.includes(user.id) || board.members.includes(user.id))">
-            <v-btn flat color="grey" class="subheading" @click="resetForm">重新填寫</v-btn>
-            <v-btn flat color="red lighten-1" class="subheading"  @click.native.stop="deletedialog=true;selectedid=card.id">刪除便利貼</v-btn>
-          </div>
-        </v-card-title> -->
         <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
           <v-container>
             <v-layout row wrap class="ma-5">
@@ -141,28 +134,6 @@
                     <v-text-field color="blue-grey darken-2" label="補充說明"  v-model="card.desc.explain"  ></v-text-field>
                   </v-flex>
                 </v-layout>
-                <!-- <v-layout row wrap v-if="selectedlist.name == '利害關係人'">
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
-                  </v-flex>
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="單位"  v-model="card.desc.department" ></v-text-field>
-                  </v-flex>
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="背景"  v-model="card.desc.background"  ></v-text-field>
-                  </v-flex>
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="角色（此人與議題的關聯）"  v-model="card.desc.role"  ></v-text-field>
-                  </v-flex>
-                </v-layout>
-                <v-layout row wrap v-if="selectedlist.name == '佐證文件'">
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="佐證文件名稱" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
-                  </v-flex>
-                  <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="文件連結"  v-model="card.desc.attachment"></v-text-field>
-                  </v-flex>
-                </v-layout> -->
               </v-flex>
               <v-flex md12 v-if="(board.admin.includes(user.id) || board.members.includes(user.id)) && card.title != ''">
                 <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '利害關係人'">
@@ -202,7 +173,7 @@
                 <v-layout row wrap v-if="selectedlist.name != '利害關係人'">
                   <v-flex flex xs12 >
                     <v-select
-                      v-model="card.desc.peoplefrom"
+                      v-model="card.desc.stakeholders"
                       :items="peoplelist"
                       item-text="name"
                       item-value="id"
@@ -211,14 +182,13 @@
                       multiple
                       deletable-chips
                       no-data-text="目前尚無資料"
-                      :disabled="card.desc.peopleto.length != 0"
                     >
                       <template slot="item" slot-scope="data">
                         <template v-if="typeof data.item !== 'object'">                   
                         </template>
                         <template v-else>
                           <v-list-tile-avatar>
-                            <v-checkbox v-model="card.desc.peoplefrom" :value="data.item.id"></v-checkbox>
+                            <v-checkbox v-model="card.desc.stakeholders" :value="data.item.id"></v-checkbox>
                           </v-list-tile-avatar>
                           <v-list-tile-content v-text="data.item.name"></v-list-tile-content> 
                         </template>
@@ -273,7 +243,7 @@
                 <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '利害關係人'">
                   <v-flex flex xs12 >
                     <v-select
-                      v-model="card.desc.data"
+                      v-model="card.desc.evidences"
                       :items="datalist"
                       item-text="name"
                       item-value="id"
@@ -286,7 +256,7 @@
                     >
                       <template slot="item" slot-scope="data">
                         <v-list-tile-avatar>
-                          <v-checkbox v-model="card.desc.data" :value="data.item.id"></v-checkbox>
+                          <v-checkbox v-model="card.desc.evidences" :value="data.item.id"></v-checkbox>
                         </v-list-tile-avatar>
                         <v-list-tile-content v-text="data.item.name"></v-list-tile-content>
                       </template>
@@ -296,7 +266,6 @@
               </v-flex>
             </v-layout>
             <v-card-actions class="pa-3" v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
-              <!--  <v-btn :disabled="!formIsValid" flat color="primary" type="submit" class="subheading">確認</v-btn> -->
               <v-btn flat color="grey lighten-1" class="subheading" @click="resetForm">重新填寫</v-btn>
               <v-spacer></v-spacer>
               <v-btn flat @click.native="dialog = false; noteicon = false" class="subheading">取消</v-btn>
@@ -305,27 +274,6 @@
           </v-container>
         </v-form>
       </v-card>
-    </v-dialog>
-    <!-- <v-dialog v-model="editdialog" max-width="50em" persistent>
-      <v-card>
-        <v-card-title class="headline">修改便利貼</v-card-title>
-        <v-card-text>
-          <v-form>
-            <v-container>
-              <v-layout row wrap>
-                <v-flex d-flex md12>
-                  <v-text-field color="blue-grey darken-2" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-form>
-        </v-card-text>
-        <v-card-actions>
-        <v-spacer></v-spacer>
-          <v-btn flat class="subheading" @click="editdialog = false">取消</v-btn>
-          <v-btn flat color="cyan" type="submit" class="subheading" @click="edittextsubmit()">確認</v-btn>
-        </v-card-actions>
-      </v-card>
     </v-dialog> -->
   </div>
 </div>
@@ -333,15 +281,32 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { createHelpers } from 'vuex-map-fields';
+import card from './forms/card'
 import UploadButton from 'vuetify-upload-button';
+
+const { mapFields: mapBoardFields } = createHelpers({
+  getterType: 'getBoardField',
+  mutationType: 'updateBoardField',
+});
+
+const { mapFields: mapCardFields } = createHelpers({
+  getterType: 'getCardField',
+  mutationType: 'updateCardField',
+});
+
+const { mapFields: mapListFields } = createHelpers({
+  getterType: 'getListField',
+  mutationType: 'updateListField',
+});
 
 export default {
   components: {
+    'form-card': card,
     'upload-btn': UploadButton
   },
   data() {
     return {
-      lists: [],
       arrows: 0,
       arrowconfig: [],
       labeltextconfig: [],
@@ -351,37 +316,6 @@ export default {
       peoplelist: [],
       datalist: [],
       snackbar: false,
-      board: {
-        id: '',
-        name: '',
-        desc: {
-          'title': '',
-          'person': '',
-          'date': null,
-          'department': '',
-          'link': ''
-        },
-        admin: [],
-        members: []
-      },
-      card: {
-        id: '',
-        title: '',
-        desc:{
-          explain:'',
-          responsetime: 'nowadays',
-          department: '',
-          background: '',
-          role: '',
-          peopleto: [],
-          peoplefrom: [],
-          data: [],
-          related: [],
-          attachment: '',
-          x: 0,
-          y: 0,
-        },
-      },
       textbox: {
         text: '',
         width: '180px',
@@ -405,9 +339,8 @@ export default {
           department: '',
           background: '',
           role: '',
-          peopleto: [],
-          peoplefrom: [],
-          data: [],
+          stakeholders: [],
+          evidences: [],
           related: [],
           attachment: '',
           x: 0,
@@ -431,9 +364,8 @@ export default {
           department: '',
           background: '',
           role: '',
-          peopleto: [],
-          peoplefrom: [],
-          data: [],
+          stakeholders: [],
+          evidences: [],
           related: [],
           attachment: '',
           x: 0,
@@ -449,9 +381,8 @@ export default {
           department: '',
           background: '',
           role: '',
-          peopleto: [],
-          peoplefrom: [],
-          data: [],
+          stakeholders: [],
+          evidences: [],
           related: [],
           attachment: '',
           x: 0,
@@ -461,7 +392,8 @@ export default {
     }
   },
   created: function() {
-    this.getcards()
+    this.$store.dispatch('getlists', this.$route.params.id)
+    /* this.getcards() */
     /* this.getlabeltextconfig() */
     this.getboard()
   },
@@ -474,7 +406,6 @@ export default {
       rects.each( r => {
         r.setZIndex(5)
         stage.draw()
-                console.log(r.getZIndex())
       })
     }, 1000)
     window.addEventListener('wheel', (e) => {
@@ -531,7 +462,7 @@ export default {
     )
   },
   methods: {
-    getcards: async function() {
+    /* getcards: async function() {
       this.lists = []
       let id = this.$route.params.id
       let listarray = await Trello.boards.get(id + '/lists',{cards: 'open'})
@@ -584,16 +515,12 @@ export default {
             card.hover = false
             card.tagsfrom = []
             card.tagsto = []
-            card.desc.peoplefrom.map( async (personid) => {
+            card.desc.stakeholders.map( async (personid) => {
               let person = await Trello.cards.get(personid)
               card.tagsfrom.push(person.name)
             })
-            card.desc.peopleto.map( async (personid) => {
-              let person = await Trello.cards.get(personid)
-              card.tagsto.push(person.name)
-            })
             card.attachments = []
-            card.desc.data.map( async (attachid) => {
+            card.desc.evidences.map( async (attachid) => {
               let attach = await Trello.cards.get(attachid,{fields: 'attachments',attachments: true})
               if (attach.attachments.length != 0) {
                 attach.attachments.map( async (att) => {
@@ -608,7 +535,7 @@ export default {
           this.lists.push(list)
         }
       }))
-    },
+    }, */
     getarrows: function() {
       let that = this
       this.arrows = 0
@@ -643,7 +570,8 @@ export default {
       }
     },
     getrectconfig: function(card) {
-      let tags = card.desc.peoplefrom.length + card.desc.peopleto.length + card.desc.data.length
+      console.log(card.desc.stakeholders)
+      let tags = 0/* card.desc.stakeholders.length + card.desc.evidences.length */
       if (tags < 2) { tags = 2 }
       return {
         fill: "#FBF0D3",
@@ -673,7 +601,7 @@ export default {
       return {
         x: 0,
         y: 10,
-        fill: card.color,
+        fill: card.categorycolor,
         width: 70,
         height: 20,
         lineJoin: 'round',
@@ -877,9 +805,8 @@ export default {
       this.card.id = card.id
       this.card.title = card.name
       this.card.desc.responsetime = card.desc.responsetime
-      this.card.desc.peopleto = card.desc.peopleto
-      this.card.desc.peoplefrom = card.desc.peoplefrom
-      this.card.desc.data = card.desc.data
+      this.card.desc.stakeholders = card.desc.stakeholders
+      this.card.desc.evidences = card.desc.evidences
       this.card.desc.related = card.desc.related
       this.card.desc.explain = card.desc.explain
       this.card.desc.role = card.desc.role
@@ -967,7 +894,7 @@ export default {
       this.newcard.desc.department= ''
       this.newcard.desc.background= ''
       this.newcard.desc.role= ''
-      this.newcard.desc.data = []
+      this.newcard.desc.evidences = []
     },
     changeresponsetime: function(card) {
       card.title = card.title.replace('[現在]','').replace('[未來]','')
@@ -1069,9 +996,26 @@ export default {
       stage.batchDraw();
     } */
   },
-  computed: mapGetters({
-    user: 'user',
-  }),
+  computed: {
+    ...mapGetters({
+      user: 'user',
+    }),
+    ...mapBoardFields({
+      board: 'board',
+    }),
+    ...mapCardFields({
+      card: 'card',
+      opencard: 'opencard',
+      selectedlist: 'selectedlist',
+      editable: 'editable',
+      titlestyle: 'titlestyle',
+      titlecolor: 'titlecolor',
+      relatedlist: 'relatedlist'
+    }),
+    ...mapListFields({
+      lists: 'lists',
+    }),
+  }
 }
 </script>
 

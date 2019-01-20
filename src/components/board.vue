@@ -22,12 +22,12 @@
     </v-layout>
     <v-layout row wrap>
       <v-flex md6>
-        <v-tabs left>
+        <v-tabs v-model="tab" left>
           <v-tabs-slider color="indigo"></v-tabs-slider>
-          <v-tab href="#tab-2" style="font-size: 1.2rem">
+          <v-tab href="#tab-1" style="font-size: 1.2rem" :to="{name:'board', params:{id:board.id}}">
             議題分析表
           </v-tab>
-          <v-tab href="#tab-1" style="font-size: 1.2rem" :to="{name:'mindmap', params:{id:board.id}}">
+          <v-tab href="#tab-2" style="font-size: 1.2rem" :to="{name:'mindmap', params:{id:board.id}}">
             心智圖
           </v-tab>
         </v-tabs>
@@ -210,6 +210,7 @@ export default {
       newmemberdialog: false,
       attsnackbar: false,
       boardtitledialog: false,
+      tab: 'tab-1',
     }
   },
   methods: {
