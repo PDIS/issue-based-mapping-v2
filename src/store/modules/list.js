@@ -65,6 +65,7 @@ const actions = {
           card.color = '#FBF0D3'
           card.categorycolor = list.color
           card.column = list.column
+          card.listname = list.name
           card.hover = false
           state.cards.push(card)
           card.desc.stakeholders.map( async (personid) => {
