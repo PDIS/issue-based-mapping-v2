@@ -4,6 +4,7 @@ import index from '@/components/index'
 import board from '@/components/board'
 import mindmap from '@/components/mindmap'
 import printout from '@/components/printout'
+import test from '@/components/mindmap-v2'
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ export default new Router({
       path: '/printout/:id',
       name: 'printout',
       component: printout
-    }
+    },
+    {
+      path: '/test/:id',
+      name: 'test',
+      component: test
+    },
   ]
 })
