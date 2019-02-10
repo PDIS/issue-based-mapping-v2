@@ -21,7 +21,7 @@ const actions = {
     state.lists = []
     let listarray = await Trello.boards.get(id + '/lists',{cards: 'open'})
     listarray.map( async (l) => {
-      if (l.name != '專有名詞字典') {
+      if (l.name != '專有名詞字典' && l.name != '利害關係人' && l.name != '佐證文件') {
         let list = {}
         list.id = l.id
         list.name = l.name

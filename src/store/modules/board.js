@@ -20,7 +20,8 @@ const state = {
       'issuesource': 'dep'
     },
     admin: [],
-    members: []
+    members: [],
+    avatars: []
   },
   openboard: false,
   selectedboardid: '',
@@ -54,15 +55,22 @@ const mutations = {
   getboardinfo (state, res) {
     state.board.admin = []
     state.board.members = []
+    state.board.avatars = []
     state.board.id = res.id
     state.board.name = res.name
     state.board.desc = JSON.parse(res.desc)
     res.memberships.map( m => {
       if (m.memberType == 'admin') {
         state.board.admin.push(m.idMember)
+        Trello.get('/members/' + m.idMember, (res) => {
+          state.board.avatars.push(res.avatarUrl);
+        })
       }
       else {
         state.board.members.push(m.idMember)
+        Trello.get('/members/' + m.idMember, (res) => {
+          state.board.avatars.push(res.avatarUrl);
+        })
       }
     })
   },

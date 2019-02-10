@@ -8,7 +8,7 @@
               <v-btn color="primary" icon flat @click="boardtitledialog = true" v-if="board.admin.includes(user.id)">
                 <v-icon>edit</v-icon>
               </v-btn>
-              <v-btn icon small fab disabled v-for="a in avatar" :key="a">
+              <v-btn icon small fab disabled v-for="a in board.avatars" :key="a">
                 <img :src="a+'/50.png'" style="border-radius:50%"/> 
               </v-btn>
               <v-icon  @click="new_member()" medium fab btn outline class=" dark ml-2" v-if="board.admin.includes(user.id)">person_add</v-icon>
@@ -836,11 +836,9 @@ export default {
     },
   },
   created: function() {
-    this.$store.dispatch('getuser')
-    this.$store.dispatch('getboardinfo', this.$route.params.id)
     this.$store.dispatch('getlists', this.$route.params.id)
     /* this.getcards() */
-    this.getavatar()
+    /* this.getavatar() */
     /* this.getmembers() */
     /* this.getattachments() */
   },

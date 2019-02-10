@@ -179,7 +179,6 @@ export default {
     },
   },
   created: function() {
-    this.$store.dispatch('getuser')
     this.$store.dispatch('getmembers')
     this.$store.dispatch('getboards')
   },

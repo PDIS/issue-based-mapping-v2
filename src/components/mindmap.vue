@@ -713,12 +713,12 @@ export default {
       window.open(attachment.url);
     },
     changecursor: function(mouseover) {
-      if (mouseover) {
+      /* if (mouseover) {
         document.body.style.cursor = 'pointer';
       }
       else {
         document.body.style.cursor = 'default';
-      }
+      } */
     },
     linkcard: function(card) {
       let that = this
