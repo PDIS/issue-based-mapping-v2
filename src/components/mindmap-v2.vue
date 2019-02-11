@@ -95,49 +95,61 @@ export default {
         list.cards.map( card => {
           let count = 0
           let newCardname = ''
-          let fontSize = 18
+          let fontSize = 16
           let rect = new fabric.Rect({
             width: 155,
             height: 170,
-            fill: '#FBF0D3' ,
-            /* stroke : 'black',
-            strokeWidth : 1, */
+            fill: 'white' ,
+            stroke : 'rgba(0,0,0,0.6)',
+            strokeWidth : 0.25,
             originX: 'center',
             originY: 'center',
           });
-          if (card.name.length < 6) {
-            newCardname = card.name
-            fontSize = 28
+          let shadow = {
+            color: 'rgba(0,0,0,0.6)',
+            blur: 20,    
+            offsetX: 5,
+            offsetY: 5,
+            opacity: 0.1,
+            fillShadow: true, 
+            strokeShadow: true 
           }
-          else {
-            for (let i = 1; i < card.name.length + 1 ; i++) {
-              if (i % 6 == 0) {
-                newCardname += card.name.substring(count , i) + ' ' 
-                count = i
-              } else if (i == card.name.length) {
-                newCardname += card.name.substring(count , i) 
-              }
+          rect.setShadow(shadow);
+          for (let i = 1; i < card.name.length + 1 ; i++) {
+            if (i % 8 == 0) {
+              newCardname += card.name.substring(count , i) + ' ' 
+              count = i
+            } else if (i == card.name.length) {
+              newCardname += card.name.substring(count , i) 
             }
           }
           let text = new fabric.Textbox( newCardname, {
-            textAlign: 'center',
+            textAlign: 'justify-left',
+            fill:'rgba(0,0,0,100)',
             fontSize: fontSize,
-            originX: 'center',
+            originX: 0.5,
             originY: 0.3,
             fontFamily:  "Roboto, 'Noto Sans TC'" ,
-            fixedWidth: 100
+            fixedWidth: 155
           });
           let category = new fabric.Textbox( list.name, {
             textAlign: 'left',
-            fontSize: 14,
+            fontSize: 18,
             left: -65,
-            top: -65,
-            backgroundColor: card.color,
+            top: -70,
+            /* backgroundColor: card.color, */
             fontFamily:  "Roboto, 'Noto Sans TC'" ,
             fixedWidth: 100,
             maxLines: 2
           });
-          let group = new fabric.Group([ rect, text, category ], {
+          let divider = new fabric.Rect({
+            width: 155,
+            height: 5,
+            fill: card.color ,
+            left: -79,
+            top: -45,
+          });
+          let group = new fabric.Group([ rect, text, category,divider ], {
             id: card.id,
             left: card.desc.x,
             top: card.desc.y,
