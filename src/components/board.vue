@@ -37,7 +37,7 @@
           <!-- <v-btn @click="relationmode = true" v-if="relationmode == false">關聯卡片</v-btn>
           <v-btn color="blue-grey darken-2" dark @click="endrelationmode()" v-if="relationmode == true">關聯卡片</v-btn> -->
           <v-btn flat target="_blank" :href="board.desc.link">會議記錄連結</v-btn>
-          <v-btn flat :to="{name:'printout', params:{id:board.id}}">輸出文件</v-btn>
+          <v-btn disabled flat :to="{name:'printout', params:{id:board.id}}">輸出文件</v-btn>
           <v-btn flat @click.stop="opendictionary = !opendictionary">專有名詞字典</v-btn>
           <!-- <v-btn flat :to="{name:'mindmap', params:{id:board.id}}">{{ $t("Mind Mapping") }}</v-btn> -->
         </v-layout>

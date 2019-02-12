@@ -7,13 +7,19 @@
     temporary
   >
     <v-toolbar color="#FFCD13">
-       <v-toolbar-title>專有名詞字典/筆記</v-toolbar-title>
+       <v-toolbar-title>專有名詞字典/筆記
+         <v-tooltip bottom>
+          <v-icon slot="activator" class="ml-1">info</v-icon>
+          <span>你可以於此新增議題相關專有名詞及其解釋，以利同仁間建立共同語言</span>
+        </v-tooltip>
+      </v-toolbar-title>
     </v-toolbar>
-    <v-card color="#FBF0D3">
+    <v-text-field color="blue-grey darken-4" prepend-icon="search" label="搜尋關鍵字" single-line v-model="search"></v-text-field>
+<!--     <v-card color="#FBF0D3">
       <v-card-title>
         <p>你可以於此新增議題相關專有名詞及其解釋，以利同仁間建立共同語言</p>
       </v-card-title>
-    </v-card>
+    </v-card> -->
     <v-btn flat color="primary" v-if="newdictionarymode == false"  @click.native="newdictionarymode = true">+新增專有名詞</v-btn>
     <v-container grid-list-xs v-if="newdictionarymode == true">
       <v-layout row wrap>
@@ -36,7 +42,7 @@
     </v-container>
     <v-list two-line subheader>
       <v-list-tile
-        v-for="dic in dictionaries"
+        v-for="dic in filteredList"
         :key="dic.id"
         @click="editDictionary(dic)"
       >
