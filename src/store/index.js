@@ -18,6 +18,5 @@ export default new Vuex.Store({
     dictionary,
     snackbar
   },
-  strict: true,
   namespaced: true
 })

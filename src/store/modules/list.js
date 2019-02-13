@@ -8,8 +8,22 @@ const { getListField, updateListField } = createHelpers({
 const state = {
   lists: [],
   cards: [],
-  stakeholderslist: [],
-  evidenceslist: [],
+  stakeholders: [],
+  evidences: [],
+  stakeholderList : {
+    id: '',
+    name: '',
+    color: '',
+    cards: [],
+    column: '',
+  },
+  evidenceList : {
+    id: '',
+    name: '',
+    color: '',
+    cards: [],
+    column: '',
+  },
 }
 
 const getters = {
@@ -21,7 +35,7 @@ const actions = {
     state.lists = []
     let listarray = await Trello.boards.get(id + '/lists',{cards: 'open'})
     listarray.map( async (l) => {
-      if (l.name != '專有名詞字典' && l.name != '利害關係人' && l.name != '佐證文件') {
+      if (l.name != '專有名詞字典') {
         let list = {}
         list.id = l.id
         list.name = l.name
@@ -68,8 +82,9 @@ const actions = {
           card.listname = list.name
           card.hover = false
           state.cards.push(card)
-          card.desc.stakeholders.map( async (personid) => {
-            let person = await Trello.cards.get(personid)
+          card.tagsfrom = []
+          card.desc.stakeholders.map( async (stakeholder) => {
+            let person = await Trello.cards.get(stakeholder.id)
             card.tagsfrom.push(person.name)
           })
           let attach = await Trello.cards.get(card.id,{fields: 'attachments',attachments: true})
@@ -93,25 +108,31 @@ const actions = {
     dispatch('getevidences')
   },
   getstakeholders ({commit}) {
+    state.stakeholders = []
     state.lists.map(list => {
       if (list.name == '利害關係人') {
+        state.stakeholderList.id = list.id
+        state.stakeholderList.name = list.name
+        state.stakeholderList.cards = list.cards
+        state.stakeholderList.color = '#0097A7'
+        state.stakeholderList.column = 6
         list.cards.map( stakeholder => {
-          state.stakeholderslist.push({
-            'id': stakeholder.id,
-            'name': stakeholder.name
-          })
+          state.stakeholders.push(stakeholder)
         })
       }
     })
   },
   getevidences ({commit}) {
+    state.evidences = []
     state.lists.map(list => {
       if (list.name == '佐證文件') {
+        state.evidenceList.id = list.id
+        state.evidenceList.name = list.name
+        state.evidenceList.cards = list.cards
+        state.evidenceList.color = '#CFD8DC'
+        state.evidenceList.column = 7
         list.cards.map( evidence => {
-          state.evidenceslist.push({
-            'id': evidence.id,
-            'name': evidence.name
-          })
+          state.evidences.push(evidence)
         })
       }
     })

@@ -29,7 +29,9 @@ const state = {
   titlecolor: '',
   titlestyle: 'border-bottom: 0.5vh solid ' ,
   relatedlist: [],
-
+  deleteCard: false,
+  deletedID: '',
+  attachsnackbar: false,
 }
 
 const getters = {

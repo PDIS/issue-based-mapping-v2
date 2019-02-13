@@ -77,8 +77,8 @@ export default {
     }),
     ...mapListFields({
       lists: 'lists',
-      stakeholderslist: 'stakeholderslist',
-      evidenceslist: 'evidenceslist',
+      stakeholders: 'stakeholders',
+      evidences: 'evidences',
     }),
   }
 }

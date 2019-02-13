@@ -6,7 +6,7 @@
         <v-spacer></v-spacer>
         <div v-if="(board.admin.includes(user.id) || board.members.includes(user.id)) && editable == true">
           <v-btn flat color="grey" class="subheading" @click="resetForm">重新填寫</v-btn>
-          <v-btn flat color="red lighten-1" class="subheading"  @click.native.stop="deletedialog=true;selectedid=card.id">刪除便利貼</v-btn>
+          <v-btn flat color="red lighten-1" class="subheading"  @click.native.stop="deleteCard = true; deletedID = card.id">刪除便利貼</v-btn>
         </div>
       </v-card-title>
       <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="submit">
@@ -64,7 +64,37 @@
               </v-layout>
               <v-layout row wrap v-if="selectedlist.name == '佐證文件'">
                 <v-flex flex xs12>
-                  <v-text-field color="blue-grey darken-2" label="文件連結"  v-model="card.desc.attachment"></v-text-field>
+                  <v-layout row wrap>
+                    <v-flex md12>
+                      <v-radio-group v-model="attachmentselection" row >
+                        <v-radio label="新增連結" value="attachmentlink"></v-radio>
+                        <v-radio label="上傳檔案" value="attachmentupload"></v-radio>
+                      </v-radio-group>
+                    </v-flex>
+                    <v-layout row wrap v-if="attachmentselection == 'attachmentlink'">
+                      <v-flex md12>
+                        <v-text-field color="blue-grey darken-2" label="文件連結"  v-model="card.desc.attachment"></v-text-field>
+                      </v-flex>
+                    </v-layout>
+                    <v-layout row wrap v-if="attachmentselection == 'attachmentupload'">
+                      <v-flex md4>
+                        <upload-btn depressed outline title="附加檔案" :fileChangedCallback="fileChanged" class="mt-3">
+                          <template slot="icon-left">
+                            <v-icon left>attach_file</v-icon>
+                          </template>
+                        </upload-btn>
+                      </v-flex>
+                      <v-flex md2>
+                        <h3 class="mt-4">{{filename}}</h3>
+                      </v-flex>
+                    </v-layout>
+                    <!-- <v-flex md12>
+                      <v-layout align-center justify-end row fill-height>
+                        <v-btn color="black" class="mt-3" small outline @click.native="newattachmentmode = false; newcard.title = ''; newcard.desc.attachment = '';" >取消</v-btn>
+                        <v-btn color="black" class="mt-3" small dark @click.native="newattachmentmode = false; addattachment(card)">確定</v-btn>
+                      </v-layout>
+                    </v-flex> -->
+                  </v-layout>
                 </v-flex>
               </v-layout>
             </v-flex>
@@ -107,7 +137,19 @@
                 <v-flex flex xs12 >
                   <v-select
                     v-model="card.desc.stakeholders"
-                    :items="stakeholderslist"
+                    :items="stakeholders"
+                    item-text="name"
+                    item-value="id"
+                    label="關聯利害關係人(資料來源)"     
+                    return-object
+                    chips
+                    multiple
+                    deletable-chips
+                    no-data-text="目前尚無資料"
+                  ></v-select>
+                  <!-- <v-select
+                    v-model="card.desc.stakeholders"
+                    :items="stakeholders"
                     item-text="name"
                     item-value="id"
                     label="關聯利害關係人(資料來源)"                     
@@ -126,7 +168,7 @@
                         <v-list-tile-content v-text="data.item.name"></v-list-tile-content> 
                       </template>
                     </template>                                        
-                  </v-select>
+                  </v-select> -->
                 </v-flex>
               </v-layout>
             </v-flex>
@@ -160,15 +202,12 @@
                   <v-flex md2>
                     <h3 class="mt-4">{{filename}}</h3>
                   </v-flex>
-                  <v-flex md12>
-
-                  </v-flex>
                 </v-layout>
                 <v-flex md12>
                   <v-layout align-center justify-end row fill-height>
-                  <v-btn color="black" class="mt-3" small outline @click.native="newattachmentmode = false; newcard.title = ''; newcard.desc.attachment = '';" >取消</v-btn>
-                  <v-btn color="black" class="mt-3" small dark @click.native="newattachmentmode = false; addattachment(card)">確定</v-btn>
-                </v-layout>
+                    <v-btn color="black" class="mt-3" small outline @click.native="newattachmentmode = false; newcard.title = ''; newcard.desc.attachment = '';" >取消</v-btn>
+                    <v-btn color="black" class="mt-3" small dark @click.native="newattachmentmode = false; addattachment(card)">確定</v-btn>
+                  </v-layout>
                 </v-flex>
               </v-layout>
             </v-flex>
@@ -177,7 +216,19 @@
                 <v-flex flex xs12 >
                   <v-select
                     v-model="card.desc.evidences"
-                    :items="evidenceslist"
+                    :items="evidences"
+                    item-text="name"
+                    item-value="id"
+                    label="選取佐證文件"     
+                    return-object
+                    chips
+                    multiple
+                    deletable-chips
+                    no-data-text="目前尚無資料"
+                  ></v-select>
+                  <!-- <v-select
+                    v-model="card.desc.evidences"
+                    :items="evidences"
                     item-text="name"
                     item-value="id"
                     label="選取佐證文件"
@@ -193,7 +244,7 @@
                       </v-list-tile-avatar>
                       <v-list-tile-content v-text="data.item.name"></v-list-tile-content>
                     </template>
-                  </v-select>
+                  </v-select> -->
                 </v-flex>
               </v-layout>
             </v-flex>
@@ -201,6 +252,19 @@
               <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '利害關係人'">
                 <v-flex flex xs12 >
                   <v-select
+                    v-model="card.desc.related"
+                    :items="relatedlist"
+                    item-text="name"
+                    item-value="id"
+                    label="關聯卡片"     
+                    return-object
+                    chips
+                    multiple
+                    deletable-chips
+                    no-data-text="目前尚無資料"
+                    prepend-icon="fa-link"
+                  ></v-select>
+                  <!-- <v-select
                     v-model="card.desc.related"
                     :items="relatedlist"
                     item-text="name"
@@ -219,33 +283,25 @@
                       </v-list-tile-avatar>
                       <v-list-tile-content v-text="data.item.name"></v-list-tile-content>
                     </template>
-                  </v-select>
+                  </v-select> -->
                 </v-flex>
               </v-layout>
             </v-flex>
-            <v-flex flex xs12 v-if="selectedlist.name == '佐證文件' && (board.admin.includes(user.id) || board.members.includes(user.id)) && editable == true && card.attachments == undefined">
-              <input type="file" @change="onFileChange">
-              <v-btn color="blue-grey" class="white--text" @click.prevent="upload(card)">
-                上傳檔案
-                <v-icon right dark >cloud_upload</v-icon>
-              </v-btn>
-            </v-flex>
+           
             <v-flex flex xs12 v-if="selectedlist.name == '佐證文件' && editable == true && card.attachments != undefined && card.attachments.preview != undefined">
               <v-card>
                 <v-card-media
                   :src="card.attachments.preview.url"
                   :height="card.attachments.preview.height"
                 ></v-card-media>
-
                 <v-card-title primary-title>
                   <div>
                     <h3 class="headline mb-0">{{card.attachments.name}}</h3>
                   </div>
                 </v-card-title>
-
                 <v-card-actions>
                   <v-btn flat color="" target="_blank" :href="card.attachments.url">下載附件</v-btn>
-                  <v-btn flat color="error" @click="deleteattachment(card)">刪除附件</v-btn>
+                  <v-btn flat color="error" @click="deleteAttachment(card)">刪除附件</v-btn>
                 </v-card-actions>
               </v-card>
             </v-flex>
@@ -256,10 +312,9 @@
                     <h3 class="headline mb-0">{{card.attachments.name}}</h3>
                   </div>
                 </v-card-title>
-
                 <v-card-actions>
                   <v-btn flat color="" target="_blank" :href="card.attachments.url">下載附件</v-btn>
-                  <v-btn flat color="error" @click="deleteattachment(card)">刪除附件</v-btn>
+                  <v-btn flat color="error" @click="deleteAttachment(card)">刪除附件</v-btn>
                 </v-card-actions>
               </v-card>
             </v-flex>
@@ -368,7 +423,7 @@ export default {
         if (l.name == '利害關係人') {
           Trello.post('cards', {'name': this.newcard.title, 'idList': l.id,'desc': JSON.stringify(this.newcard.desc) } , function(res) {
             that.newcard.title = ''
-            card.desc.stakeholders.push(res.id)
+            card.desc.stakeholders.push(res)
             that.$store.dispatch('getlists', that.$route.params.id)
             let snackbar = {
               state: true,
@@ -425,12 +480,31 @@ export default {
         }
       })
     },
+    deleteAttachment: function(card) {
+      let that = this
+      Trello.delete('cards/' + card.id + '/attachments/' + card.attachments.id, function() {
+        let snackbar = {
+          state: true,
+          color: 'success',
+          text: '刪除'
+        }
+        that.$store.dispatch('getsnackbar', snackbar)
+        that.$store.dispatch('getlists', that.$route.params.id)
+        that.opencard = false
+      })
+    },
     fileChanged: function(file) {
+      let title = ''
+      if (this.newcard.title != '') {
+        title = this.newcard.title
+      } else {
+        title = this.card.title
+      }
       let formData = new FormData();
       formData.append('key','fb8dab318e1888679f571104d8b36ac7')
       formData.append('token',localStorage.trello_token)
       formData.append("file", file)
-      formData.append("name", this.newattachment.title);
+      formData.append("name", title);
       this.filename = file.name
       this.uploadfile = formData
     },
@@ -453,40 +527,73 @@ export default {
           this.card.desc.y = this.selectedlist.column * 150 
           Trello.post('cards', {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc)} , function(res) {
             if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
-              if (that.card.attachments == undefined) {
-                Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
-                  window.location.reload(true);
-                })
-              } else if (that.card.desc.attachment == that.card.attachments.url) {
-                window.location.reload(true);
-              } else {
-                that.attsnackbar = true
-              }
+              Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
+                let snackbar = {
+                  state: true,
+                  color: 'success',
+                  text: '新增'
+                }
+                that.$store.dispatch('getsnackbar', snackbar)
+                that.opencard = false
+                that.$store.dispatch('getlists', that.$route.params.id)
+              })
             } else {
-              let snackbar = {
-                state: true,
-                color: 'success',
-                text: '新增'
+              if (that.card.attachments == undefined) {
+                let request = new XMLHttpRequest()
+                request.responseType = "json"
+                request.onreadystatechange = function() {
+                  if (request.readyState === 4) {
+                    let snackbar = {
+                      state: true,
+                      color: 'success',
+                      text: '新增'
+                    }
+                    that.$store.dispatch('getsnackbar', snackbar)
+                    that.opencard = false
+                    that.$store.dispatch('getlists', that.$route.params.id)
+                  }
+                }
+                request.open("POST", 'https://api.trello.com/1/cards/' +  res.id + '/attachments/')
+                request.send(that.uploadfile)
               }
-              that.$store.dispatch('getsnackbar', snackbar)
-              that.opencard = false
-              that.$store.dispatch('getlists', that.$route.params.id)
             }
           })
         }
         else {
           Trello.put('cards/' + this.card.id, {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function(res) {
-            if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
-              if (that.card.attachments == undefined) {
+            if (that.card.attachments == undefined) {
+              if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
                 Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
-                  window.location.reload(true);
+                  let snackbar = {
+                    state: true,
+                    color: 'success',
+                    text: '新增'
+                  }
+                  that.$store.dispatch('getsnackbar', snackbar)
+                  that.opencard = false
+                  that.$store.dispatch('getlists', that.$route.params.id)
                 })
-              } else if (that.card.desc.attachment == that.card.attachments.url) {
-                window.location.reload(true);
               } else {
-                that.attsnackbar = true
+                if (that.card.attachments == undefined) {
+                  let request = new XMLHttpRequest()
+                  request.responseType = "json"
+                  request.onreadystatechange = function() {
+                    if (request.readyState === 4) {
+                      let snackbar = {
+                        state: true,
+                        color: 'success',
+                        text: '新增'
+                      }
+                      that.$store.dispatch('getsnackbar', snackbar)
+                      that.opencard = false
+                      that.$store.dispatch('getlists', that.$route.params.id)
+                    }
+                  }
+                  request.open("POST", 'https://api.trello.com/1/cards/' +  res.id + '/attachments/')
+                  request.send(that.uploadfile)
+                }
               }
-            } else {
+            } else if (that.card.desc.attachment == that.card.attachments.url.replace('http://','')) {
               let snackbar = {
                 state: true,
                 color: 'success',
@@ -495,6 +602,26 @@ export default {
               that.$store.dispatch('getsnackbar', snackbar)
               that.opencard = false
               that.$store.dispatch('getlists', that.$route.params.id)
+            } else if (that.filename == that.card.attachments.name) {
+              let snackbar = {
+                state: true,
+                color: 'success',
+                text: '修改'
+              }
+              that.$store.dispatch('getsnackbar', snackbar)
+              that.opencard = false
+              that.$store.dispatch('getlists', that.$route.params.id)
+            } else if (that.card.desc.attachment == '' || that.card.desc.attachment == undefined) {
+              let snackbar = {
+                state: true,
+                color: 'success',
+                text: '修改'
+              }
+              that.$store.dispatch('getsnackbar', snackbar)
+              that.opencard = false
+              that.$store.dispatch('getlists', that.$route.params.id)
+            } else {
+              that.attachsnackbar = true
             }
           })
         }
@@ -515,12 +642,15 @@ export default {
       editable: 'editable',
       titlestyle: 'titlestyle',
       titlecolor: 'titlecolor',
-      relatedlist: 'relatedlist'
+      relatedlist: 'relatedlist',
+      deleteCard: 'deleteCard',
+      deletedID: 'deletedID',
+      attachsnackbar: 'attachsnackbar'
     }),
     ...mapListFields({
       lists: 'lists',
-      stakeholderslist: 'stakeholderslist',
-      evidenceslist: 'evidenceslist',
+      stakeholders: 'stakeholders',
+      evidences: 'evidences',
     }),
   }
 }

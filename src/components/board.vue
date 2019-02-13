@@ -42,9 +42,17 @@
           <!-- <v-btn flat :to="{name:'mindmap', params:{id:board.id}}">{{ $t("Mind Mapping") }}</v-btn> -->
         </v-layout>
       </v-flex>
+      <v-flex md12>
+        <v-btn flat icon @click.native="openstakeholders = true">
+          <v-icon large>supervisor_account</v-icon>
+        </v-btn>
+        <v-btn flat icon @click.native="openevidences = true">
+          <v-icon large>attachment</v-icon>
+        </v-btn>
+      </v-flex>
     </v-layout>
     <v-layout row>
-      <v-flex xs12 md4 lg3 v-for="(list) in lists" :key="list.id">
+      <v-flex xs12 md4 lg3 v-for="(list) in lists" :key="list.id" v-show="list.name != '利害關係人' && list.name != '佐證文件'">
         <!-- <v-toolbar dense flat text-ms-center :color="list.color" >
           <v-toolbar-title class="subheading">{{list.name}}</v-toolbar-title>
         </v-toolbar> -->
@@ -54,7 +62,7 @@
             {{list.name}}
           </v-card-title>
         </v-card>
-        <v-card class="elevation-5" tile>
+        <v-card class="elevation-5" tile v-show="list.name != '利害關係人' && list.name != '佐證文件'">
           <v-container fluid grid-list-xs align-center class="pa-2">
             <draggable ml-0 :id="list.id" :options="{group:'cards',animation:200}" @add="movecard" style="min-height:1em" >
               <!-- <v-card :color="card.color" :dark="card.hover" hover v-for="card in searchcards(list)" :key="card.id" class="mb-2" style="margin:0; width:100%" :id="card.id" @mouseup="editcard(card,list)" @mouseover="hover = true;changecolor(card,list)" @mouseout="hover = false;changecolor(card,list)"> -->
@@ -74,13 +82,13 @@
       </v-flex>
     </v-layout>
     <form-card></form-card>
-    <v-dialog v-model="deletedialog" max-width="290">
+    <v-dialog v-model="deleteCard" max-width="290">
       <v-card>
         <v-card-title class="headline">確定刪除?</v-card-title>
         <v-card-text></v-card-text>
         <v-card-actions>
-          <v-btn color="blue" flat="flat" @click.native="deletedialog=false; closecard(card.id)">確定</v-btn>
-          <v-btn color="black" flat="flat" @click.native="deletedialog=false" >取消</v-btn>
+          <v-btn color="blue" flat="flat" @click.native="deleteCard=false; closecard(deletedID)">確定</v-btn>
+          <v-btn color="black" flat="flat" @click.native="deleteCard=false" >取消</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -112,7 +120,7 @@
         <v-container>
           <v-layout>
             <v-flex>
-          <v-text-field  color="grey darken-4" class="mt-0 mb-0" label="email address or name" value="Input text" v-model="email"></v-text-field> 
+          <v-text-field  color="grey darken-4" class="mt-0 mb-0" label="請輸入email(可輸入多個email，中間以 , 分開)" value="Input text" v-model="email"></v-text-field> 
           </v-flex>
           </v-layout>
         </v-container>
@@ -129,10 +137,10 @@
     <v-snackbar
       :timeout="5000"
       top="top"
-      v-model="attsnackbar"
+      v-model="attachsnackbar"
     >
       請先刪除附件再重新上傳!
-      <v-btn flat color="pink" @click.native="attsnackbar = false">關閉</v-btn>
+      <v-btn flat color="pink" @click.native="attachsnackbar = false">關閉</v-btn>
     </v-snackbar>
     <v-dialog v-model="boardtitledialog" max-width="50vw">
       <v-card>
@@ -151,6 +159,38 @@
           <v-spacer></v-spacer>
           <v-btn flat class="subheading" @click="getboardinfo();boardtitledialog = false">取消</v-btn>
           <v-btn flat color="cyan" type="submit" class="subheading" @click="editboardtitle()">確認</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="openstakeholders" max-width="50vw">
+      <v-card>
+        <v-card-title>
+          <h2 style="border-bottom: 0.5vh solid #21B5C2">利害關係人</h2>
+        </v-card-title>
+        <v-card-text>
+          <p>請選點利害關係人即可開始編輯該人物之相關資訊</p>
+          <v-btn outline class="elevation-5" v-for="stakeholder in stakeholders " :key="stakeholder.id"  @click.native="editcard(stakeholder, stakeholderList)">{{stakeholder.name}}</v-btn>
+          <v-btn flat color="primary" @click.native="newcard(stakeholderList)">+新增利害關係人</v-btn>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat class="subheading" @click="openstakeholders = false">關閉</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="openevidences" max-width="50vw">
+      <v-card>
+        <v-card-title>
+          <h2 style="border-bottom: 0.5vh solid #21B5C2">佐證文件</h2>
+        </v-card-title>
+        <v-card-text>
+          <p>請選點Ｖ即可開始編輯該文件之相關資訊</p>
+          <v-btn outline class="elevation-5" v-for="evidence in evidences " :key="evidence.id"  @click.native="editcard(evidence, evidenceList)">{{evidence.name}}</v-btn>
+          <v-btn flat color="primary" @click.native="newcard(evidenceList)">+新增佐證文件</v-btn>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat class="subheading" @click="openevidences = false">關閉</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -202,15 +242,15 @@ export default {
       success: '',
       show_new_member: false,
       search: '',
-      deletedialog: false,
       email: '',
       hover: false,
       relationmode: false,
       firstcard: {},
       newmemberdialog: false,
-      attsnackbar: false,
       boardtitledialog: false,
       tab: 'tab-1',
+      openstakeholders: false,
+      openevidences: false,
     }
   },
   methods: {
@@ -297,6 +337,8 @@ export default {
           this.card.desc.role = card.desc.role
           this.card.desc.department = card.desc.department
           this.card.desc.background = card.desc.background
+          this.card.desc.stakeholders = card.desc.stakeholders
+          this.card.desc.evidences = card.desc.evidences
           this.card.desc.attachment = card.desc.attachment 
           this.card.desc.x = card.desc.x
           this.card.desc.y = card.desc.y
@@ -386,7 +428,7 @@ export default {
           color: 'success',
           text: '刪除'
         }
-        that.closeDialog()
+        that.opencard = false
         that.$store.dispatch('getsnackbar', snackbar)
       })
     },
@@ -415,10 +457,17 @@ export default {
       })
       this.members = heremembers
     },
-    newmember: function() {      
-      for (let this_email of this.email.split(", ")) {
+    newmember: function() {
+      let that = this      
+      for (let this_email of this.email.replace(' ','').split(",")) {
         Trello.put('boards/' + this.board.id +'/members' ,{'email':this_email ,'type':'normal'},function(res) {
-          window.location.reload(true);
+          let snackbar = {
+            state: true,
+            color: 'success',
+            text: '新增'
+          }
+          that.$store.dispatch('getsnackbar', snackbar)
+          that.$store.dispatch('getboardinfo', that.$route.params.id)
         })
       }
     },
@@ -737,7 +786,7 @@ export default {
         request.open("POST", 'https://api.trello.com/1/cards/' + card.id + '/attachments/')
         request.send(this.uploadfile)
       } else {
-        this.attsnackbar = true
+        this.attachsnackbar = true
       }
     },
 /*     changeresponsetime: function(card) {
@@ -827,7 +876,7 @@ export default {
                 request.open("POST", 'https://api.trello.com/1/cards/' +  res.id + '/attachments/')
                 request.send(that.uploadfile)
               } else {
-                /* this.attsnackbar = true */
+                /* this.attachsnackbar = true */
               }
             }
           })
@@ -856,10 +905,17 @@ export default {
       editable: 'editable',
       titlestyle: 'titlestyle',
       titlecolor: 'titlecolor',
-      relatedlist: 'relatedlist'
+      relatedlist: 'relatedlist',
+      deleteCard: 'deleteCard',
+      deletedID: 'deletedID',
+      attachsnackbar: 'attachsnackbar',
     }),
     ...mapListFields({
       lists: 'lists',
+      stakeholders: 'stakeholders',
+      evidences: 'evidences',
+      stakeholderList: 'stakeholderList',
+      evidenceList: 'evidenceList',
     }),
     ...mapDictionaryFields({
       opendictionary: 'opendictionary',
