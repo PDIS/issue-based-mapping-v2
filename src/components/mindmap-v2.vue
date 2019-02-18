@@ -96,9 +96,11 @@ export default {
           let count = 0
           let newCardname = ''
           let fontSize = 16
+          let element = []
+          let height = (card.desc.stakeholders.length + card.desc.evidences.length) / 2 * 20 + 170
           let rect = new fabric.Rect({
             width: 155,
-            height: 170,
+            height: height,
             fill: 'white' ,
             stroke : 'rgba(0,0,0,0.6)',
             strokeWidth : 0.25,
@@ -149,7 +151,25 @@ export default {
             left: -79,
             top: -45,
           });
-          let group = new fabric.Group([ rect, text, category,divider ], {
+          element.push(rect)
+          element.push(text)
+          element.push(category)
+          element.push(divider)
+          let ss = 0
+          card.desc.stakeholders.map( s => {
+            let stakeholder = new fabric.Textbox( s.name, {
+              textAlign: 'left',
+              fontSize: 14,
+              left: -65,
+              top: 60 + ss*20,
+              backgroundColor: '#D2B4DE',
+              fontFamily:  "Roboto, 'Noto Sans TC'" ,
+              fixedWidth: 50,
+            });
+             element.push(stakeholder)
+             ss++
+          })
+          let group = new fabric.Group(element, {
             id: card.id,
             left: card.desc.x,
             top: card.desc.y,
@@ -180,6 +200,16 @@ export default {
         }
       };
       canvas.on('object:moved', moveHandler);
+      canvas.on('mouse:wheel', function(opt) {
+        let delta = opt.e.deltaY;
+        let zoom = canvas.getZoom();
+        zoom = zoom + delta/2000;
+        if (zoom > 20) zoom = 20;
+        if (zoom < 0.01) zoom = 0.01;
+        canvas.setZoom(zoom);
+        opt.e.preventDefault();
+        opt.e.stopPropagation();
+      })
     },
   },
   mounted: function() {
