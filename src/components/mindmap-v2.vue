@@ -1,14 +1,75 @@
 <template>
   <div style="width: 100%; height: 100%">
+    <v-container grid-list-md>
+      <v-layout row>
+        <v-flex xs9>
+          <v-card flat class="mt-1">
+            <v-card-text>
+              <div class="headline"># {{board.name}} 
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-flex>
+      </v-layout>
+      <v-layout row wrap>
+        <v-flex md12>
+          <v-tabs v-model="tab" left class="mt-2">
+            <v-tabs-slider color="indigo"></v-tabs-slider>
+            <v-tab href="#tab-2" style="font-size: 1.2rem" :to="{name:'board', params:{id:board.id}}">
+              議題分析表
+            </v-tab>
+            <v-tab href="#tab-1" style="font-size: 1.2rem">
+              心智圖
+            </v-tab>
+          </v-tabs>
+        </v-flex>
+        <!-- <v-flex md12>
+          <v-btn-toggle v-model="mouseMode">
+            <v-btn flat>
+              <v-icon>pan_tool</v-icon>
+            </v-btn>
+            <v-btn flat>
+              <v-icon>select_all</v-icon>
+            </v-btn>
+          </v-btn-toggle>
+        </v-flex> -->
+      </v-layout>
+    </v-container>
     <canvas id="mindmap"></canvas>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+import { createHelpers } from 'vuex-map-fields';
+import card from './forms/card'
+import UploadButton from 'vuetify-upload-button';
+
+const { mapFields: mapBoardFields } = createHelpers({
+  getterType: 'getBoardField',
+  mutationType: 'updateBoardField',
+});
+
+const { mapFields: mapCardFields } = createHelpers({
+  getterType: 'getCardField',
+  mutationType: 'updateCardField',
+});
+
+const { mapFields: mapListFields } = createHelpers({
+  getterType: 'getListField',
+  mutationType: 'updateListField',
+});
+
 export default {
+  components: {
+    'form-card': card,
+    'upload-btn': UploadButton
+  },
   data() {
     return {
       lists: [],
+      tab: 'tab-1',
+      mouseMode: 0
     }
   },
   methods: {
@@ -89,7 +150,7 @@ export default {
     draw: function() {
       let canvas = new fabric.Canvas('mindmap',{
         width: window.innerWidth,
-        height: window.innerHeight - 64
+        height: window.innerHeight
       });
       this.lists.map( list => {
         list.cards.map( card => {
@@ -227,13 +288,36 @@ export default {
       canvas.on('mouse:wheel', function(opt) {
         let delta = opt.e.deltaY;
         let zoom = canvas.getZoom();
-        zoom = zoom + delta/2000;
+        zoom = zoom - delta/2000;
         if (zoom > 20) zoom = 20;
         if (zoom < 0.01) zoom = 0.01;
         canvas.setZoom(zoom);
         opt.e.preventDefault();
         opt.e.stopPropagation();
       })
+      canvas.on('mouse:down:before', function(opt) {
+        var evt = opt.e;
+        if (evt.button != 0) {
+          this.isDragging = true;
+          this.selection = false;
+          this.lastPosX = evt.clientX;
+          this.lastPosY = evt.clientY;
+        }
+      })
+      canvas.on('mouse:move', function(opt) {
+        if (this.isDragging) {
+          var e = opt.e;
+          this.viewportTransform[4] += e.clientX - this.lastPosX;
+          this.viewportTransform[5] += e.clientY - this.lastPosY;
+          this.requestRenderAll();
+          this.lastPosX = e.clientX;
+          this.lastPosY = e.clientY;
+        }
+      });
+      canvas.on('mouse:up:before', function(opt) {
+        this.isDragging = false;
+        this.selection = true;
+      });
     },
   },
   mounted: function() {
@@ -241,10 +325,20 @@ export default {
   },
   created: function() {
     this.getcards().then( () => this.draw() )
+  },
+  computed: {
+    ...mapGetters({
+      user: 'user',
+    }),
+    ...mapBoardFields({
+      board: 'board',
+    }),
   }
 }
 </script>
 
 <style>
-
+.canvas-container {
+  position: fixed !important
+}
 </style>

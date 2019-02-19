@@ -2,7 +2,7 @@
   <v-container grid-list-md>
     <v-layout row>
       <v-flex xs9>
-        <v-card flat class="mt-2">
+        <v-card flat class="">
           <v-card-text>
             <div class="headline"># {{board.name}} 
               <v-btn color="primary" icon flat @click="boardtitledialog = true" v-if="board.admin.includes(user.id)">
@@ -33,7 +33,7 @@
         </v-tabs>
       </v-flex>
       <v-flex md6>
-        <v-layout align-center justify-start row reverse fill-height class="mb-2">
+        <v-layout align-center justify-start row reverse fill-height>
           <!-- <v-btn @click="relationmode = true" v-if="relationmode == false">關聯卡片</v-btn>
           <v-btn color="blue-grey darken-2" dark @click="endrelationmode()" v-if="relationmode == true">關聯卡片</v-btn> -->
           <v-btn flat target="_blank" :href="board.desc.link">會議記錄連結</v-btn>
