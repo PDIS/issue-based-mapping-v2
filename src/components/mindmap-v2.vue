@@ -130,7 +130,7 @@ export default {
             fill:'rgba(0,0,0,100)',
             fontSize: fontSize,
             originX: 0.5,
-            originY: 0.3,
+            originY: 0.4,
             fontFamily:  "Roboto, 'Noto Sans TC'" ,
             fixedWidth: 155
           });
@@ -138,8 +138,7 @@ export default {
             textAlign: 'left',
             fontSize: 18,
             left: -65,
-            top: -70,
-            /* backgroundColor: card.color, */
+            top: -75 - (card.desc.stakeholders.length + card.desc.evidences.length) / 2 * 10,
             fontFamily:  "Roboto, 'Noto Sans TC'" ,
             fixedWidth: 100,
             maxLines: 2
@@ -149,25 +148,50 @@ export default {
             height: 5,
             fill: card.color ,
             left: -79,
-            top: -45,
+            top: -45 - (card.desc.stakeholders.length + card.desc.evidences.length) / 2 * 10,
           });
           element.push(rect)
           element.push(text)
           element.push(category)
           element.push(divider)
-          let ss = 0
+          let tagsCounter = 1
+          let offsetX = 0
+          let offsetY = 0
           card.desc.stakeholders.map( s => {
+            if (tagsCounter % 2 == 0) {
+              offsetX = 80
+            } else {
+              offsetX = 0
+              offsetY++
+            }
             let stakeholder = new fabric.Textbox( s.name, {
               textAlign: 'left',
               fontSize: 14,
-              left: -65,
-              top: 60 + ss*20,
+              left: -65 + offsetX,
+              top: 45 + offsetY * 20,
               backgroundColor: '#D2B4DE',
               fontFamily:  "Roboto, 'Noto Sans TC'" ,
-              fixedWidth: 50,
             });
-             element.push(stakeholder)
-             ss++
+            element.push(stakeholder)
+            tagsCounter++
+          })
+          card.desc.evidences.map( e => {
+            if (tagsCounter % 2 == 0) {
+              offsetX = 80
+            } else {
+              offsetX = 0
+              offsetY++
+            }
+            let evidence = new fabric.Textbox( e.name, {
+              textAlign: 'left',
+              fontSize: 14,
+              left: -65 + offsetX,
+              top: 45 + offsetY * 20,
+              backgroundColor: '#CFD8DC',
+              fontFamily:  "Roboto, 'Noto Sans TC'" ,
+            });
+            element.push(evidence)
+            tagsCounter++
           })
           let group = new fabric.Group(element, {
             id: card.id,
