@@ -23,7 +23,7 @@ export default new Router({
     {
       path: '/mindmap/:id',
       name: 'mindmap',
-      component: mindmap
+      component: mindmapv2
     },
     {
       path: '/printout/:id',

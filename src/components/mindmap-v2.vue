@@ -126,13 +126,13 @@ export default {
             card.hover = false
             card.tagsfrom = []
             card.tagsto = []
-            card.desc.stakeholders.map( async (personid) => {
-              let person = await Trello.cards.get(personid)
+            card.desc.stakeholders.map( async (stakeholder) => {
+              let person = await Trello.cards.get(stakeholder.id)
               card.tagsfrom.push(person.name)
             })
             card.attachments = []
-            card.desc.evidences.map( async (attachid) => {
-              let attach = await Trello.cards.get(attachid,{fields: 'attachments',attachments: true})
+            card.desc.evidences.map( async (evidence) => {
+              let attach = await Trello.cards.get(evidence.id,{fields: 'attachments',attachments: true})
               if (attach.attachments.length != 0) {
                 attach.attachments.map( async (att) => {
                   let attachment = {}
@@ -148,10 +148,15 @@ export default {
       }))
     },
     draw: function() {
+      const REC_WIDTH = 155;
+      const REC_HEIGHT = 155;
+      const TRI_WIDTH = 15;
+      const TRI_HEIGHT = 15;
       let canvas = new fabric.Canvas('mindmap',{
         width: window.innerWidth,
         height: window.innerHeight
       });
+      ['object:moving', 'object:scaling'].forEach(addChildMoveLine);
       this.lists.map( list => {
         list.cards.map( card => {
           let count = 0
@@ -256,6 +261,7 @@ export default {
           })
           let group = new fabric.Group(element, {
             id: card.id,
+            name: card.name,
             left: card.desc.x,
             top: card.desc.y,
             hasControls: false,
@@ -270,6 +276,207 @@ export default {
           canvas.add(group)
         })
       })
+      fabric.Canvas.prototype.getItemsByName = function(name) {
+        var objectList = [],
+            objects = this.getObjects();
+
+        for (var i = 0, len = this.size(); i < len; i++) {
+          if (objects[i].name && objects[i].name === name) {
+            objectList.push(objects[i]);
+          }
+        }
+
+        return objectList;
+      };
+      fabric.Canvas.prototype.getItemByName = function(name) {
+        var object = null,
+            objects = this.getObjects();
+
+        for (var i = 0, len = this.size(); i < len; i++) {
+          if (objects[i].name && objects[i].name === name) {
+            object = objects[i];
+            break;
+          }
+        }
+
+        return object;
+      };
+      this.lists.map( list => {
+        list.cards.map( card => {
+          let start = canvas.getItemByName(card.name)
+          if (card.desc.related.length != 0) {
+            card.desc.related.map( r => {
+              let end = canvas.getItemByName(r.name)
+              addChildLine(start, end)
+            })
+          }
+        })
+      })
+      function calcArrowAngle(x1, y1, x2, y2) {
+          var angle = 0,
+              x, y;
+
+          x = (x2 - x1);
+          y = (y2 - y1);
+
+          if (x === 0) {
+              angle = (y === 0) ? 0 : (y > 0) ? Math.PI / 2 : Math.PI * 3 / 2;
+          } else if (y === 0) {
+              angle = (x > 0) ? 0 : Math.PI;
+          } else {
+              angle = (x < 0) ? Math.atan(y / x) + Math.PI : (y < 0) ? Math.atan(y / x) + (2 * Math.PI) : Math.atan(y / x);
+          }
+
+          return (angle * 180 / Math.PI + 90);
+      }
+      function addChildLine(start, end) {
+        canvas.off('object:selected', addChildLine);
+
+        // add the line
+        var fromObject = start;
+        var toObject = end;
+        var from = fromObject.getCenterPoint();
+        var to = toObject.getCenterPoint();
+        var fromX = from.x;
+        var fromY = from.y;
+        var toX = to.x;
+        var toY = to.y;
+
+        // var disX = REC_WIDTH/2 + TRI_WIDTH/2;
+        // var disY = REC_HEIGHT/2 + TRI_HEIGHT/2;
+
+        //var distanceX, distanceY;
+
+        //calibrateLine(fromX, fromY, toX, toY);
+
+        var calibrateX = REC_WIDTH/2 + TRI_WIDTH/2;
+        var calibrateY = REC_HEIGHT/2 + TRI_HEIGHT/2;
+
+        var distanceX, distanceY;
+
+        if (fromX < toX) {
+            distanceX = toX - fromX;
+        } else {
+            distanceX = fromX - toX;
+        }
+
+        if (fromY < toY) {
+            distanceY = toY - fromY;
+        } else {
+            distanceY = fromY - toY;
+        }
+
+        if (distanceX > distanceY) {
+
+            if(fromX < toX) {
+                toX -= calibrateX;
+            } else {
+                toX += calibrateX;
+            }
+        } else {
+            if (fromY < toY) {
+                toY -= calibrateY;
+            } else {
+                toY += calibrateY;
+            }
+        }
+
+        var line = new fabric.Line([fromX, fromY, toX, toY], {
+            fill: 'black',
+            stroke: 'black',
+            strokeWidth: 3,
+            selectable: false,
+            fromObject: fromObject,
+            toObject: toObject,
+        });
+
+        // leftover code that we might need but probably not
+        /*
+        centerX = (from.x + to.x)/2;
+        centerY = (from.y + to.y)/2;
+        deltaX = line.left - centerX;
+        deltaY = line.top - centerY;
+        */
+
+        line.triangle = new fabric.Triangle({
+            left: line.x2,
+            top: line.y2,
+            angle: calcArrowAngle(line.x1, line.y1, line.x2, line.y2),
+            originX: 'center',
+            originY: 'center',
+            hasBorders: false,
+            hasControls: false,
+            lockScalingX: true,
+            lockScalingY: true,
+            lockRotation: true,
+            pointType: 'arrow_start',
+            width: TRI_WIDTH,
+            height: TRI_HEIGHT,
+            fill: 'black',
+            selectable: false,
+        });
+
+      // var Group = new fabric.Group([line, line.triangle]);
+      // canvas.add(Group);
+
+        canvas.add(line, line.triangle);
+
+        // so that the line is behind the connected shapes
+        line.sendToBack();
+
+        // add a reference to the line to each object
+        fromObject.addChild = fromObject.addChild || {};
+        fromObject.addChild.lines = fromObject.addChild.lines || [];
+        fromObject.addChild.lines.push(line);
+        toObject.addChild = toObject.addChild || {};
+        toObject.addChild.lines = toObject.addChild.lines || [];
+        toObject.addChild.lines.push(line);
+        
+        // to remove line references when the line gets removed
+        line.addChildRemove = function() {
+            fromObject.addChild.lines.forEach(function(e, i, arr) {
+                if (e === line)
+                    arr.splice(i, 1);
+            });
+        };
+
+        // undefined instead of delete since we are anyway going to do this many times
+        canvas.addChild = undefined;
+    }
+
+    function addChildMoveLine(event) {
+      canvas.on(event, function(options) {
+        var object = options.target;
+
+        // udpate lines (if any)
+        if (object.addChild && object.addChild.lines) {
+          object.addChild.lines.forEach(function(line) {
+            var fcenter = line.fromObject.getCenterPoint(),
+                fx = fcenter.x,
+                fy = fcenter.y,
+                tcenter = line.toObject.getCenterPoint(),
+                tx = tcenter.x,
+                ty = tcenter.y,
+                xdis = REC_WIDTH/2 + TRI_WIDTH/2,
+                ydis = REC_HEIGHT/2 + TRI_HEIGHT/2,
+                horizontal = Math.abs(tx - line.x1) > Math.abs(ty - line.y1)
+            line.set({
+                'x1': fx,
+                'y1': fy,
+                'x2': tx + xdis * (horizontal ? (tx < line.x1 ? 1 : -1) :                       0),
+                'y2': ty + ydis * (horizontal ?                       0 : (ty < line.y1 ? 1 : -1)),
+            });
+            line.triangle.set({
+                'left': line.x2, 'top': line.y2,
+                'angle': calcArrowAngle(line.x1, line.y1, line.x2, line.y2)
+            });
+          });
+        }
+
+        canvas.renderAll();
+      });
+    }
+
       let moveHandler = evt => {
         let movingObject = evt.target;
         let x = movingObject.left + movingObject.width / 2;
