@@ -156,7 +156,7 @@ export default {
         width: window.innerWidth,
         height: window.innerHeight
       });
-      ['object:moving', 'object:scaling'].forEach(addChildMoveLine);
+      ['object:moving'].forEach(addChildMoveLine);
       this.lists.map( list => {
         list.cards.map( card => {
           let count = 0
@@ -276,29 +276,15 @@ export default {
           canvas.add(group)
         })
       })
-      fabric.Canvas.prototype.getItemsByName = function(name) {
-        var objectList = [],
-            objects = this.getObjects();
-
-        for (var i = 0, len = this.size(); i < len; i++) {
-          if (objects[i].name && objects[i].name === name) {
-            objectList.push(objects[i]);
-          }
-        }
-
-        return objectList;
-      };
       fabric.Canvas.prototype.getItemByName = function(name) {
-        var object = null,
+        let object = null,
             objects = this.getObjects();
-
-        for (var i = 0, len = this.size(); i < len; i++) {
+        for (let i = 0, len = this.size(); i < len; i++) {
           if (objects[i].name && objects[i].name === name) {
             object = objects[i];
             break;
           }
         }
-
         return object;
       };
       this.lists.map( list => {
@@ -313,21 +299,17 @@ export default {
         })
       })
       function calcArrowAngle(x1, y1, x2, y2) {
-          var angle = 0,
-              x, y;
-
-          x = (x2 - x1);
-          y = (y2 - y1);
-
-          if (x === 0) {
-              angle = (y === 0) ? 0 : (y > 0) ? Math.PI / 2 : Math.PI * 3 / 2;
-          } else if (y === 0) {
-              angle = (x > 0) ? 0 : Math.PI;
-          } else {
-              angle = (x < 0) ? Math.atan(y / x) + Math.PI : (y < 0) ? Math.atan(y / x) + (2 * Math.PI) : Math.atan(y / x);
-          }
-
-          return (angle * 180 / Math.PI + 90);
+        let angle = 0, x, y;
+        x = (x2 - x1);
+        y = (y2 - y1);
+        if (x === 0) {
+          angle = (y === 0) ? 0 : (y > 0) ? Math.PI / 2 : Math.PI * 3 / 2;
+        } else if (y === 0) {
+          angle = (x > 0) ? 0 : Math.PI;
+        } else {
+          angle = (x < 0) ? Math.atan(y / x) + Math.PI : (y < 0) ? Math.atan(y / x) + (2 * Math.PI) : Math.atan(y / x);
+        }
+        return (angle * 180 / Math.PI + 90);
       }
       function addChildLine(start, end) {
         canvas.off('object:selected', addChildLine);
@@ -482,13 +464,15 @@ export default {
         let x = movingObject.left + movingObject.width / 2;
         let y = movingObject.top + movingObject.height / 2;
         for (let i = 0; i < movingObject._objects.length; i++) {
-          Trello.get('cards/' + movingObject._objects[i].id, res => {
-            let desc = JSON.parse(res.desc)
-            desc.x = x + movingObject._objects[i].left
-            desc.y = y + movingObject._objects[i].top
-            Trello.put('cards/' + movingObject._objects[i].id, {'desc': JSON.stringify(desc) } , () => {
-            }) 
-          })
+          if ( movingObject._objects[i].id != undefined) {
+            Trello.get('cards/' + movingObject._objects[i].id, res => {
+              let desc = JSON.parse(res.desc)
+              desc.x = x + movingObject._objects[i].left
+              desc.y = y + movingObject._objects[i].top
+              Trello.put('cards/' + movingObject._objects[i].id, {'desc': JSON.stringify(desc) } , () => {
+              }) 
+            })
+          }
         }
       };
       canvas.on('object:moved', moveHandler);
@@ -503,7 +487,7 @@ export default {
         opt.e.stopPropagation();
       })
       canvas.on('mouse:down:before', function(opt) {
-        var evt = opt.e;
+        let evt = opt.e;
         if (evt.button != 0) {
           this.isDragging = true;
           this.selection = false;
@@ -513,7 +497,7 @@ export default {
       })
       canvas.on('mouse:move', function(opt) {
         if (this.isDragging) {
-          var e = opt.e;
+          let e = opt.e;
           this.viewportTransform[4] += e.clientX - this.lastPosX;
           this.viewportTransform[5] += e.clientY - this.lastPosY;
           this.requestRenderAll();
