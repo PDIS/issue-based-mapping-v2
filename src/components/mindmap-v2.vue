@@ -156,7 +156,6 @@ export default {
         width: window.innerWidth,
         height: window.innerHeight
       });
-      ['object:moving'].forEach(addChildMoveLine);
       this.lists.map( list => {
         list.cards.map( card => {
           let count = 0
@@ -429,32 +428,110 @@ export default {
     function addChildMoveLine(event) {
       canvas.on(event, function(options) {
         var object = options.target;
-
         // udpate lines (if any)
-        if (object.addChild && object.addChild.lines) {
-          object.addChild.lines.forEach(function(line) {
-            var fcenter = line.fromObject.getCenterPoint(),
-                fx = fcenter.x,
-                fy = fcenter.y,
-                tcenter = line.toObject.getCenterPoint(),
-                tx = tcenter.x,
-                ty = tcenter.y,
-                xdis = REC_WIDTH/2 + TRI_WIDTH/2,
-                ydis = REC_HEIGHT/2 + TRI_HEIGHT/2,
-                horizontal = Math.abs(tx - line.x1) > Math.abs(ty - line.y1)
-            line.set({
-                'x1': fx,
-                'y1': fy,
-                'x2': tx + xdis * (horizontal ? (tx < line.x1 ? 1 : -1) :                       0),
-                'y2': ty + ydis * (horizontal ?                       0 : (ty < line.y1 ? 1 : -1)),
+        for (let i = 0; i < object._objects.length; i++) {
+          if (object._objects[i].addChild && object._objects[i].addChild.lines) {
+            object._objects[i].addChild.lines.forEach( line => {
+              if (line.fromObject.group != undefined && line.toObject.group != undefined) {
+                line.fromObject.group._objects.map(obj1 => {
+                  line.toObject.group._objects.map(obj2 => {
+                    if (line.fromObject.id == obj1.id && line.toObject.id == obj2.id) {
+                      var fcenter = line.fromObject.group.getCenterPoint(),
+                          fx = fcenter.x + obj1.getCenterPoint().x,
+                          fy = fcenter.y + obj1.getCenterPoint().y,
+                          tcenter = line.toObject.group.getCenterPoint(),
+                          tx = tcenter.x + obj2.getCenterPoint().x,
+                          ty = tcenter.y + obj2.getCenterPoint().y,
+                          xdis = REC_WIDTH/2 + TRI_WIDTH/2,
+                          ydis = REC_HEIGHT/2 + TRI_HEIGHT/2,
+                          horizontal = Math.abs(tx - line.x1) > Math.abs(ty - line.y1)
+                      line.set({
+                          'x1': fx,
+                          'y1': fy,
+                          'x2': tx + xdis * (horizontal ? (tx < line.x1 ? 1 : -1) :                       0),
+                          'y2': ty + ydis * (horizontal ?                       0 : (ty < line.y1 ? 1 : -1)),
+                      });
+                      line.triangle.set({
+                          'left': line.x2, 'top': line.y2,
+                          'angle': calcArrowAngle(line.x1, line.y1, line.x2, line.y2)
+                      });
+                    }
+                  })
+                })
+              } else if (line.fromObject.group == undefined) {
+                line.toObject.group._objects.map(obj => {
+                  if (line.toObject.id == obj.id) {
+                    var fcenter = line.fromObject.getCenterPoint(),
+                        fx = fcenter.x,
+                        fy = fcenter.y,
+                        tcenter = line.toObject.group.getCenterPoint(),
+                        tx = tcenter.x + obj.getCenterPoint().x,
+                        ty = tcenter.y + obj.getCenterPoint().y,
+                        xdis = REC_WIDTH/2 + TRI_WIDTH/2,
+                        ydis = REC_HEIGHT/2 + TRI_HEIGHT/2,
+                        horizontal = Math.abs(tx - line.x1) > Math.abs(ty - line.y1)
+                    line.set({
+                        'x1': fx,
+                        'y1': fy,
+                        'x2': tx + xdis * (horizontal ? (tx < line.x1 ? 1 : -1) :                       0),
+                        'y2': ty + ydis * (horizontal ?                       0 : (ty < line.y1 ? 1 : -1)),
+                    });
+                    line.triangle.set({
+                        'left': line.x2, 'top': line.y2,
+                        'angle': calcArrowAngle(line.x1, line.y1, line.x2, line.y2)
+                    });
+                  }
+                })
+              } else if (line.toObject.group == undefined) {
+                line.fromObject.group._objects.map(obj => {
+                  if (line.fromObject.id == obj.id) {
+                    var fcenter = line.fromObject.group.getCenterPoint(),
+                        fx = fcenter.x + obj.getCenterPoint().x,
+                        fy = fcenter.y + obj.getCenterPoint().y,
+                        tcenter = line.toObject.getCenterPoint(),
+                        tx = tcenter.x,
+                        ty = tcenter.y,
+                        xdis = REC_WIDTH/2 + TRI_WIDTH/2,
+                        ydis = REC_HEIGHT/2 + TRI_HEIGHT/2,
+                        horizontal = Math.abs(tx - line.x1) > Math.abs(ty - line.y1)
+                    line.set({
+                        'x1': fx,
+                        'y1': fy,
+                        'x2': tx + xdis * (horizontal ? (tx < line.x1 ? 1 : -1) :                       0),
+                        'y2': ty + ydis * (horizontal ?                       0 : (ty < line.y1 ? 1 : -1)),
+                    });
+                    line.triangle.set({
+                        'left': line.x2, 'top': line.y2,
+                        'angle': calcArrowAngle(line.x1, line.y1, line.x2, line.y2)
+                    });
+                  }
+                })
+              }
             });
-            line.triangle.set({
-                'left': line.x2, 'top': line.y2,
-                'angle': calcArrowAngle(line.x1, line.y1, line.x2, line.y2)
+          } else if (object.addChild && object.addChild.lines) {
+            object.addChild.lines.forEach( line => {
+              var fcenter = line.fromObject.getCenterPoint(),
+                  fx = fcenter.x,
+                  fy = fcenter.y,
+                  tcenter = line.toObject.getCenterPoint(),
+                  tx = tcenter.x,
+                  ty = tcenter.y,
+                  xdis = REC_WIDTH/2 + TRI_WIDTH/2,
+                  ydis = REC_HEIGHT/2 + TRI_HEIGHT/2,
+                  horizontal = Math.abs(tx - line.x1) > Math.abs(ty - line.y1)
+              line.set({
+                  'x1': fx,
+                  'y1': fy,
+                  'x2': tx + xdis * (horizontal ? (tx < line.x1 ? 1 : -1) :                       0),
+                  'y2': ty + ydis * (horizontal ?                       0 : (ty < line.y1 ? 1 : -1)),
+              });
+              line.triangle.set({
+                  'left': line.x2, 'top': line.y2,
+                  'angle': calcArrowAngle(line.x1, line.y1, line.x2, line.y2)
+              });
             });
-          });
+          }
         }
-
         canvas.renderAll();
       });
     }
@@ -475,6 +552,8 @@ export default {
           }
         }
       };
+      ['object:moving'].forEach(addChildMoveLine);
+
       canvas.on('object:moved', moveHandler);
       canvas.on('mouse:wheel', function(opt) {
         let delta = opt.e.deltaY;
