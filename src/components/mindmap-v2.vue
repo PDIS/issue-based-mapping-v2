@@ -557,11 +557,12 @@ export default {
       canvas.on('object:moved', moveHandler);
       canvas.on('mouse:wheel', function(opt) {
         let delta = opt.e.deltaY;
+        let pointer = canvas.getPointer(opt.e);
         let zoom = canvas.getZoom();
         zoom = zoom - delta/2000;
         if (zoom > 20) zoom = 20;
         if (zoom < 0.01) zoom = 0.01;
-        canvas.setZoom(zoom);
+        canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
         opt.e.preventDefault();
         opt.e.stopPropagation();
       })
