@@ -156,6 +156,7 @@ export default {
         width: window.innerWidth,
         height: window.innerHeight
       });
+      
       this.lists.map( list => {
         list.cards.map( card => {
           let count = 0
@@ -215,6 +216,7 @@ export default {
             left: -79,
             top: -45 - (card.desc.stakeholders.length + card.desc.evidences.length) / 2 * 10,
           });
+          
           element.push(rect)
           element.push(text)
           element.push(category)
@@ -295,8 +297,26 @@ export default {
               addChildLine(start, end)
             })
           }
+          addButton(start)
         })
       })
+      function addButton(start) {
+        let center = start.getCenterPoint()
+        let circle = new fabric.Circle({
+          radius: 20, 
+          fill: '',
+          stroke: 'red',
+          strokeWidth: 3, 
+          left: center.x, 
+          top: center.y,
+        })
+
+        /* let cross =  new Cross({ top: center.x, left: center.y })
+        let button = new fabric.Group(button, cross, {
+
+        })
+        canvas.add(button); */
+      }
       function calcArrowAngle(x1, y1, x2, y2) {
         let angle = 0, x, y;
         x = (x2 - x1);
@@ -588,6 +608,10 @@ export default {
       canvas.on('mouse:up:before', function(opt) {
         this.isDragging = false;
         this.selection = true;
+        let objects = this.getObjects();
+        for (let i = 0; i < objects.length; i++){
+          objects[i].setCoords();
+        }
       });
     },
   },
