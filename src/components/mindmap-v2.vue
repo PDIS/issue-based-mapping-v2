@@ -156,7 +156,6 @@ export default {
         width: window.innerWidth,
         height: window.innerHeight
       });
-      
       this.lists.map( list => {
         list.cards.map( card => {
           let count = 0
@@ -266,6 +265,7 @@ export default {
             left: card.desc.x,
             top: card.desc.y,
             hasControls: false,
+            hasRotatingPoint: false,
             borderColor: 'gray',
           });
           group.on('moved', e => {
@@ -302,21 +302,27 @@ export default {
       })
       function addButton(start) {
         let center = start.getCenterPoint()
-        let circle = new fabric.Circle({
-          radius: 20, 
-          fill: '',
-          stroke: 'red',
-          strokeWidth: 3, 
-          left: center.x, 
-          top: center.y,
-        })
-
-        /* let cross =  new Cross({ top: center.x, left: center.y })
-        let button = new fabric.Group(button, cross, {
-
-        })
-        canvas.add(button); */
+        fabric.Image.fromURL('http://www.pngmart.com/files/8/Plus-Transparent-Images-PNG.png', function(myImg) {
+          //i create an extra var for to change some image properties
+          var img1 = myImg.set({
+            name:'button', 
+            left: center.x + REC_WIDTH / 2.3, 
+            top: center.y ,
+            width:1000,
+            height:1000,
+            romObject:start,
+            hoverCursor: "pointer"
+          });
+          img1.scaleToHeight(30);
+          img1.scaleToWidth(30);
+          img1.selectable = false,
+          canvas.add(img1)
+          start.addChild = start.addChild || {};
+          start.addChild.button = start.addChild.button || [];
+          start.addChild.button.push(img1);
+        });
       }
+
       function calcArrowAngle(x1, y1, x2, y2) {
         let angle = 0, x, y;
         x = (x2 - x1);
@@ -550,6 +556,21 @@ export default {
                   'angle': calcArrowAngle(line.x1, line.y1, line.x2, line.y2)
               });
             });
+          } 
+          if (object._objects[i].addChild && object._objects[i].addChild.button) {
+            object._objects[i].addChild.button.forEach( button => {
+              button.fromObject.group._objects.map(obj => {
+                if (button.fromObject.id == obj.id) {                    
+                  var fcenter = button.fromObject.group.getCenterPoint()
+                  button.set({ left: fcenter.x + obj.getCenterPoint().x + REC_WIDTH / 2.3, top: fcenter.y  + obj.getCenterPoint().y}) 
+                }
+              })
+            });
+          } else if (object.addChild && object.addChild.button) {
+            object.addChild.button.forEach( button => {
+              var fcenter = button.fromObject.getCenterPoint()
+              button.set({ left: fcenter.x + REC_WIDTH / 2.3, top: fcenter.y})
+            });
           }
         }
         canvas.renderAll();
@@ -614,9 +635,6 @@ export default {
         }
       });
     },
-  },
-  mounted: function() {
-
   },
   created: function() {
     this.getcards().then( () => this.draw() )
