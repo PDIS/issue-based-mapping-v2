@@ -310,9 +310,9 @@ export default {
             top: center.y ,
             width:1000,
             height:1000,
-            romObject:start,
+            fromObject: start,
             hoverCursor: "pointer"
-          });
+            });
           img1.scaleToHeight(30);
           img1.scaleToWidth(30);
           img1.selectable = false,
