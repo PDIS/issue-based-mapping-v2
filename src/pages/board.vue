@@ -1,6 +1,7 @@
 <template>
   <v-container grid-list-md>
-    <v-layout row>
+    <toolbar></toolbar>
+    <!-- <v-layout row>
       <v-flex xs9>
         <v-card flat class="">
           <v-card-text>
@@ -34,12 +35,9 @@
       </v-flex>
       <v-flex md6>
         <v-layout align-center justify-start row reverse fill-height>
-          <!-- <v-btn @click="relationmode = true" v-if="relationmode == false">關聯卡片</v-btn>
-          <v-btn color="blue-grey darken-2" dark @click="endrelationmode()" v-if="relationmode == true">關聯卡片</v-btn> -->
           <v-btn flat target="_blank" :href="board.desc.link">會議記錄連結</v-btn>
           <v-btn disabled flat :to="{name:'printout', params:{id:board.id}}">輸出文件</v-btn>
           <v-btn flat @click.stop="opendictionary = !opendictionary">專有名詞字典</v-btn>
-          <!-- <v-btn flat :to="{name:'mindmap', params:{id:board.id}}">{{ $t("Mind Mapping") }}</v-btn> -->
         </v-layout>
       </v-flex>
       <v-flex md12>
@@ -50,7 +48,7 @@
           <v-icon large>attachment</v-icon>
         </v-btn>
       </v-flex>
-    </v-layout>
+    </v-layout> -->
     <v-layout row>
       <v-flex xs12 md4 lg3 v-for="(list) in lists" :key="list.id" v-show="list.name != '利害關係人' && list.name != '佐證文件'">
         <!-- <v-toolbar dense flat text-ms-center :color="list.color" >
@@ -110,7 +108,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog> -->
-    <v-dialog v-model="newmemberdialog" max-width="50vw">
+    <!-- <v-dialog v-model="newmemberdialog" max-width="50vw">
       <v-card>
         <v-card-title>
           新增議題成員
@@ -132,7 +130,7 @@
           <v-btn flat color="cyan" type="submit" class="subheading" @click="newmember()">確認</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
     <snackbar></snackbar>
     <v-snackbar
       :timeout="5000"
@@ -194,7 +192,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <dictionary></dictionary>
+    <!-- <dictionary></dictionary> -->
   </v-container>
 </template>
 
@@ -203,9 +201,9 @@ import { mapActions, mapGetters } from 'vuex'
 import { createHelpers } from 'vuex-map-fields';
 import draggable from 'vuedraggable'
 import UploadButton from 'vuetify-upload-button';
-import card from './forms/card'
-import dictionary from './dictionary'
-import snackbar from './snackbar'
+import card from '../components/forms/card'
+import snackbar from '../components/snackbar'
+import toolbar from '../components/toolbar'
 
 const { mapFields: mapBoardFields } = createHelpers({
   getterType: 'getBoardField',
@@ -222,35 +220,23 @@ const { mapFields: mapListFields } = createHelpers({
   mutationType: 'updateListField',
 });
 
-const { mapFields: mapDictionaryFields } = createHelpers({
-  getterType: 'getDictionaryField',
-  mutationType: 'updateDictionaryField',
-});
-
 export default {
   components: {
     draggable,
     'upload-btn': UploadButton,
     'form-card': card,
-    dictionary,
-    snackbar
+    snackbar,
+    toolbar
   },
   data () {
     return {
       members: [],
       avatar: [],
       success: '',
-      show_new_member: false,
-      search: '',
-      email: '',
       hover: false,
       relationmode: false,
       firstcard: {},
-      newmemberdialog: false,
-      boardtitledialog: false,
       tab: 'tab-1',
-      openstakeholders: false,
-      openevidences: false,
     }
   },
   methods: {
@@ -897,6 +883,10 @@ export default {
     }),
     ...mapBoardFields({
       board: 'board',
+      openstakeholders: 'openstakeholders',
+      openevidences: 'openevidences',
+      boardtitledialog: 'boardtitledialog',
+      search: 'search'
     }),
     ...mapCardFields({
       card: 'card',
@@ -917,9 +907,6 @@ export default {
       stakeholderList: 'stakeholderList',
       evidenceList: 'evidenceList',
     }),
-    ...mapDictionaryFields({
-      opendictionary: 'opendictionary',
-    })
   }
 }
 </script>

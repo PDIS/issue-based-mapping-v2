@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import index from '@/components/index'
-import board from '@/components/board'
-import mindmap from '@/components/mindmap'
+import index from '@/pages/index'
+import board from '@/pages/board'
+import mindmap from '@/pages/mindmap'
 import printout from '@/components/printout'
-import mindmapv2 from '@/components/mindmap-v2'
+import mindmapv2 from '@/pages/mindmap-v2'
 
 Vue.use(Router)
 

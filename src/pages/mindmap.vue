@@ -282,7 +282,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { createHelpers } from 'vuex-map-fields';
-import card from './forms/card'
+import card from '../components/forms/card'
 import UploadButton from 'vuetify-upload-button';
 
 const { mapFields: mapBoardFields } = createHelpers({

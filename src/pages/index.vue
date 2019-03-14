@@ -128,8 +128,8 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { createHelpers } from 'vuex-map-fields';
-import form from './forms/board'
-import snackbar from './snackbar'
+import form from '../components/forms/board'
+import snackbar from '../components/snackbar'
 
 const { mapFields } = createHelpers({
   getterType: 'getBoardField',

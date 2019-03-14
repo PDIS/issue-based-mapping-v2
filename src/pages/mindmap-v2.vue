@@ -1,49 +1,18 @@
 <template>
   <div style="width: 100%; height: 100%">
     <v-container grid-list-md>
-      <v-layout row>
-        <v-flex xs9>
-          <v-card flat class="mt-1">
-            <v-card-text>
-              <div class="headline"># {{board.name}} 
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-      </v-layout>
-      <v-layout row wrap>
-        <v-flex md12>
-          <v-tabs v-model="tab" left class="mt-2">
-            <v-tabs-slider color="indigo"></v-tabs-slider>
-            <v-tab href="#tab-2" style="font-size: 1.2rem" :to="{name:'board', params:{id:board.id}}">
-              議題分析表
-            </v-tab>
-            <v-tab href="#tab-1" style="font-size: 1.2rem">
-              心智圖
-            </v-tab>
-          </v-tabs>
-        </v-flex>
-        <!-- <v-flex md12>
-          <v-btn-toggle v-model="mouseMode">
-            <v-btn flat>
-              <v-icon>pan_tool</v-icon>
-            </v-btn>
-            <v-btn flat>
-              <v-icon>select_all</v-icon>
-            </v-btn>
-          </v-btn-toggle>
-        </v-flex> -->
-      </v-layout>
+      <toolbar></toolbar>
     </v-container>
-    <canvas id="mindmap"></canvas>
+    <canvas id="canvas"></canvas>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { createHelpers } from 'vuex-map-fields';
-import card from './forms/card'
+import card from '../components/forms/card'
 import UploadButton from 'vuetify-upload-button';
+import toolbar from '../components/toolbar'
 
 const { mapFields: mapBoardFields } = createHelpers({
   getterType: 'getBoardField',
@@ -63,12 +32,12 @@ const { mapFields: mapListFields } = createHelpers({
 export default {
   components: {
     'form-card': card,
-    'upload-btn': UploadButton
+    'upload-btn': UploadButton,
+    toolbar,
   },
   data() {
     return {
       lists: [],
-      tab: 'tab-1',
       mouseMode: 0
     }
   },
@@ -152,7 +121,7 @@ export default {
       const REC_HEIGHT = 155;
       const TRI_WIDTH = 15;
       const TRI_HEIGHT = 15;
-      let canvas = new fabric.Canvas('mindmap',{
+      let canvas = new fabric.Canvas('canvas',{
         width: window.innerWidth,
         height: window.innerHeight
       });

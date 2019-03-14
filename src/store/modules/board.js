@@ -21,10 +21,14 @@ const state = {
     },
     admin: [],
     members: [],
-    avatars: []
+    avatars: [],
   },
   openboard: false,
   selectedboardid: '',
+  openstakeholders: false,
+  openevidences: false,
+  boardtitledialog: false,
+  search: '',
 }
 
 const getters = {
