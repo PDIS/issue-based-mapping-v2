@@ -82,24 +82,6 @@ const actions = {
           card.listname = list.name
           card.hover = false
           state.cards.push(card)
-          card.tagsfrom = []
-          card.desc.stakeholders.map( async (stakeholder) => {
-            let person = await Trello.cards.get(stakeholder.id)
-            card.tagsfrom.push(person.name)
-          })
-          let attach = await Trello.cards.get(card.id,{fields: 'attachments',attachments: true})
-          if (attach.attachments.length != 0) {
-            attach.attachments.map( async (att) => {
-              let attachment = {}
-              attachment.id = att.id
-              attachment.name = att.name
-              attachment.url = att.url
-              if (att.previews.length != 0) {
-                attachment.preview = att.previews[4]
-              }
-              card.attachments = await attachment
-            })
-          }
         })
         state.lists.push(list)
       }

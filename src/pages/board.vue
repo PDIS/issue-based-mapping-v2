@@ -1,54 +1,6 @@
 <template>
   <v-container grid-list-md>
     <toolbar></toolbar>
-    <!-- <v-layout row>
-      <v-flex xs9>
-        <v-card flat class="">
-          <v-card-text>
-            <div class="headline"># {{board.name}} 
-              <v-btn color="primary" icon flat @click="boardtitledialog = true" v-if="board.admin.includes(user.id)">
-                <v-icon>edit</v-icon>
-              </v-btn>
-              <v-btn icon small fab disabled v-for="a in board.avatars" :key="a">
-                <img :src="a+'/50.png'" style="border-radius:50%"/> 
-              </v-btn>
-              <v-icon  @click="new_member()" medium fab btn outline class=" dark ml-2" v-if="board.admin.includes(user.id)">person_add</v-icon>
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-flex>
-      <v-flex xs3>
-        <v-text-field color="grey darken-4" class="mt-3 mb-0" prepend-icon="search" label="搜尋卡片關鍵字" value="Input text" v-model="search"></v-text-field>
-      </v-flex>
-    </v-layout>
-    <v-layout row wrap>
-      <v-flex md6>
-        <v-tabs v-model="tab" left>
-          <v-tabs-slider color="indigo"></v-tabs-slider>
-          <v-tab href="#tab-1" style="font-size: 1.2rem" :to="{name:'board', params:{id:board.id}}">
-            議題分析表
-          </v-tab>
-          <v-tab href="#tab-2" style="font-size: 1.2rem" :to="{name:'mindmap', params:{id:board.id}}">
-            心智圖
-          </v-tab>
-        </v-tabs>
-      </v-flex>
-      <v-flex md6>
-        <v-layout align-center justify-start row reverse fill-height>
-          <v-btn flat target="_blank" :href="board.desc.link">會議記錄連結</v-btn>
-          <v-btn disabled flat :to="{name:'printout', params:{id:board.id}}">輸出文件</v-btn>
-          <v-btn flat @click.stop="opendictionary = !opendictionary">專有名詞字典</v-btn>
-        </v-layout>
-      </v-flex>
-      <v-flex md12>
-        <v-btn flat icon @click.native="openstakeholders = true">
-          <v-icon large>supervisor_account</v-icon>
-        </v-btn>
-        <v-btn flat icon @click.native="openevidences = true">
-          <v-icon large>attachment</v-icon>
-        </v-btn>
-      </v-flex>
-    </v-layout> -->
     <v-layout row>
       <v-flex xs12 md4 lg3 v-for="(list) in lists" :key="list.id" v-show="list.name != '利害關係人' && list.name != '佐證文件'">
         <!-- <v-toolbar dense flat text-ms-center :color="list.color" >
@@ -90,47 +42,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <!-- <v-dialog v-model="newpersondialog" max-width="290">
-      <v-card>
-        <v-card-title class="headline">新增利害關係人</v-card-title>
-        <v-form>
-          <v-container>
-            <v-layout>
-              <v-flex>
-                <v-text-field color="blue-grey darken-2" label="姓名" prepend-icon="people" v-model="newperson" ></v-text-field>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-form>
-        <v-card-actions>
-          <v-btn color="blue" flat="flat" @click.native="newpersondialog=false;addperson()">確定</v-btn>
-          <v-btn color="black" flat="flat" @click.native="newpersondialog=false;newperson=''" >取消</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog> -->
-    <!-- <v-dialog v-model="newmemberdialog" max-width="50vw">
-      <v-card>
-        <v-card-title>
-          新增議題成員
-        </v-card-title>
-        <v-card-text>
-        <v-form>
-        <v-container>
-          <v-layout>
-            <v-flex>
-          <v-text-field  color="grey darken-4" class="mt-0 mb-0" label="請輸入email(可輸入多個email，中間以 , 分開)" value="Input text" v-model="email"></v-text-field> 
-          </v-flex>
-          </v-layout>
-        </v-container>
-      </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn flat class="subheading" @click="newmemberdialog = false">取消</v-btn>
-          <v-btn flat color="cyan" type="submit" class="subheading" @click="newmember()">確認</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog> -->
     <snackbar></snackbar>
     <v-snackbar
       :timeout="5000"
@@ -192,7 +103,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <!-- <dictionary></dictionary> -->
   </v-container>
 </template>
 
@@ -304,101 +214,32 @@ export default {
           this.card.title = '[未來]'
         }
       }
+      this.getrelated(list)
     },
-    editcard: function(card,list) {
+    editcard: function( card, list) {
       this.opencard = true
-      if (this.relationmode == false) {
-        /* if (this.board.admin.includes(this.user.id) || this.board.members.includes(this.user.id)) { */
-          this.selectedlist.name = list.name;
-          this.selectedlist.id = list.id;
-          this.selectedlist.color = list.color
-          this.selectedlist.cards = list.cards
-          this.selectedlist.column = list.column
-          this.card.id = card.id
-          this.card.title = card.name
-          this.card.desc.responsetime = card.desc.responsetime
-          this.card.desc.data = card.desc.data
-          this.card.desc.related = card.desc.related
-          this.card.desc.explain = card.desc.explain
-          this.card.desc.role = card.desc.role
-          this.card.desc.department = card.desc.department
-          this.card.desc.background = card.desc.background
-          this.card.desc.stakeholders = card.desc.stakeholders
-          this.card.desc.evidences = card.desc.evidences
-          this.card.desc.attachment = card.desc.attachment 
-          this.card.desc.x = card.desc.x
-          this.card.desc.y = card.desc.y
-          this.card.attachments = card.attachments
-          this.editable = true
-          this.getrelated(list)
-        /* } */
-      }
-      else {
-        /* if (Object.keys(this.firstcard).length == 0) {
-          this.lists.map(l => {
-            l.cards.map(c => {
-              if (c.column == 1) {
-                if (c.id != card.id && l.column != list.column + 1 && l.column != list.column) {
-                  c.color = 'black'
-                }
-              } else {
-                if (c.id != card.id && l.column != list.column + 1) {
-                  c.color = 'black'
-                }
-              }
-            })
-          })
-          this.firstcard = card
-          card.desc.related.map( r => {
-            this.lists.map(l => {
-              l.cards.map( c => {
-                if (c.id == r) {
-                  c.color = 'blue-grey darken-2'
-                  c.hover = true
-                }
-              })
-            })
-          })
-        }
-        else {
-          let that = this
-          if (this.firstcard.column == 1) {
-            if (this.firstcard.column + 1 == list.column || this.firstcard.column == list.column ) {
-              if (!this.firstcard.desc.related.includes(card.id)) {
-                this.firstcard.desc.related.push(card.id)
-                Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
-                  card.color = 'blue-grey darken-2'
-                  card.hover = true
-                })
-              } else {
-                let index = this.firstcard.desc.related.indexOf(card.id);
-                if (index !== -1) this.firstcard.desc.related.splice(index, 1);
-                Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
-                  card.color = list.color
-                  card.hover = false
-                })
-              }
-            } 
-          } else {
-            if (this.firstcard.column + 1 == list.column) {
-              if (!this.firstcard.desc.related.includes(card.id)) {
-                this.firstcard.desc.related.push(card.id)
-                Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
-                  card.color = 'blue-grey darken-2'
-                  card.hover = true
-                })
-              } else {
-                let index = this.firstcard.desc.related.indexOf(card.id);
-                if (index !== -1) this.firstcard.desc.related.splice(index, 1);
-                Trello.put('cards/' + this.firstcard.id, {'desc': JSON.stringify(this.firstcard.desc) } , function() {
-                  card.color = list.color
-                  card.hover = false
-                })
-              }
-            } 
-          }
-        } */
-      }
+      this.selectedlist.name = list.name;
+      this.selectedlist.id = list.id;
+      this.selectedlist.color = list.color
+      this.selectedlist.cards = list.cards
+      this.selectedlist.column = list.column
+      this.card.id = card.id
+      this.card.title = card.name
+      this.card.desc.responsetime = card.desc.responsetime
+      this.card.desc.data = card.desc.data
+      this.card.desc.related = card.desc.related
+      this.card.desc.explain = card.desc.explain
+      this.card.desc.role = card.desc.role
+      this.card.desc.department = card.desc.department
+      this.card.desc.background = card.desc.background
+      this.card.desc.stakeholders = card.desc.stakeholders
+      this.card.desc.evidences = card.desc.evidences
+      this.card.desc.attachment = card.desc.attachment 
+      this.card.desc.x = card.desc.x
+      this.card.desc.y = card.desc.y
+      this.card.attachments = card.attachments
+      this.editable = true
+      this.getrelated(list)
     },
     searchcards: function(list) {
       return list.cards.filter(card => {
@@ -907,7 +748,7 @@ export default {
       stakeholderList: 'stakeholderList',
       evidenceList: 'evidenceList',
     }),
-  }
+  },
 }
 </script>
 

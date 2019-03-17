@@ -46,6 +46,23 @@
           <v-icon large>attachment</v-icon>
         </v-btn>
       </v-flex>
+      <v-flex md12 v-if="mode == 'mindmap'">
+        <v-btn flat icon @click.native="newcard('問題面向')" color="#FFCD13">
+          <v-icon large>note</v-icon>
+        </v-btn>
+        <v-btn flat icon @click.native="newcard('問題細節')" color="#FFE276">
+          <v-icon large>note</v-icon>
+        </v-btn>
+        <v-btn flat icon @click.native="newcard('現有解法')" color="#91AD70">
+          <v-icon large>note</v-icon>
+        </v-btn>
+        <v-btn flat icon @click.native="newcard('政府回應')" color="#F08B8B">
+          <v-icon large>note</v-icon>
+        </v-btn>
+        <v-btn flat icon @click.native="newcard('困難')" color="#C85938">
+          <v-icon large>note</v-icon>
+        </v-btn>
+      </v-flex>
     </v-layout>
     <v-dialog v-model="newmemberdialog" max-width="50vw">
       <v-card>
@@ -136,6 +153,70 @@ export default {
         })
       }
     },
+    newcard: function (name) {
+      this.lists.map( list => {
+        if (list.name == name) {
+          this.opencard = true; 
+          this.selectedlist.name = list.name;
+          this.selectedlist.id = list.id;
+          this.selectedlist.color = list.color
+          this.selectedlist.cards = list.cards
+          this.selectedlist.column = list.column
+          this.editable = false
+          /* this.resetForm() */
+          if (this.selectedlist.name == '政府回應') {
+            if (this.card.desc.responsetime == 'nowadays') {
+              this.card.title = '[現在]'
+            } else {
+              this.card.title = '[未來]'
+            }
+          }
+          this.getrelated(list)
+        }
+      })
+    },
+    getrelated: function(currentlist) {
+      this.relatedlist = []
+      this.lists.map(list => {
+        if (currentlist.name == '問題面向') {
+          if (list.name == '問題細節') {
+            list.cards.map( data => {
+              this.relatedlist.push({
+                'id': data.id,
+                'name': data.name
+              })
+            })
+          }
+        } else if (currentlist.name == '問題細節') {
+           if (list.name == '現有解法') {
+            list.cards.map( data => {
+              this.relatedlist.push({
+                'id': data.id,
+                'name': data.name
+              })
+            })
+          }
+        } else if (currentlist.name == '現有解法') {
+           if (list.name == '政府回應') {
+            list.cards.map( data => {
+              this.relatedlist.push({
+                'id': data.id,
+                'name': data.name
+              })
+            })
+          }
+        } else if (currentlist.name == '政府回應') {
+           if (list.name == '困難') {
+            list.cards.map( data => {
+              this.relatedlist.push({
+                'id': data.id,
+                'name': data.name
+              })
+            })
+          }
+        }
+      })
+    },
   },
   created: function() {
     if (this.$route.name == 'board') {
@@ -155,7 +236,20 @@ export default {
       boardtitledialog: 'boardtitledialog',
       search: 'search',
     }),
+    ...mapCardFields({
+      card: 'card',
+      opencard: 'opencard',
+      selectedlist: 'selectedlist',
+      editable: 'editable',
+      titlestyle: 'titlestyle',
+      titlecolor: 'titlecolor',
+      relatedlist: 'relatedlist',
+      deleteCard: 'deleteCard',
+      deletedID: 'deletedID',
+      attachsnackbar: 'attachsnackbar',
+    }),
     ...mapListFields({
+      lists: 'lists',
       stakeholders: 'stakeholders',
       evidences: 'evidences',
       stakeholderList: 'stakeholderList',
@@ -164,7 +258,7 @@ export default {
     ...mapDictionaryFields({
       opendictionary: 'opendictionary',
     })
-  }
+  },
 }
 </script>
 

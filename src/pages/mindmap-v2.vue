@@ -4,6 +4,7 @@
       <toolbar></toolbar>
     </v-container>
     <canvas id="canvas"></canvas>
+    <form-card></form-card>
   </div>
 </template>
 
@@ -37,8 +38,7 @@ export default {
   },
   data() {
     return {
-      lists: [],
-      mouseMode: 0
+      canvas: new fabric.Canvas('canvas')
     }
   },
   methods: {
@@ -93,14 +93,8 @@ export default {
             card.column = list.column
             card.showexplain = false
             card.hover = false
-            card.tagsfrom = []
-            card.tagsto = []
-            card.desc.stakeholders.map( async (stakeholder) => {
-              let person = await Trello.cards.get(stakeholder.id)
-              card.tagsfrom.push(person.name)
-            })
             card.attachments = []
-            card.desc.evidences.map( async (evidence) => {
+            /* card.desc.evidences.map( async (evidence) => {
               let attach = await Trello.cards.get(evidence.id,{fields: 'attachments',attachments: true})
               if (attach.attachments.length != 0) {
                 attach.attachments.map( async (att) => {
@@ -110,7 +104,7 @@ export default {
                   card.attachments.push(attachment)
                 })
               }
-            })
+            }) */
           })
           this.lists.push(list)
         }
@@ -125,126 +119,131 @@ export default {
         width: window.innerWidth,
         height: window.innerHeight
       });
+      /* let canvas = new fabric.Canvas('canvas')
+      canvas.setHeight(window.innerHeight);
+      canvas.setWidth(window.innerWidth); */
       this.lists.map( list => {
-        list.cards.map( card => {
-          let count = 0
-          let newCardname = ''
-          let fontSize = 16
-          let element = []
-          let height = (card.desc.stakeholders.length + card.desc.evidences.length) / 2 * 20 + 170
-          let rect = new fabric.Rect({
-            width: 155,
-            height: height,
-            fill: 'white' ,
-            stroke : 'rgba(0,0,0,0.6)',
-            strokeWidth : 0.25,
-            originX: 'center',
-            originY: 'center',
-          });
-          let shadow = {
-            color: 'rgba(0,0,0,0.6)',
-            blur: 20,    
-            offsetX: 5,
-            offsetY: 5,
-            opacity: 0.1,
-            fillShadow: true, 
-            strokeShadow: true 
-          }
-          rect.setShadow(shadow);
-          for (let i = 1; i < card.name.length + 1 ; i++) {
-            if (i % 8 == 0) {
-              newCardname += card.name.substring(count , i) + ' ' 
-              count = i
-            } else if (i == card.name.length) {
-              newCardname += card.name.substring(count , i) 
-            }
-          }
-          let text = new fabric.Textbox( newCardname, {
-            textAlign: 'justify-left',
-            fill:'rgba(0,0,0,100)',
-            fontSize: fontSize,
-            originX: 0.5,
-            originY: 0.4,
-            fontFamily:  "Roboto, 'Noto Sans TC'" ,
-            fixedWidth: 155
-          });
-          let category = new fabric.Textbox( list.name, {
-            textAlign: 'left',
-            fontSize: 18,
-            left: -65,
-            top: -75 - (card.desc.stakeholders.length + card.desc.evidences.length) / 2 * 10,
-            fontFamily:  "Roboto, 'Noto Sans TC'" ,
-            fixedWidth: 100,
-            maxLines: 2
-          });
-          let divider = new fabric.Rect({
-            width: 155,
-            height: 5,
-            fill: card.color ,
-            left: -79,
-            top: -45 - (card.desc.stakeholders.length + card.desc.evidences.length) / 2 * 10,
-          });
-          
-          element.push(rect)
-          element.push(text)
-          element.push(category)
-          element.push(divider)
-          let tagsCounter = 1
-          let offsetX = 0
-          let offsetY = 0
-          card.desc.stakeholders.map( s => {
-            if (tagsCounter % 2 == 0) {
-              offsetX = 80
-            } else {
-              offsetX = 0
-              offsetY++
-            }
-            let stakeholder = new fabric.Textbox( s.name, {
-              textAlign: 'left',
-              fontSize: 14,
-              left: -65 + offsetX,
-              top: 45 + offsetY * 20,
-              backgroundColor: '#D2B4DE',
-              fontFamily:  "Roboto, 'Noto Sans TC'" ,
+        if (list.name != '利害關係人' && list.name != '佐證文件' && list.name != '專有名詞字典') {
+          list.cards.map( card => {
+            let count = 0
+            let newCardname = ''
+            let fontSize = 16
+            let element = []
+            let height = (card.desc.stakeholders.length + card.desc.evidences.length) / 2 * 20 + 170
+            let rect = new fabric.Rect({
+              width: 155,
+              height: height,
+              fill: 'white' ,
+              stroke : 'rgba(0,0,0,0.6)',
+              strokeWidth : 0.25,
+              originX: 'center',
+              originY: 'center',
             });
-            element.push(stakeholder)
-            tagsCounter++
-          })
-          card.desc.evidences.map( e => {
-            if (tagsCounter % 2 == 0) {
-              offsetX = 80
-            } else {
-              offsetX = 0
-              offsetY++
+            let shadow = {
+              color: 'rgba(0,0,0,0.6)',
+              blur: 20,    
+              offsetX: 5,
+              offsetY: 5,
+              opacity: 0.1,
+              fillShadow: true, 
+              strokeShadow: true 
             }
-            let evidence = new fabric.Textbox( e.name, {
-              textAlign: 'left',
-              fontSize: 14,
-              left: -65 + offsetX,
-              top: 45 + offsetY * 20,
-              backgroundColor: '#CFD8DC',
+            rect.setShadow(shadow);
+            for (let i = 1; i < card.name.length + 1 ; i++) {
+              if (i % 8 == 0) {
+                newCardname += card.name.substring(count , i) + ' ' 
+                count = i
+              } else if (i == card.name.length) {
+                newCardname += card.name.substring(count , i) 
+              }
+            }
+            let text = new fabric.Textbox( newCardname, {
+              textAlign: 'justify-left',
+              fill:'rgba(0,0,0,100)',
+              fontSize: fontSize,
+              originX: 0.5,
+              originY: 0.4,
               fontFamily:  "Roboto, 'Noto Sans TC'" ,
+              fixedWidth: 155
             });
-            element.push(evidence)
-            tagsCounter++
-          })
-          let group = new fabric.Group(element, {
-            id: card.id,
-            name: card.name,
-            left: card.desc.x,
-            top: card.desc.y,
-            hasControls: false,
-            hasRotatingPoint: false,
-            borderColor: 'gray',
-          });
-          group.on('moved', e => {
-            card.desc.x = e.target.left
-            card.desc.y = e.target.top
-            Trello.put('cards/' + card.id, {'idList': list.id,'desc': JSON.stringify(card.desc) } , () => {
+            let category = new fabric.Textbox( list.name, {
+              textAlign: 'left',
+              fontSize: 18,
+              left: -65,
+              top: -75 - (card.desc.stakeholders.length + card.desc.evidences.length) / 2 * 10,
+              fontFamily:  "Roboto, 'Noto Sans TC'" ,
+              fixedWidth: 100,
+              maxLines: 2
+            });
+            let divider = new fabric.Rect({
+              width: 155,
+              height: 5,
+              fill: card.categorycolor ,
+              left: -79,
+              top: -45 - (card.desc.stakeholders.length + card.desc.evidences.length) / 2 * 10,
+            });
+            
+            element.push(rect)
+            element.push(text)
+            element.push(category)
+            element.push(divider)
+            let tagsCounter = 1
+            let offsetX = 0
+            let offsetY = 0
+            card.desc.stakeholders.map( s => {
+              if (tagsCounter % 2 == 0) {
+                offsetX = 80
+              } else {
+                offsetX = 0
+                offsetY++
+              }
+              let stakeholder = new fabric.Textbox( s.name, {
+                textAlign: 'left',
+                fontSize: 14,
+                left: -65 + offsetX,
+                top: 45 + offsetY * 20,
+                backgroundColor: '#D2B4DE',
+                fontFamily:  "Roboto, 'Noto Sans TC'" ,
+              });
+              element.push(stakeholder)
+              tagsCounter++
             })
+            card.desc.evidences.map( e => {
+              if (tagsCounter % 2 == 0) {
+                offsetX = 80
+              } else {
+                offsetX = 0
+                offsetY++
+              }
+              let evidence = new fabric.Textbox( e.name, {
+                textAlign: 'left',
+                fontSize: 14,
+                left: -65 + offsetX,
+                top: 45 + offsetY * 20,
+                backgroundColor: '#CFD8DC',
+                fontFamily:  "Roboto, 'Noto Sans TC'" ,
+              });
+              element.push(evidence)
+              tagsCounter++
+            })
+            let group = new fabric.Group(element, {
+              id: card.id,
+              name: card.name,
+              left: card.desc.x,
+              top: card.desc.y,
+              hasControls: false,
+              hasRotatingPoint: false,
+              borderColor: 'gray',
+            });
+            group.on('moved', e => {
+              card.desc.x = e.target.left
+              card.desc.y = e.target.top
+              Trello.put('cards/' + card.id, {'idList': list.id,'desc': JSON.stringify(card.desc) } , () => {
+              })
+            })
+            canvas.add(group)
           })
-          canvas.add(group)
-        })
+        }
       })
       fabric.Canvas.prototype.getItemByName = function(name) {
         let object = null,
@@ -258,16 +257,18 @@ export default {
         return object;
       };
       this.lists.map( list => {
-        list.cards.map( card => {
-          let start = canvas.getItemByName(card.name)
-          if (card.desc.related.length != 0) {
-            card.desc.related.map( r => {
-              let end = canvas.getItemByName(r.name)
-              addChildLine(start, end)
-            })
-          }
-          addButton(start)
-        })
+        if (list.name != '利害關係人' && list.name != '佐證文件' && list.name != '專有名詞字典') {
+          list.cards.map( card => {
+            let start = canvas.getItemByName(card.name)
+            if (card.desc.related.length != 0) {
+              card.desc.related.map( r => {
+                let end = canvas.getItemByName(r.name)
+                addChildLine(start, end)
+              })
+            }
+            addButton(start)
+          })
+        }
       })
       function addButton(start) {
         let center = start.getCenterPoint()
@@ -606,7 +607,7 @@ export default {
     },
   },
   created: function() {
-    this.getcards().then( () => this.draw() )
+    this.$store.dispatch('getlists', this.$route.params.id).then( () => this.draw() )
   },
   computed: {
     ...mapGetters({
@@ -615,6 +616,18 @@ export default {
     ...mapBoardFields({
       board: 'board',
     }),
+    ...mapListFields({
+      lists: 'lists',
+      stakeholders: 'stakeholders',
+      evidences: 'evidences',
+      stakeholderList: 'stakeholderList',
+      evidenceList: 'evidenceList',
+    })
+  },
+  watch: {
+    lists: function() {
+ 
+    }
   }
 }
 </script>
