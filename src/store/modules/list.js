@@ -32,7 +32,9 @@ const getters = {
 
 const actions = {
   async getlists ({commit, dispatch}, id) {
-    state.lists = []
+    /* state.lists = [] */
+    let newLists = []
+    let newCards = []
     let listarray = await Trello.boards.get(id + '/lists',{cards: 'open'})
     listarray.map( async (l) => {
       if (l.name != '專有名詞字典') {
@@ -81,10 +83,12 @@ const actions = {
           card.column = list.column
           card.listname = list.name
           card.hover = false
-          state.cards.push(card)
+          newCards.push(card)
         })
-        state.lists.push(list)
+        newLists.push(list)
       }
+      state.cards = newCards
+      state.lists = newLists
     })
     dispatch('getstakeholders')
     dispatch('getevidences')

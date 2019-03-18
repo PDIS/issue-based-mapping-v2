@@ -234,6 +234,7 @@ export default {
               hasControls: false,
               hasRotatingPoint: false,
               borderColor: 'gray',
+              card: card,
             });
             group.on('moved', e => {
               card.desc.x = e.target.left
@@ -626,7 +627,7 @@ export default {
   },
   watch: {
     lists: function() {
- 
+      this.draw()
     }
   }
 }
