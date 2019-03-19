@@ -111,17 +111,15 @@ export default {
       }))
     },
     draw: function() {
+      let that = this
       const REC_WIDTH = 155;
       const REC_HEIGHT = 155;
       const TRI_WIDTH = 15;
       const TRI_HEIGHT = 15;
-      let canvas = new fabric.Canvas('canvas',{
-        width: window.innerWidth,
-        height: window.innerHeight
-      });
-      /* let canvas = new fabric.Canvas('canvas')
-      canvas.setHeight(window.innerHeight);
-      canvas.setWidth(window.innerWidth); */
+      this.canvas.dispose()
+      this.canvas = new fabric.Canvas('canvas')
+      this.canvas.setHeight(window.innerHeight);
+      this.canvas.setWidth(window.innerWidth);
       this.lists.map( list => {
         if (list.name != '利害關係人' && list.name != '佐證文件' && list.name != '專有名詞字典') {
           list.cards.map( card => {
@@ -242,7 +240,7 @@ export default {
               Trello.put('cards/' + card.id, {'idList': list.id,'desc': JSON.stringify(card.desc) } , () => {
               })
             })
-            canvas.add(group)
+            that.canvas.add(group)
           })
         }
       })
@@ -260,10 +258,10 @@ export default {
       this.lists.map( list => {
         if (list.name != '利害關係人' && list.name != '佐證文件' && list.name != '專有名詞字典') {
           list.cards.map( card => {
-            let start = canvas.getItemByName(card.name)
+            let start = that.canvas.getItemByName(card.name)
             if (card.desc.related.length != 0) {
               card.desc.related.map( r => {
-                let end = canvas.getItemByName(r.name)
+                let end = that.canvas.getItemByName(r.name)
                 addChildLine(start, end)
               })
             }
@@ -287,7 +285,7 @@ export default {
           img1.scaleToHeight(30);
           img1.scaleToWidth(30);
           img1.selectable = false,
-          canvas.add(img1)
+          that.canvas.add(img1)
           start.addChild = start.addChild || {};
           start.addChild.button = start.addChild.button || [];
           start.addChild.button.push(img1);
@@ -308,7 +306,7 @@ export default {
         return (angle * 180 / Math.PI + 90);
       }
       function addChildLine(start, end) {
-        canvas.off('object:selected', addChildLine);
+        that.canvas.off('object:selected', addChildLine);
 
         // add the line
         var fromObject = start;
@@ -397,7 +395,7 @@ export default {
       // var Group = new fabric.Group([line, line.triangle]);
       // canvas.add(Group);
 
-        canvas.add(line, line.triangle);
+        that.canvas.add(line, line.triangle);
 
         // so that the line is behind the connected shapes
         line.sendToBack();
@@ -419,11 +417,11 @@ export default {
         };
 
         // undefined instead of delete since we are anyway going to do this many times
-        canvas.addChild = undefined;
+        that.canvas.addChild = undefined;
     }
 
     function addChildMoveLine(event) {
-      canvas.on(event, function(options) {
+      that.canvas.on(event, function(options) {
         var object = options.target;
         // udpate lines (if any)
         for (let i = 0; i < object._objects.length; i++) {
@@ -544,7 +542,7 @@ export default {
             });
           }
         }
-        canvas.renderAll();
+        that.canvas.renderAll();
       });
     }
 
@@ -566,19 +564,19 @@ export default {
       };
       ['object:moving'].forEach(addChildMoveLine);
 
-      canvas.on('object:moved', moveHandler);
-      canvas.on('mouse:wheel', function(opt) {
+      that.canvas.on('object:moved', moveHandler);
+      that.canvas.on('mouse:wheel', function(opt) {
         let delta = opt.e.deltaY;
-        let pointer = canvas.getPointer(opt.e);
-        let zoom = canvas.getZoom();
+        let pointer = that.canvas.getPointer(opt.e);
+        let zoom = that.canvas.getZoom();
         zoom = zoom - delta/2000;
         if (zoom > 20) zoom = 20;
         if (zoom < 0.01) zoom = 0.01;
-        canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+        that.canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
         opt.e.preventDefault();
         opt.e.stopPropagation();
       })
-      canvas.on('mouse:down:before', function(opt) {
+      that.canvas.on('mouse:down:before', function(opt) {
         let evt = opt.e;
         if (evt.button != 0) {
           this.isDragging = true;
@@ -587,7 +585,7 @@ export default {
           this.lastPosY = evt.clientY;
         }
       })
-      canvas.on('mouse:move', function(opt) {
+      that.canvas.on('mouse:move', function(opt) {
         if (this.isDragging) {
           let e = opt.e;
           this.viewportTransform[4] += e.clientX - this.lastPosX;
@@ -597,7 +595,7 @@ export default {
           this.lastPosY = e.clientY;
         }
       });
-      canvas.on('mouse:up:before', function(opt) {
+      that.canvas.on('mouse:up:before', function(opt) {
         this.isDragging = false;
         this.selection = true;
         let objects = this.getObjects();
@@ -605,10 +603,11 @@ export default {
           objects[i].setCoords();
         }
       });
+      that.canvas.renderAll.bind(that.canvas)
     },
   },
   created: function() {
-    this.$store.dispatch('getlists', this.$route.params.id).then( () => this.draw() )
+    this.$store.dispatch('getlists', this.$route.params.id)
   },
   computed: {
     ...mapGetters({
@@ -627,6 +626,8 @@ export default {
   },
   watch: {
     lists: function() {
+      let canvas = this.canvas
+      canvas.clear()
       this.draw()
     }
   }
