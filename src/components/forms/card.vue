@@ -450,7 +450,7 @@ export default {
                   color: 'success',
                   text: '新增'
                 }
-                card.desc.evidences.push(res.id)
+                card.desc.evidences.push(res)
                 that.$store.dispatch('getsnackbar', snackbar)
               })
             } else {
@@ -466,7 +466,7 @@ export default {
                       color: 'success',
                       text: '新增'
                     }
-                    card.desc.evidences.push(res.id)
+                    card.desc.evidences.push(res)
                     that.$store.dispatch('getsnackbar', snackbar)
                   }
                 }
