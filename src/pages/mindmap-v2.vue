@@ -240,6 +240,9 @@ export default {
               Trello.put('cards/' + card.id, {'idList': list.id,'desc': JSON.stringify(card.desc) } , () => {
               })
             })
+            group.on('mousedblclick', e => {
+              that.editcard(card)
+            })
             that.canvas.add(group)
           })
         }
@@ -277,14 +280,17 @@ export default {
             name:'button', 
             left: center.x + REC_WIDTH / 2.3, 
             top: center.y ,
-            width:1000,
-            height:1000,
+            width: 1000,
+            height: 1000,
             fromObject: start,
             hoverCursor: "pointer"
             });
           img1.scaleToHeight(30);
           img1.scaleToWidth(30);
           img1.selectable = false,
+          img1.on('mousedown', e => {
+            that.newcard(start.card)
+          })
           that.canvas.add(img1)
           start.addChild = start.addChild || {};
           start.addChild.button = start.addChild.button || [];
@@ -307,7 +313,6 @@ export default {
       }
       function addChildLine(start, end) {
         that.canvas.off('object:selected', addChildLine);
-
         // add the line
         var fromObject = start;
         var toObject = end;
@@ -605,6 +610,112 @@ export default {
       });
       that.canvas.renderAll.bind(that.canvas)
     },
+    newcard: function (start) {
+      let that = this
+      this.lists.map(list => {
+        if (start.listname == '問題面向') {
+          if (list.name == '問題細節') {
+            that.selectedlist = list
+          }
+        } else if (start.listname == '問題細節') {
+           if (list.name == '現有解法') {
+            that.selectedlist = list
+          }
+        } else if (start.listname == '現有解法') {
+           if (list.name == '政府回應') {
+            that.selectedlist = list
+          }
+        } else if (start.listname == '政府回應') {
+           if (list.name == '困難') {
+            that.selectedlist = list
+          }
+        }
+      })
+      this.cardFrom = start
+      this.opencard = true; 
+      this.editable = false
+      /* this.resetForm() */
+      if (this.selectedlist.name == '政府回應') {
+        if (this.card.desc.responsetime == 'nowadays') {
+          this.card.title = '[現在]'
+        } else {
+          this.card.title = '[未來]'
+        }
+      }
+      this.getrelated(this.selectedlist)
+    },
+    getrelated: function(currentlist) {
+      this.relatedlist = []
+      this.lists.map(list => {
+        if (currentlist.name == '問題面向') {
+          if (list.name == '問題細節') {
+            list.cards.map( data => {
+              this.relatedlist.push({
+                'id': data.id,
+                'name': data.name,
+                'desc': data.desc
+              })
+            })
+          }
+        } else if (currentlist.name == '問題細節') {
+           if (list.name == '現有解法') {
+            list.cards.map( data => {
+              this.relatedlist.push({
+                'id': data.id,
+                'name': data.name,
+                'desc': data.desc
+              })
+            })
+          }
+        } else if (currentlist.name == '現有解法') {
+           if (list.name == '政府回應') {
+            list.cards.map( data => {
+              this.relatedlist.push({
+                'id': data.id,
+                'name': data.name,
+                'desc': data.desc
+              })
+            })
+          }
+        } else if (currentlist.name == '政府回應') {
+           if (list.name == '困難') {
+            list.cards.map( data => {
+              this.relatedlist.push({
+                'id': data.id,
+                'name': data.name,
+                'desc': data.desc
+              })
+            })
+          }
+        }
+      })
+    },
+    editcard: function(card) {
+      let that = this
+      this.lists.map(list => {
+        if (card.listname === list.name) {
+          that.selectedlist = list
+        }
+      })
+      this.opencard = true
+      this.card.id = card.id
+      this.card.title = card.name
+      this.card.desc.responsetime = card.desc.responsetime
+      this.card.desc.data = card.desc.data
+      this.card.desc.related = card.desc.related
+      this.card.desc.explain = card.desc.explain
+      this.card.desc.role = card.desc.role
+      this.card.desc.department = card.desc.department
+      this.card.desc.background = card.desc.background
+      this.card.desc.stakeholders = card.desc.stakeholders
+      this.card.desc.evidences = card.desc.evidences
+      this.card.desc.attachment = card.desc.attachment 
+      this.card.desc.x = card.desc.x
+      this.card.desc.y = card.desc.y
+      this.card.attachments = card.attachments
+      this.editable = true
+      this.getrelated(this.selectedlist)
+    },
   },
   created: function() {
     this.$store.dispatch('getlists', this.$route.params.id)
@@ -615,6 +726,19 @@ export default {
     }),
     ...mapBoardFields({
       board: 'board',
+    }),
+    ...mapCardFields({
+      card: 'card',
+      opencard: 'opencard',
+      selectedlist: 'selectedlist',
+      editable: 'editable',
+      titlestyle: 'titlestyle',
+      titlecolor: 'titlecolor',
+      relatedlist: 'relatedlist',
+      deleteCard: 'deleteCard',
+      deletedID: 'deletedID',
+      attachsnackbar: 'attachsnackbar',
+      cardFrom: 'cardFrom',
     }),
     ...mapListFields({
       lists: 'lists',

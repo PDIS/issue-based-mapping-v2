@@ -103,7 +103,11 @@ const actions = {
         state.stakeholderList.color = '#0097A7'
         state.stakeholderList.column = 6
         list.cards.map( stakeholder => {
-          state.stakeholders.push(stakeholder)
+          state.stakeholders.push({
+            'id': stakeholder.id,
+            'name': stakeholder.name,
+            'desc': stakeholder.desc
+          })
         })
       }
     })
@@ -118,7 +122,11 @@ const actions = {
         state.evidenceList.color = '#CFD8DC'
         state.evidenceList.column = 7
         list.cards.map( evidence => {
-          state.evidences.push(evidence)
+          state.evidences.push({
+            'id': evidence.id,
+            'name': evidence.name,
+            'desc': evidence.desc
+          })
         })
       }
     })

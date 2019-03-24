@@ -8,8 +8,9 @@
               <!-- <v-btn color="primary" icon flat @click="boardtitledialog = true" v-if="board.admin.includes(user.id)">
                 <v-icon>edit</v-icon>
               </v-btn> -->
-              <v-btn icon small fab disabled v-for="a in board.avatars" :key="a" class="mx-3 mb-3">
-                <img :src="a+'/50.png'" style="border-radius:50%"/> 
+              <v-btn icon small fab disabled v-for="a in board.avatars" :key="a" class="mb-3">
+                <img :src="a+'/50.png'" style="border-radius:50%" v-if="a !== null"/>
+                <img src="https://c7.uihere.com/files/150/864/961/anonymous-icon-business-user-cliparts.jpg" width="55" style="border-radius:50%" v-else/>
               </v-btn>
               <v-icon  @click="new_member()" medium fab btn outline class=" dark ml-2" v-if="board.admin.includes(user.id)">person_add</v-icon>
             </div>
@@ -47,7 +48,42 @@
         </v-btn>
       </v-flex>
       <v-flex md12 v-if="mode == 'mindmap'">
-        <v-btn flat icon @click.native="newcard('問題面向')" color="#FFCD13">
+        <v-layout align-center justify-start row fill-height>
+          <v-menu>
+            <template #activator="{ on: menu }">
+              <v-tooltip bottom>
+                <template #activator="{ on: tooltip }">
+                  <v-btn flat icon v-on="{ ...tooltip, ...menu }">
+                    <v-icon large>note</v-icon>
+                  </v-btn>
+                </template>
+                <span>新增卡片</span>
+              </v-tooltip>
+            </template>
+            <v-list>
+              <v-list-tile
+                v-for="(item, index) in items"
+                :key="index"
+                @click="newcard(item.title)"
+              >
+                <v-list-tile-title >{{ item.title }}</v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
+          <v-item-group>
+            <v-item>
+              <v-btn flat icon slot-scope="{ active, toggle }" :color="active ? 'primary' : ''" @click="toggle">
+                <v-icon>fa-link</v-icon>
+              </v-btn>
+            </v-item>
+            <v-item>
+              <v-btn flat icon slot-scope="{ active, toggle }" :color="active ? 'primary' : ''" @click="toggle">
+                <v-icon>fa-unlink</v-icon>
+              </v-btn>
+            </v-item>
+          </v-item-group>
+        </v-layout>
+        <!-- <v-btn flat icon @click.native="newcard('問題面向')" color="#FFCD13">
           <v-icon large>note</v-icon>
         </v-btn>
         <v-btn flat icon @click.native="newcard('問題細節')" color="#FFE276">
@@ -61,7 +97,7 @@
         </v-btn>
         <v-btn flat icon @click.native="newcard('困難')" color="#C85938">
           <v-icon large>note</v-icon>
-        </v-btn>
+        </v-btn> -->
       </v-flex>
     </v-layout>
     <v-dialog v-model="newmemberdialog" max-width="50vw">
@@ -132,6 +168,14 @@ export default {
       relationmode: false,
       newmemberdialog: false,
       mode: 'board',
+      items: [
+        { title: '問題面向' },
+        { title: '問題細節' },
+        { title: '現有解法' },
+        { title: '政府回應' },
+        { title: '困難' },
+      ],
+      linkingMode: false,
     }
   },
   methods: {
@@ -183,7 +227,8 @@ export default {
             list.cards.map( data => {
               this.relatedlist.push({
                 'id': data.id,
-                'name': data.name
+                'name': data.name,
+                'desc': data.desc
               })
             })
           }
@@ -192,7 +237,8 @@ export default {
             list.cards.map( data => {
               this.relatedlist.push({
                 'id': data.id,
-                'name': data.name
+                'name': data.name,
+                'desc': data.desc
               })
             })
           }
@@ -201,7 +247,8 @@ export default {
             list.cards.map( data => {
               this.relatedlist.push({
                 'id': data.id,
-                'name': data.name
+                'name': data.name,
+                'desc': data.desc
               })
             })
           }
@@ -210,7 +257,8 @@ export default {
             list.cards.map( data => {
               this.relatedlist.push({
                 'id': data.id,
-                'name': data.name
+                'name': data.name,
+                'desc': data.desc
               })
             })
           }

@@ -526,23 +526,13 @@ export default {
           this.card.desc.x = 100 + this.selectedlist.cards.length * 150
           this.card.desc.y = this.selectedlist.column * 150 
           Trello.post('cards', {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc)} , function(res) {
-            if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
-              Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
-                let snackbar = {
-                  state: true,
-                  color: 'success',
-                  text: '新增'
-                }
-                that.$store.dispatch('getsnackbar', snackbar)
-                that.opencard = false
-                that.$store.dispatch('getlists', that.$route.params.id)
-              })
-            } else {
-              if (that.card.attachments == undefined) {
-                let request = new XMLHttpRequest()
-                request.responseType = "json"
-                request.onreadystatechange = function() {
-                  if (request.readyState === 4) {
+            if (that.cardFrom !== null) {
+              let newCardID = res.id
+              let relatedObject = {id: newCardID, name: that.card.title}
+              that.cardFrom.desc.related.push(relatedObject)
+              Trello.put('cards/' + that.cardFrom.id, {'desc': JSON.stringify(that.cardFrom.desc) } , function(res) {
+                if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
+                  Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
                     let snackbar = {
                       state: true,
                       color: 'success',
@@ -551,10 +541,59 @@ export default {
                     that.$store.dispatch('getsnackbar', snackbar)
                     that.opencard = false
                     that.$store.dispatch('getlists', that.$route.params.id)
+                  })
+                } else {
+                  if (that.card.attachments == undefined) {
+                    let request = new XMLHttpRequest()
+                    request.responseType = "json"
+                    request.onreadystatechange = function() {
+                      if (request.readyState === 4) {
+                        let snackbar = {
+                          state: true,
+                          color: 'success',
+                          text: '新增'
+                        }
+                        that.$store.dispatch('getsnackbar', snackbar)
+                        that.opencard = false
+                        that.$store.dispatch('getlists', that.$route.params.id)
+                      }
+                    }
+                    request.open("POST", 'https://api.trello.com/1/cards/' +  res.id + '/attachments/')
+                    request.send(that.uploadfile)
                   }
                 }
-                request.open("POST", 'https://api.trello.com/1/cards/' +  res.id + '/attachments/')
-                request.send(that.uploadfile)
+              })
+            } else {
+              if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
+                Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
+                  let snackbar = {
+                    state: true,
+                    color: 'success',
+                    text: '新增'
+                  }
+                  that.$store.dispatch('getsnackbar', snackbar)
+                  that.opencard = false
+                  that.$store.dispatch('getlists', that.$route.params.id)
+                })
+              } else {
+                if (that.card.attachments == undefined) {
+                  let request = new XMLHttpRequest()
+                  request.responseType = "json"
+                  request.onreadystatechange = function() {
+                    if (request.readyState === 4) {
+                      let snackbar = {
+                        state: true,
+                        color: 'success',
+                        text: '新增'
+                      }
+                      that.$store.dispatch('getsnackbar', snackbar)
+                      that.opencard = false
+                      that.$store.dispatch('getlists', that.$route.params.id)
+                    }
+                  }
+                  request.open("POST", 'https://api.trello.com/1/cards/' +  res.id + '/attachments/')
+                  request.send(that.uploadfile)
+                }
               }
             }
           })
@@ -645,7 +684,8 @@ export default {
       relatedlist: 'relatedlist',
       deleteCard: 'deleteCard',
       deletedID: 'deletedID',
-      attachsnackbar: 'attachsnackbar'
+      attachsnackbar: 'attachsnackbar',
+      cardFrom: 'cardFrom',
     }),
     ...mapListFields({
       lists: 'lists',

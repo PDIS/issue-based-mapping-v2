@@ -164,7 +164,8 @@ export default {
             list.cards.map( data => {
               this.relatedlist.push({
                 'id': data.id,
-                'name': data.name
+                'name': data.name,
+                'desc': data.desc
               })
             })
           }
@@ -173,7 +174,8 @@ export default {
             list.cards.map( data => {
               this.relatedlist.push({
                 'id': data.id,
-                'name': data.name
+                'name': data.name,
+                'desc': data.desc
               })
             })
           }
@@ -182,7 +184,8 @@ export default {
             list.cards.map( data => {
               this.relatedlist.push({
                 'id': data.id,
-                'name': data.name
+                'name': data.name,
+                'desc': data.desc
               })
             })
           }
@@ -191,7 +194,8 @@ export default {
             list.cards.map( data => {
               this.relatedlist.push({
                 'id': data.id,
-                'name': data.name
+                'name': data.name,
+                'desc': data.desc
               })
             })
           }

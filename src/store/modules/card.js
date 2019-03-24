@@ -32,6 +32,7 @@ const state = {
   deleteCard: false,
   deletedID: '',
   attachsnackbar: false,
+  cardFrom: null,
 }
 
 const getters = {
