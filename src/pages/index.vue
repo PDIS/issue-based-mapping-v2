@@ -179,6 +179,18 @@ export default {
     },
   },
   created: function() {
+    // Your corresponding keys
+    Parse.initialize('{parse}', 'unused');
+    
+    // For back4app applications, this url is
+    // 'https://parseapi.back4app.com'
+    Parse.serverURL = 'http://parse.pdis.nat.gov.tw/parse/'
+    // Parse initialization above
+    var obj = new Parse.Object('GameScore');
+    obj.set('score',1337);
+    obj.save().then(function(obj) {
+      console.log(obj.toJSON());
+    }, function(err) { console.log(err); });
     this.$store.dispatch('getmembers')
     this.$store.dispatch('getboards')
   },
