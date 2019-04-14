@@ -82,12 +82,41 @@
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title >{{$t("Issue Mapping Instruction")}}</v-toolbar-title>
       <v-spacer></v-spacer>
-      <strong class="mr-3 title">Hi, {{user.name}}</strong>
-      <v-btn icon outline small fab btn disabled class="mr-3 mb-3" v-if="user.avatar != ''">
+      <GoogleLogin :params="params" :onSuccess="onSuccess" :onFailure="onFailure" class="v-btn v-btn--flat theme--dark" v-if="!isLogin">登入</GoogleLogin>
+      <!-- <GoogleLogin :params="params" :logoutButton = "true" :onSuccess="logout" class="v-btn v-btn--flat theme--dark" v-if="isLogin">Logout</GoogleLogin> -->
+      <!-- <strong class="mr-3 title">Hi, {{user.name}}</strong> -->
+      <!-- <v-btn icon outline small fab btn disabled class="mr-3 mb-3" v-if="user.avatar != ''">
         <v-avatar>
           <img :src="user.avatar" alt="username">
         </v-avatar> 
+      </v-btn> -->
+      <!-- <v-speed-dial direction="bottom" open-on-hover = true transition="slide-y-reverse-transition" v-if="user.avatar != ''">
+      <template v-slot:activator>
+        <v-btn icon small fab class="mr-3 mb-3">
+          <v-avatar>
+            <img :src="user.avatar" alt="username">
+          </v-avatar>
+        </v-btn>
+      </template>
+      <v-btn fab dark small class="mr-3">
+        <v-icon>exit_to_app<GoogleLogin :params="params" :logoutButton = "true" :onSuccess="logout" class="v-btn v-btn--flat theme--dark" v-if="isLogin"></GoogleLogin></v-icon>
       </v-btn>
+    </v-speed-dial> -->
+      <v-menu open-on-hover offset-y v-if="user.avatar != ''">
+        <template v-slot:activator="{ on }">
+          <v-btn icon small fab class="mr-3 mb-3" v-on="on">
+            <v-avatar>
+              <img :src="user.avatar" alt="username">
+            </v-avatar>
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-tile>
+            <v-list-tile-title><GoogleLogin :params="params" :logoutButton = "true" :onSuccess="logout" v-if="isLogin">登出</GoogleLogin></v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
     </v-toolbar> 
   </div>
 </template>
@@ -96,6 +125,7 @@
 import Vue from 'vue'
 import { mapActions, mapGetters } from 'vuex'
 import { createHelpers } from 'vuex-map-fields';
+import GoogleLogin from 'vue-google-login';
 
 const { mapFields } = createHelpers({
   getterType: 'getBoardField',
@@ -103,6 +133,9 @@ const { mapFields } = createHelpers({
 });
 
 export default {
+  components: {
+     GoogleLogin
+  },
   data () {
     return {
       clipped: false,
@@ -111,16 +144,53 @@ export default {
       miniVariant: false,
       title: this.$t("Issue Mapping Instruction"),
       search: '',
-      lang: 'zh-TW'
+      lang: 'zh-TW',
+      params: {
+        client_id: "203197589455-a4mgtbjg6lvr2jb5eu2bngndrfrr75bn.apps.googleusercontent.com"
+      },
+      isLogin: false,
     }
   },
   methods: {
     setlang: function(lang) {
       Vue.i18n.set(lang);
-    }
+    },
+    onSuccess: function(googleUser) {
+      /* this.user.id = googleUser.getBasicProfile().Eea */
+      this.user.avatar = googleUser.getBasicProfile().Paa
+      this.user.name = googleUser.getBasicProfile().ig
+      this.user.email = googleUser.getBasicProfile().U3
+      this.isLogin = true
+      /* window.location.reload(true) */
+    },
+    onFailure: function() {
+      
+    },
+    getLoginStatus: function() {
+      Vue.GoogleAuth.then(auth2 => {
+        if (auth2.currentUser.get().w3 == null) {
+          this.isLogin = false
+        } else {
+          /* this.user.id = auth2.currentUser.get().w3.Eea */
+          this.user.avatar = auth2.currentUser.get().w3.Paa
+          this.user.name = auth2.currentUser.get().w3.ig
+          this.user.email = auth2.currentUser.get().w3.U3
+          this.isLogin = true
+        }
+      })
+    },
+    logout: function() {
+      this.isLogin = false
+      this.user.id = ''
+      this.user.avatar = ''
+      this.user.name = ''
+      this.user.email = ''
+      /* window.location.reload(true) */
+    },
   },
   created: function() {
-    this.$store.dispatch('getuser')
+    this.getLoginStatus()
+    /* this.$store.dispatch('getuser') */
     if (this.$route.params.id != undefined) {
       this.$store.dispatch('getboardinfo', this.$route.params.id)
     }

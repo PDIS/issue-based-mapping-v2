@@ -2,7 +2,8 @@ const state = {
   user: {
     'id':'',
     'name':'',
-    'avatar': ''
+    'avatar': '',
+    'email': ''
   },
   members: []
 }

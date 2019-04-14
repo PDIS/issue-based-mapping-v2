@@ -187,10 +187,10 @@ export default {
     Parse.serverURL = 'http://parse.pdis.nat.gov.tw/parse/'
     // Parse initialization above
     var obj = new Parse.Object('GameScore');
-    obj.set('score',1337);
+  /*   obj.set('score',1337);
     obj.save().then(function(obj) {
       console.log(obj.toJSON());
-    }, function(err) { console.log(err); });
+    }, function(err) { console.log(err); }); */
     this.$store.dispatch('getmembers')
     this.$store.dispatch('getboards')
   },

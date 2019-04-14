@@ -10,12 +10,16 @@ import Vuex from 'vuex'
 import vuexI18n from 'vuex-i18n';
 import store from './store'
 import Vue2Filters from 'vue2-filters'
+import { LoaderPlugin } from 'vue-google-login';
 
 Vue.use(Vue2Filters)
 Vue.use(Vuex)
 Vue.use(vuexI18n.plugin, store )
 Vue.use(VueKonva)
 Vue.use(Vuetify)
+Vue.use(LoaderPlugin, {
+  client_id: '203197589455-a4mgtbjg6lvr2jb5eu2bngndrfrr75bn.apps.googleusercontent.com',
+});
 
 Vue.config.productionTip = false
 
