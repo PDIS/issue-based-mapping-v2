@@ -21,13 +21,13 @@
             <v-flex md12 mx-4>
               <v-layout row wrap>
                 <v-flex flex xs12 v-if="selectedlist.name == '利害關係人'">
-                  <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                  <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱"  v-model="card.name" :counter="30" :rules="titleRules"></v-text-field>
                 </v-flex>
                 <v-flex flex xs12 v-else-if="selectedlist.name == '佐證文件'">
-                  <v-text-field color="blue-grey darken-2" label="佐證文件名稱" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                  <v-text-field color="blue-grey darken-2" label="佐證文件名稱" v-model="card.name" :counter="30" :rules="titleRules"></v-text-field>
                 </v-flex>
                 <v-flex flex xs12 v-else>
-                  <v-text-field color="blue-grey darken-2" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                  <v-text-field color="blue-grey darken-2" v-model="card.name" :counter="30" :rules="titleRules"></v-text-field>
                 </v-flex>
               </v-layout>
               <v-layout row wrap v-if="selectedlist.name == '問題細節'">
@@ -90,7 +90,7 @@
                     </v-layout>
                     <!-- <v-flex md12>
                       <v-layout align-center justify-end row fill-height>
-                        <v-btn color="black" class="mt-3" small outline @click.native="newattachmentmode = false; newcard.title = ''; newcard.desc.attachment = '';" >取消</v-btn>
+                        <v-btn color="black" class="mt-3" small outline @click.native="newattachmentmode = false; newcard.name = ''; newcard.desc.attachment = '';" >取消</v-btn>
                         <v-btn color="black" class="mt-3" small dark @click.native="newattachmentmode = false; addattachment(card)">確定</v-btn>
                       </v-layout>
                     </v-flex> -->
@@ -98,7 +98,8 @@
                 </v-flex>
               </v-layout>
             </v-flex>
-            <v-flex md12 mx-2 v-if="board.admin.includes(user.id) || board.members.includes(user.id)">
+            <!-- <v-flex md12 mx-2 v-if="board.admin.includes(user.id) || board.members.includes(user.id)"> -->
+              <v-flex md12 mx-2>
               <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '利害關係人'">
                 <v-flex>
                   <v-btn flat color="primary" v-if="newstakeholdermode == false && newattachmentmode == false" @click.native="newstakeholdermode = true">+新增利害關係人</v-btn>
@@ -124,10 +125,10 @@
             <v-flex md12 mx-4 v-if="newstakeholdermode == true">
               <v-layout row wrap>
                 <v-flex md6>
-                  <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱"  v-model="newcard.title" ></v-text-field>
+                  <v-text-field color="blue-grey darken-2" label="稱謂/單位名稱"  v-model="newcard.name" ></v-text-field>
                 </v-flex>
                 <v-flex md6>
-                  <v-btn color="black" class="mt-3" small outline @click.native="newstakeholdermode = false; newcard.title = ''" >取消</v-btn>
+                  <v-btn color="black" class="mt-3" small outline @click.native="newstakeholdermode = false; newcard.name = ''" >取消</v-btn>
                   <v-btn color="black" class="mt-3" small dark @click.native="newstakeholdermode = false; addstakeholder(card)">確定</v-btn>
                 </v-flex>
               </v-layout>
@@ -182,7 +183,7 @@
                 </v-flex>
                 <v-layout row wrap v-if="attachmentselection == 'attachmentlink'">
                   <v-flex md12>
-                    <v-text-field color="blue-grey darken-2" label="佐證文件名稱"  v-model="newcard.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="佐證文件名稱"  v-model="newcard.name" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex md12>
                     <v-text-field color="blue-grey darken-2" label="文件連結"  v-model="newcard.desc.attachment"></v-text-field>
@@ -190,7 +191,7 @@
                 </v-layout>
                 <v-layout row wrap v-if="attachmentselection == 'attachmentupload'">
                   <v-flex md6>
-                    <v-text-field color="blue-grey darken-2" label="佐證文件名稱"  v-model="newcard.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="佐證文件名稱"  v-model="newcard.name" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex md4>
                     <upload-btn depressed outline title="附加檔案" :fileChangedCallback="fileChanged" class="mt-3">
@@ -205,7 +206,7 @@
                 </v-layout>
                 <v-flex md12>
                   <v-layout align-center justify-end row fill-height>
-                    <v-btn color="black" class="mt-3" small outline @click.native="newattachmentmode = false; newcard.title = ''; newcard.desc.attachment = '';" >取消</v-btn>
+                    <v-btn color="black" class="mt-3" small outline @click.native="newattachmentmode = false; newcard.name = ''; newcard.desc.attachment = '';" >取消</v-btn>
                     <v-btn color="black" class="mt-3" small dark @click.native="newattachmentmode = false; addattachment(card)">確定</v-btn>
                   </v-layout>
                 </v-flex>
@@ -319,15 +320,16 @@
               </v-card>
             </v-flex>
           </v-layout>
-          <v-card-actions class="px-3" v-if="(board.admin.includes(user.id) || board.members.includes(user.id)) && newstakeholdermode == false && newattachmentmode == false">
+          <!-- v-card-actions class="px-3" v-if="(board.admin.includes(user.id) || board.members.includes(user.id)) && newstakeholdermode == false && newattachmentmode == false"> -->
+          <v-card-actions class="px-3" v-if="newstakeholdermode == false && newattachmentmode == false">
             <v-spacer></v-spacer>
             <v-btn flat @click.native="opencard = !opencard" class="subheading">取消</v-btn>
             <v-btn flat color="cyan" type="submit" class="subheading" :disabled="!valid" >確認</v-btn>
           </v-card-actions>
-          <v-card-actions class="px-3" v-if="(!board.admin.includes(user.id) && !board.members.includes(user.id))">
+         <!--  <v-card-actions class="px-3" v-if="(!board.admin.includes(user.id) && !board.members.includes(user.id))">
             <v-spacer></v-spacer>
             <v-btn flat @click.native="opencard = !opencard" class="subheading">關閉</v-btn>
-          </v-card-actions>
+          </v-card-actions> -->
         </v-container>
       </v-form>
     </v-card>
@@ -409,41 +411,76 @@ export default {
       return this.titlestyle + this.titlecolor
     },
     changeresponsetime: function(card) {
-      card.title = card.title.replace('[現在]','').replace('[未來]','')
+      card.name = card.name.replace('[現在]','').replace('[未來]','')
       if (card.desc.responsetime == 'nowadays') {
         this.responsestring = '[現在]'
       } else {
         this.responsestring = '[未來]'
       }
-      card.title = this.responsestring + card.title
+      card.name = this.responsestring + card.name
     },
     addstakeholder: function(card) {
       let that = this
-      this.lists.map( l => {
+      this.lists.map( async l => {
         if (l.name == '利害關係人') {
-          Trello.post('cards', {'name': this.newcard.title, 'idList': l.id,'desc': JSON.stringify(this.newcard.desc) } , function(res) {
-            that.newcard.title = ''
-            card.desc.stakeholders.push(res)
-            that.$store.dispatch('getlists', that.$route.params.id)
-            let snackbar = {
-              state: true,
-              color: 'success',
-              text: '新增'
-            }
-            that.$store.dispatch('getsnackbar', snackbar)
+          this.newcard.idList = l.id
+          let data = await fetch("http://localhost:8787/newcard/", {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.newcard)
           })
+          let res = await data.json()
+          /* Trello.post('cards', {'name': this.newcard.name, 'idList': l.id,'desc': JSON.stringify(this.newcard.desc) } , function(res) { */
+          that.newcard.name = ''
+          card.desc.stakeholders.push(res)
+          that.$store.dispatch('getlists', that.$route.params.id)
+          let snackbar = {
+            state: true,
+            color: 'success',
+            text: '新增'
+          }
+          that.$store.dispatch('getsnackbar', snackbar)
         }
       })
     },
     addattachment: function(card) {
       let that = this;
-      this.lists.map( l => {
+      this.lists.map(async l => {
         if (l.name == '佐證文件') {
-          Trello.post('cards', {'name': this.newcard.title, 'idList': l.id,'desc': JSON.stringify(this.newcard.desc)} , function(res) {
-            if (that.newcard.desc.attachment != '' && that.newcard.desc.attachment != undefined) {
-              Trello.post('cards/' + res.id + '/attachments', {'url': that.newcard.desc.attachment, 'name': that.newcard.title}, function() {
-                that.newcard.title = ''
-                that.newcard.desc.attachment = ''
+          this.newcard.idList = l.id
+          let data = await fetch("http://localhost:8787/newcard/", {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.newcard)
+          })
+          let res = await data.json()
+          if (that.newcard.desc.attachment != '' && that.newcard.desc.attachment != undefined) {
+            /* Trello.post('cards/' + res.id + '/attachments', {'url': that.newcard.desc.attachment, 'name': that.newcard.name}, function() { */
+            fetch("http://localhost:8787/newattachmenturl/" + that.card.id + "/" + that.newcard.name + "/" + that.newcard.desc.attachment, {
+              method: "post",
+            }).then( () => {
+              that.newcard.name = ''
+              that.newcard.desc.attachment = ''
+              that.$store.dispatch('getlists', that.$route.params.id)
+              let snackbar = {
+                state: true,
+                color: 'success',
+                text: '新增'
+              }
+              card.desc.evidences.push(res)
+              that.$store.dispatch('getsnackbar', snackbar)
+            })
+          } else {
+            if (that.newcard.attachments == undefined) {
+              fetch("http://localhost:8787/newattachment/" + that.card.id + "/" + that.card.name, {
+                method: "post",
+                body: that.uploadfile
+              }).then( data => {
+                that.newcard.name = ''
                 that.$store.dispatch('getlists', that.$route.params.id)
                 let snackbar = {
                   state: true,
@@ -452,37 +489,22 @@ export default {
                 }
                 card.desc.evidences.push(res)
                 that.$store.dispatch('getsnackbar', snackbar)
+              }).catch( e => {
+
               })
             } else {
-              if (that.newcard.attachments == undefined) {
-                let request = new XMLHttpRequest()
-                request.responseType = "json"
-                request.onreadystatechange = function() {
-                  if (request.readyState === 4) {
-                    that.newcard.title = ''
-                    that.$store.dispatch('getlists', that.$route.params.id)
-                    let snackbar = {
-                      state: true,
-                      color: 'success',
-                      text: '新增'
-                    }
-                    card.desc.evidences.push(res)
-                    that.$store.dispatch('getsnackbar', snackbar)
-                  }
-                }
-                request.open("POST", 'https://api.trello.com/1/cards/' +  res.id + '/attachments/')
-                request.send(that.uploadfile)
-              } else {
 
-              }
             }
-          })
+          }
         }
       })
     },
     deleteAttachment: function(card) {
       let that = this
-      Trello.delete('cards/' + card.id + '/attachments/' + card.attachments.id, function() {
+      /* Trello.delete('cards/' + card.id + '/attachments/' + card.attachments.id, function() { */
+      fetch("http://localhost:8787/deleteattachment/" + card.id + "/" + card.attachments.id, {
+        method: "DELETE",
+      }).then( () => {
         let snackbar = {
           state: true,
           color: 'success',
@@ -495,21 +517,21 @@ export default {
     },
     fileChanged: function(file) {
       let title = ''
-      if (this.newcard.title != '') {
-        title = this.newcard.title
+      if (this.newcard.name != '') {
+        title = this.newcard.name
       } else {
-        title = this.card.title
+        title = this.card.name
       }
       let formData = new FormData();
-      formData.append('key','fb8dab318e1888679f571104d8b36ac7')
-      formData.append('token',localStorage.trello_token)
+      /* formData.append('key','fb8dab318e1888679f571104d8b36ac7')
+      formData.append('token',localStorage.trello_token) */
       formData.append("file", file)
-      formData.append("name", title);
+      /* formData.append("name", title); */
       this.filename = file.name
       this.uploadfile = formData
     },
     resetForm: function() {
-      this.card.title = ''
+      this.card.name = ''
       this.card.desc.explain = ''
       this.card.desc.department= ''
       this.card.desc.background= ''
@@ -518,21 +540,53 @@ export default {
       this.card.desc.evidences = []
       this.card.desc.related= []
     },
-    submit: function() {
+    submit: async function() {
       let that = this
       if (this.$refs.form.validate()) {
         if (this.editable == false) 
         {
           this.card.desc.x = 100 + this.selectedlist.cards.length * 150
-          this.card.desc.y = this.selectedlist.column * 150 
-          Trello.post('cards', {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc)} , function(res) {
-            if (that.cardFrom !== null) {
-              let newCardID = res.id
-              let relatedObject = {id: newCardID, name: that.card.title}
-              that.cardFrom.desc.related.push(relatedObject)
-              Trello.put('cards/' + that.cardFrom.id, {'desc': JSON.stringify(that.cardFrom.desc) } , function(res) {
-                if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
-                  Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
+          this.card.desc.y = this.selectedlist.column * 150
+          this.card.idList = this.selectedlist.id
+          let data = await fetch("http://localhost:8787/newcard/", {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.card)
+          })
+          let res = await data.json() 
+          if (that.cardFrom !== null) {
+            let newCardID = res.id
+            let relatedObject = {id: newCardID, name: that.card.name}
+            that.cardFrom.desc.related.push(relatedObject)
+            data = await fetch("http://localhost:8787/editcard/", {
+              method: "PUT",
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(that.cardFrom)
+            })
+            res = await data.json()
+            if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
+              fetch("http://localhost:8787/newattachmenturl/" + res.id + "/" + that.card.name + "/" + that.card.desc.attachment, {
+                method: "post",
+              }).then( () => {
+                let snackbar = {
+                  state: true,
+                  color: 'success',
+                  text: '新增'
+                }
+                that.$store.dispatch('getsnackbar', snackbar)
+                that.opencard = false
+                that.$store.dispatch('getlists', that.$route.params.id)
+              })
+            } else {
+              if (that.card.attachments == undefined) {
+                fetch("http://localhost:8787/newattachment/" + that.card.id + "/" + that.card.name, {
+                  method: "post",
+                  body: that.uploadfile
+                }).then( data => {
                     let snackbar = {
                       state: true,
                       color: 'success',
@@ -542,30 +596,14 @@ export default {
                     that.opencard = false
                     that.$store.dispatch('getlists', that.$route.params.id)
                   })
-                } else {
-                  if (that.card.attachments == undefined) {
-                    let request = new XMLHttpRequest()
-                    request.responseType = "json"
-                    request.onreadystatechange = function() {
-                      if (request.readyState === 4) {
-                        let snackbar = {
-                          state: true,
-                          color: 'success',
-                          text: '新增'
-                        }
-                        that.$store.dispatch('getsnackbar', snackbar)
-                        that.opencard = false
-                        that.$store.dispatch('getlists', that.$route.params.id)
-                      }
-                    }
-                    request.open("POST", 'https://api.trello.com/1/cards/' +  res.id + '/attachments/')
-                    request.send(that.uploadfile)
-                  }
                 }
-              })
+              }
             } else {
               if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
-                Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
+                /* Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.name}, function() { */
+                fetch("http://localhost:8787/newattachmenturl/" + res.id + "/" + that.card.name + "/" + that.card.desc.attachment, {
+                  method: "post",
+                }).then( () => {
                   let snackbar = {
                     state: true,
                     color: 'success',
@@ -577,10 +615,10 @@ export default {
                 })
               } else {
                 if (that.card.attachments == undefined) {
-                  let request = new XMLHttpRequest()
-                  request.responseType = "json"
-                  request.onreadystatechange = function() {
-                    if (request.readyState === 4) {
+                  fetch("http://localhost:8787/newattachment/" + that.card.id + "/" + that.card.name, {
+                    method: "post",
+                    body: that.uploadfile
+                  }).then( data => {
                       let snackbar = {
                         state: true,
                         color: 'success',
@@ -589,20 +627,27 @@ export default {
                       that.$store.dispatch('getsnackbar', snackbar)
                       that.opencard = false
                       that.$store.dispatch('getlists', that.$route.params.id)
-                    }
-                  }
-                  request.open("POST", 'https://api.trello.com/1/cards/' +  res.id + '/attachments/')
-                  request.send(that.uploadfile)
+                    })
                 }
               }
             }
-          })
         }
         else {
-          Trello.put('cards/' + this.card.id, {'name': this.card.title, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function(res) {
+          this.card.idList = this.selectedlist.id
+          let data = await fetch("http://localhost:8787/editcard/", {
+            method: "PUT",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.card)
+          })
+          let res = await data.json()
+          /* Trello.put('cards/' + this.card.id, {'name': this.card.name, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function(res) { */
             if (that.card.attachments == undefined) {
               if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
-                Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.title}, function() {
+                fetch("http://localhost:8787/newattachmenturl/" + res.id + "/" + that.card.name + "/" + that.card.desc.attachment, {
+                  method: "post",
+                }).then( () => {
                   let snackbar = {
                     state: true,
                     color: 'success',
@@ -614,10 +659,10 @@ export default {
                 })
               } else {
                 if (that.card.attachments == undefined) {
-                  let request = new XMLHttpRequest()
-                  request.responseType = "json"
-                  request.onreadystatechange = function() {
-                    if (request.readyState === 4) {
+                  fetch("http://localhost:8787/newattachment/" + that.card.id + "/" + that.card.name, {
+                    method: "post",
+                    body: that.uploadfile
+                  }).then( data => {
                       let snackbar = {
                         state: true,
                         color: 'success',
@@ -626,10 +671,7 @@ export default {
                       that.$store.dispatch('getsnackbar', snackbar)
                       that.opencard = false
                       that.$store.dispatch('getlists', that.$route.params.id)
-                    }
-                  }
-                  request.open("POST", 'https://api.trello.com/1/cards/' +  res.id + '/attachments/')
-                  request.send(that.uploadfile)
+                    })
                 }
               }
             } else if (that.card.desc.attachment == that.card.attachments.url.replace('http://','')) {
@@ -662,7 +704,6 @@ export default {
             } else {
               that.attachsnackbar = true
             }
-          })
         }
       }
     },

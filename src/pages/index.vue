@@ -16,7 +16,8 @@
     </v-layout>  
     <v-divider></v-divider>
     <v-layout row wrap v-if="!showtable">
-      <v-flex xs12 sm6 md4 lg3 text-xs-center v-if="members.includes(user.id)">
+      <!-- <v-flex xs12 sm6 md4 lg3 text-xs-center v-if="members.includes(user.id)"> -->
+      <v-flex xs12 sm6 md4 lg3 text-xs-center>
         <v-card height='20em' hover class="yellow darken-2">
           <v-container fill-height>
             <v-layout align-center justify-center>
@@ -71,7 +72,8 @@
           <v-card-actions class="mt-1" style="background-color:white">  
             <v-btn class="blue-grey darken-4 white--text" :to="{name:'board', params:{id:board.id}}"><v-icon>arrow_right</v-icon>{{ $t("Enter") }}</v-btn>
             <v-spacer></v-spacer> 
-            <div v-if="board.admin.includes(user.id)">
+            <!-- <div v-if="board.admin.includes(user.id)"> -->
+            <div>
               <v-btn icon flat color="teal" :to="{name:'index'}" active-class @click="openboard = !openboard; selectedboardid = board.id"><v-icon>edit</v-icon></v-btn>
               <v-btn icon flat color="pink" :to="{name:'index'}" active-class @click.native.stop="dialog = true; selectedboardid = board.id"><v-icon>delete</v-icon></v-btn>
             </div>
@@ -179,19 +181,7 @@ export default {
     },
   },
   created: function() {
-    // Your corresponding keys
-    Parse.initialize('{parse}', 'unused');
-    
-    // For back4app applications, this url is
-    // 'https://parseapi.back4app.com'
-    Parse.serverURL = 'http://parse.pdis.nat.gov.tw/parse/'
-    // Parse initialization above
-    var obj = new Parse.Object('GameScore');
-  /*   obj.set('score',1337);
-    obj.save().then(function(obj) {
-      console.log(obj.toJSON());
-    }, function(err) { console.log(err); }); */
-    this.$store.dispatch('getmembers')
+    /* this.$store.dispatch('getmembers') */
     this.$store.dispatch('getboards')
   },
   computed: {

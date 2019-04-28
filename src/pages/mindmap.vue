@@ -96,12 +96,12 @@
                 <v-select v-model="newcard.typeid" :items="lists" label="卡片類型" item-text="name" item-value="id" @change="changetype"></v-select>
                 <v-layout row wrap v-if="newcard.type == '問題面向'">
                    <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="內容" v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="內容" v-model="card.name" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap v-if="newcard.type == '問題細節'">
                   <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="內容"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="內容"  v-model="card.name" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex flex xs12>
                     <v-text-field color="blue-grey darken-2" label="補充說明" v-model="card.desc.explain" ></v-text-field>
@@ -109,12 +109,12 @@
                 </v-layout >
                 <v-layout row wrap  v-if="newcard.type == '現有解法'">
                   <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="內容"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="內容"  v-model="card.name" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap  v-if="newcard.type == '政府回應'">
                   <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="內容"  v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="內容"  v-model="card.name" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex flex xs12>
                     <v-radio-group v-model="card.desc.responsetime" row @change="changeresponsetime(card)">
@@ -128,14 +128,14 @@
                 </v-layout>
                 <v-layout row wrap v-if="newcard.type == '困難'">
                   <v-flex flex xs12>
-                    <v-text-field color="blue-grey darken-2" label="內容"   v-model="card.title" :counter="30" :rules="titleRules"></v-text-field>
+                    <v-text-field color="blue-grey darken-2" label="內容"   v-model="card.name" :counter="30" :rules="titleRules"></v-text-field>
                   </v-flex>
                   <v-flex flex xs12>
                     <v-text-field color="blue-grey darken-2" label="補充說明"  v-model="card.desc.explain"  ></v-text-field>
                   </v-flex>
                 </v-layout>
               </v-flex>
-              <v-flex md12 v-if="(board.admin.includes(user.id) || board.members.includes(user.id)) && card.title != ''">
+              <v-flex md12 v-if="(board.admin.includes(user.id) || board.members.includes(user.id)) && card.name != ''">
                 <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '利害關係人'">
                   <v-flex>
                     <v-btn flat color="primary" v-if="newpersonmode == false && newattachmentmode == false" @click.native="newpersonmode = true">+新增利害關係人</v-btn>
@@ -169,7 +169,7 @@
                   </v-flex>
                 </v-layout>
               </v-flex>
-              <v-flex flex md12 v-if="newpersonmode == false && newattachmentmode == false && card.title != ''">
+              <v-flex flex md12 v-if="newpersonmode == false && newattachmentmode == false && card.name != ''">
                 <v-layout row wrap v-if="selectedlist.name != '利害關係人'">
                   <v-flex flex xs12 >
                     <v-select
@@ -239,7 +239,7 @@
                   </v-flex>
                 </v-layout>
               </v-flex>
-              <v-flex flex md12 v-if="newpersonmode == false && newattachmentmode == false && card.title != ''">
+              <v-flex flex md12 v-if="newpersonmode == false && newattachmentmode == false && card.name != ''">
                 <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '利害關係人'">
                   <v-flex flex xs12 >
                     <v-select
@@ -803,7 +803,7 @@ export default {
       this.selectedlist.cards = list.cards
       this.selectedlist.column = list.column */
       this.card.id = card.id
-      this.card.title = card.name
+      this.card.name = card.name
       this.card.desc.responsetime = card.desc.responsetime
       this.card.desc.stakeholders = card.desc.stakeholders
       this.card.desc.evidences = card.desc.evidences
@@ -841,14 +841,14 @@ export default {
     },
     edittextsubmit: function() {
       let that = this
-      Trello.put('cards/' + this.card.id, {'name': this.card.title } , function(res) {
+      Trello.put('cards/' + this.card.id, {'name': this.card.name } , function(res) {
         that.getcards()
         that.editdialog = false
         setTimeout( () => {
           that.getarrows()
         }, 1000)
         /* let text = that.$refs['text' + this.card.id][0].getStage()
-        text.text(that.card.title)
+        text.text(that.card.name)
         let stage = that.$refs.stage.getStage();
         stage.draw() */
       })
@@ -860,9 +860,9 @@ export default {
           this.resetForm()
           if (this.newcard.type == '政府回應') {
             if (this.newcard.desc.responsetime == 'nowadays') {
-              this.newcard.title = '[現在]'
+              this.newcard.name = '[現在]'
             } else {
-              this.newcard.title = '[未來]'
+              this.newcard.name = '[未來]'
             }
           }
         }
@@ -889,7 +889,7 @@ export default {
       })
     },
     resetForm: function() {
-      this.newcard.title = ''
+      this.newcard.name = ''
       this.newcard.desc.explain = ''
       this.newcard.desc.department= ''
       this.newcard.desc.background= ''
@@ -897,13 +897,13 @@ export default {
       this.newcard.desc.evidences = []
     },
     changeresponsetime: function(card) {
-      card.title = card.title.replace('[現在]','').replace('[未來]','')
+      card.name = card.name.replace('[現在]','').replace('[未來]','')
       if (card.desc.responsetime == 'nowadays') {
         this.responsestring = '[現在]'
       } else {
         this.responsestring = '[未來]'
       }
-      card.title = this.responsestring + card.title
+      card.name = this.responsestring + card.name
     },
     getexplainrectconfig: function(card) {
       return {
@@ -944,7 +944,7 @@ export default {
       let that = this
       this.newcard.desc.x = 600
       this.newcard.desc.y = 400
-      Trello.post('cards', {'name': this.newcard.title, 'idList': this.newcard.typeid,'desc': JSON.stringify(this.newcard.desc)} , function(res) {
+      Trello.post('cards', {'name': this.newcard.name, 'idList': this.newcard.typeid,'desc': JSON.stringify(this.newcard.desc)} , function(res) {
         that.dialog = false
         that.getcards()
       })

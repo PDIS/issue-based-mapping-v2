@@ -20,7 +20,7 @@ const actions = {
   getuser ({ commit, dispatch }) {
     Trello.members.get('me', function (res) {
       commit('getuser', res)
-    }, dispatch('login'))
+    })
   },
   getmembers ({ commit }) {
     Trello.organizations.get('pdisimi',{'fields':'all'}, function(res) {

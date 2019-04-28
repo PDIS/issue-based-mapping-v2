@@ -40,15 +40,21 @@ const getters = {
 }
 
 const actions = {
-  getboardinfo ({ commit }, route) {
-    Trello.boards.get(route, {'fields':'all'}, function(res) {
+  async getboardinfo ({ commit }, route) {
+    let data = await fetch("http://localhost:8787/getboardinfo/" + route)
+    let boardinfo = await data.json()
+    commit('getboardinfo', boardinfo)
+    /* Trello.boards.get(route, {'fields':'all'}, function(res) {
       commit('getboardinfo', res)
-    })
+    }) */
   },
-  getboards ({ commit }) {
-    Trello.organizations.get('pdisimi/boards',{'filter':'open'}, function(res) {
+  async getboards ({ commit }) {
+    let data = await fetch("http://localhost:8787/getboards")
+    let boards = await data.json()
+    commit('getboards', boards)
+    /* Trello.organizations.get('pdisimi/boards',{'filter':'open'}, function(res) {
       commit('getboards', res)
-    })
+    }) */
   },
   editboard ({ commit }, id) {
     commit('editboard', id)
@@ -63,7 +69,7 @@ const mutations = {
     state.board.id = res.id
     state.board.name = res.name
     state.board.desc = JSON.parse(res.desc)
-    res.memberships.map( m => {
+    /* res.memberships.map( m => {
       if (m.memberType == 'admin') {
         state.board.admin.push(m.idMember)
         Trello.get('/members/' + m.idMember, (res) => {
@@ -76,7 +82,7 @@ const mutations = {
           state.board.avatars.push(res.avatarUrl);
         })
       }
-    })
+    }) */
   },
   getboards (state, res) {
     state.boards = []

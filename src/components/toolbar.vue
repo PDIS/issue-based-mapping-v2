@@ -210,9 +210,9 @@ export default {
           /* this.resetForm() */
           if (this.selectedlist.name == '政府回應') {
             if (this.card.desc.responsetime == 'nowadays') {
-              this.card.title = '[現在]'
+              this.card.name = '[現在]'
             } else {
-              this.card.title = '[未來]'
+              this.card.name = '[未來]'
             }
           }
           this.getrelated(list)

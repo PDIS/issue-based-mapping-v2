@@ -637,9 +637,9 @@ export default {
       /* this.resetForm() */
       if (this.selectedlist.name == '政府回應') {
         if (this.card.desc.responsetime == 'nowadays') {
-          this.card.title = '[現在]'
+          this.card.name = '[現在]'
         } else {
-          this.card.title = '[未來]'
+          this.card.name = '[未來]'
         }
       }
       this.getrelated(this.selectedlist)
@@ -699,7 +699,7 @@ export default {
       })
       this.opencard = true
       this.card.id = card.id
-      this.card.title = card.name
+      this.card.name = card.name
       this.card.desc.responsetime = card.desc.responsetime
       this.card.desc.data = card.desc.data
       this.card.desc.related = card.desc.related

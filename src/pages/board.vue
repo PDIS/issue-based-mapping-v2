@@ -23,7 +23,8 @@
               </v-card>
             </draggable>
           </v-container>
-          <v-card tile v-if="board.admin.includes(user.id) || board.members.includes(user.id)" color="grey lighten-3">
+          <v-card tile color="grey lighten-3">
+          <!-- <v-card tile v-if="board.admin.includes(user.id) || board.members.includes(user.id)" color="grey lighten-3"> -->
             <v-btn flat text-md-left style="margin:0;width:100%" @click.native.stop="newcard(list)" > 
               <v-icon small>add</v-icon>新增卡片<v-spacer></v-spacer> 
             </v-btn>
@@ -152,8 +153,11 @@ export default {
   methods: {
     ...mapActions(['getboardinfo', 'getlists', 'getsnackbar']),
     movecard: function(event) {
-      let that = this
-      Trello.put('cards/' + event.item.id,{'idList':event.to.id},function(res) {
+      fetch("http://localhost:8787/movecard/" + event.item.id + "/" + event.to.id, {
+        method: "PUT",
+        headers: {
+          'Content-Type': 'application/json'
+        }
       })
     },
     getrelated: function(currentlist) {
@@ -213,9 +217,9 @@ export default {
       /* this.resetForm() */
       if (this.selectedlist.name == '政府回應') {
         if (this.card.desc.responsetime == 'nowadays') {
-          this.card.title = '[現在]'
+          this.card.name = '[現在]'
         } else {
-          this.card.title = '[未來]'
+          this.card.name = '[未來]'
         }
       }
       this.getrelated(list)
@@ -228,7 +232,7 @@ export default {
       this.selectedlist.cards = list.cards
       this.selectedlist.column = list.column
       this.card.id = card.id
-      this.card.title = card.name
+      this.card.name = card.name
       this.card.desc.responsetime = card.desc.responsetime
       this.card.desc.data = card.desc.data
       this.card.desc.related = card.desc.related
@@ -252,7 +256,13 @@ export default {
     },
     closecard: function(id) {
       let that = this
-      Trello.put('cards/' + id ,{'closed':true}, function(res) {
+      fetch("http://localhost:8787/closecard/" + id, {
+        method: "PUT",
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then( () => {
+      /* Trello.put('cards/' + id ,{'closed':true}, function(res) { */
         that.getlists(that.board.id)
         let snackbar = {
           state: true,
@@ -276,7 +286,7 @@ export default {
         })
       })
     },
-    getmembers: function() {
+    /* getmembers: function() {
       let that = this
       let id = this.$route.params.id
       let heremembers = []
@@ -301,7 +311,7 @@ export default {
           that.$store.dispatch('getboardinfo', that.$route.params.id)
         })
       }
-    },
+    }, */
     getcolor: function() {
       if (this.hover == true) {
         return 'black'
@@ -532,13 +542,13 @@ export default {
         }
       }
     },
-    getcards: function() {
+    /* getcards: function() {
       let that = this;
       let id = this.$route.params.id
       Trello.boards.get(id + '/cards',{'fields':'all'}, function(res) {
         that.cards = res
       })
-    },
+    }, */
 /*     addperson: function(card) {
       let that = this;
       this.lists.map( l => {
@@ -567,7 +577,7 @@ export default {
         })
       })
     },
-    getattachments: function() {
+   /*  getattachments: function() {
       this.lists.map( l => {
         l.cards.map( c => {
           c.attachments = []
@@ -583,8 +593,8 @@ export default {
           })
         })
       })
-    },
-    fileChanged: function(file) {
+    }, */
+    /* fileChanged: function(file) {
       let formData = new FormData();
       formData.append('key','fb8dab318e1888679f571104d8b36ac7')
       formData.append('token',localStorage.trello_token)
@@ -592,8 +602,8 @@ export default {
       formData.append("name", this.newattachment.title);
       this.filename = file.name
       this.uploadfile = formData
-    },
-    onFileChange: function(e) {
+    }, */
+    /* onFileChange: function(e) {
       let files = e.target.files || e.dataTransfer.files;
       if (!files.length)
         return;
@@ -601,7 +611,7 @@ export default {
       formData.append('key','fb8dab318e1888679f571104d8b36ac7')
       formData.append('token',localStorage.trello_token)
       formData.append("file", files[0])
-      formData.append("name", this.card.title);
+      formData.append("name", this.card.name);
       this.filename = file.name
       this.uploadfile = formData
     },
@@ -619,21 +629,21 @@ export default {
       } else {
         this.attachsnackbar = true
       }
-    },
+    }, */
 /*     changeresponsetime: function(card) {
-      card.title = card.title.replace('[現在]','').replace('[未來]','')
+      card.name = card.name.replace('[現在]','').replace('[未來]','')
       if (card.desc.responsetime == 'nowadays') {
         this.responsestring = '[現在]'
       } else {
         this.responsestring = '[未來]'
       }
-      card.title = this.responsestring + card.title
+      card.name = this.responsestring + card.name
     }, */
     new_member: function(){
       this.newmemberdialog = true;  
       // this.show_new_member = add_member!this.show_new_member;
     },
-    deleteattachment: function(card) {
+    /* deleteattachment: function(card) {
       Trello.delete('cards/' + card.id + '/attachments/' + card.attachments.id, function() {
         window.location.reload(true);
       })
@@ -650,7 +660,7 @@ export default {
         that.boardtitledialog = false
         that.$store.dispatch('getboardinfo', that.$route.params.id)
       })
-    },
+    }, */
     /* bindtitlestyle: function(title) {
       if (title == '問題面向') {
         this.titlecolor = '#FFCD13'
@@ -669,7 +679,7 @@ export default {
       } 
       return this.titlestyle + this.titlecolor
     }, */
-    addattachment: function(card) {
+    /* addattachment: function(card) {
       let that = this;
       this.lists.map( l => {
         if (l.name == '佐證文件') {
@@ -707,13 +717,12 @@ export default {
                 request.open("POST", 'https://api.trello.com/1/cards/' +  res.id + '/attachments/')
                 request.send(that.uploadfile)
               } else {
-                /* this.attachsnackbar = true */
               }
             }
           })
         }
       })
-    },
+    }, */
   },
   created: function() {
     this.$store.dispatch('getlists', this.$route.params.id)

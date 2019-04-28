@@ -110,7 +110,9 @@ export default {
     getDictionary: async function() {
       let that = this
       this.dictionaries = []
-      let lists = await Trello.boards.get(this.$route.params.id + '/lists',{cards: 'open'})
+      let data = await fetch("http://localhost:8787/getlists/" + this.$route.params.id)
+      let lists = await data.json()
+      /* let lists = await Trello.boards.get(this.$route.params.id + '/lists',{cards: 'open'}) */
       lists.map( (list) => {
         if (list.name == '專有名詞字典') {
           that.listid = list.id
@@ -123,8 +125,15 @@ export default {
     },
     addDictionary: async function() {
       let that = this
+      this.dictionary.idList = this.listid
       if(!this.edit) {
-        Trello.post('cards', {'name': this.dictionary.name, 'idList': this.listid,'desc': JSON.stringify(this.dictionary.desc)} , function(res) {
+        fetch("http://localhost:8787/newcard/", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(this.dictionary)
+        }).then( () => {
           let snackbar = {
             state: true,
             color: 'success',
@@ -134,7 +143,13 @@ export default {
           that.getDictionary()
         })
       } else {
-        Trello.put('cards/' + this.dictionary.id, {'name': this.dictionary.name, 'idList': this.listid,'desc': JSON.stringify(this.dictionary.desc)} , function(res) {
+        fetch("http://localhost:8787/editcard/", {
+          method: "PUT",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(this.dictionary)
+        }).then( () => {
           let snackbar = {
             state: true,
             color: 'success',
@@ -151,7 +166,12 @@ export default {
     },
     deleteDictionary: function(id) {
       let that = this
-      Trello.put('cards/' + id ,{'closed':true}, function(res) {
+      fetch("http://localhost:8787/closecard/" + id, {
+        method: "PUT",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }).then( () => {
         let snackbar = {
           state: true,
           color: 'success',

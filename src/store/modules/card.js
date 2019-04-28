@@ -8,7 +8,7 @@ const { getCardField, updateCardField } = createHelpers({
 const state = {
   card: {
     id: '',
-    title: '',
+    name: '',
     desc: {
       explain:'',
       responsetime: 'nowadays',

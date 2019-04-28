@@ -69,14 +69,33 @@ export default {
   },
   methods: {
     ...mapActions(['editboard', 'getsnackbar']),
-    submit: function() {
+    submit: async function() {
       let that = this
       if (this.$refs.form.validate()) {
         if (this.board.desc.issuesource == 'dep') {
           this.board.desc.title = '部會自提'
         }
         if (this.selectedboardid != '') {
-          Trello.put('boards/' + this.board.id,{'name':this.board.name},function(res) {
+          try {
+            let data = await fetch('http://localhost:8787/editboard/', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(this.board)
+            })
+            let snackbar = {
+              state: true,
+              color: 'success',
+              text: '修改'
+            }
+            that.$store.dispatch('getsnackbar', snackbar)
+            that.$store.dispatch('editboard','')
+            that.$store.dispatch('getboards')
+          } catch (e) {
+            console.log(e)
+          }
+         /*  Trello.put('boards/' + this.board.id,{'name':this.board.name},function(res) {
             Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.board.desc)},function() {
               let snackbar = {
                 state: true,
@@ -87,10 +106,30 @@ export default {
               that.$store.dispatch('editboard','')
               that.$store.dispatch('getboards')
             })
-          })
+          }) */
         }
         else {
-          Trello.post('boards',{'name':this.board.name,'idOrganization':'5ad56d6d96cb269a7a2aaa0a','idBoardSource':'5c19e75bc6ac7935093c0ae6','prefs_permissionLevel':'public'},function(res) {
+          try {
+            this.board.user = this.user
+            let data = await fetch('http://localhost:8787/newboard/', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(this.board)
+            })
+            let success = await data.json()
+            let snackbar = {
+              state: true,
+              color: 'success',
+              text: '新增'
+            }
+            this.$store.dispatch('getsnackbar', snackbar)
+            this.$router.push('board/' + success.id)
+          } catch (e) {
+            console.log(e)
+          }
+          /* Trello.post('boards',{'name':this.board.name,'idOrganization':'5ad56d6d96cb269a7a2aaa0a','idBoardSource':'5c19e75bc6ac7935093c0ae6','prefs_permissionLevel':'public'},function(res) {
             Trello.put('boards/' + res.id ,{'desc': JSON.stringify(that.board.desc)},function(res) {
               let snackbar = {
                 state: true,
@@ -100,7 +139,7 @@ export default {
               that.$store.dispatch('getsnackbar', snackbar)
               that.$router.push('board/' + res.id)
             })
-          })
+          }) */
         }
       }
     },
@@ -108,14 +147,22 @@ export default {
       this.$refs.form.reset()
       this.board.desc.issuesource = 'dep'
     },
-    getstatus: function() {
+    getstatus: async function() {
       let that = this
       if (this.selectedboardid != '') {
         this.board.id = this.selectedboardid
-        Trello.boards.get(this.board.id, function(res) {
+        try {
+          let data = await fetch('http://localhost:8787/getboardinfo/' + this.board.id)
+          let board = await data.json()
+          this.board.name = board.name
+          this.board.desc = JSON.parse(board.desc)
+        } catch (e) {
+          console.log(e)
+        }
+        /* Trello.boards.get(this.board.id, function(res) {
           that.board.name = res.name
           that.board.desc = JSON.parse(res.desc)
-        })
+        }) */
       }
       else {
         /* this.resetForm() */
@@ -123,6 +170,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      user: 'user',
+    }),
     ...mapFields ({
       openboard: 'openboard',
       selectedboardid: 'selectedboardid',
