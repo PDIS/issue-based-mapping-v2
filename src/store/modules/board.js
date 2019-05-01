@@ -19,7 +19,7 @@ const state = {
       'link': '',
       'issuesource': 'dep'
     },
-    admin: [],
+    admins: [],
     members: [],
     avatars: [],
   },
@@ -63,12 +63,17 @@ const actions = {
 
 const mutations = {
   getboardinfo (state, res) {
-    state.board.admin = []
+    state.board.id = res.data.id
+    state.board.name = res.data.name
+    state.board.desc = JSON.parse(res.data.desc)
+    state.board.admins = []
     state.board.members = []
-    state.board.avatars = []
-    state.board.id = res.id
-    state.board.name = res.name
-    state.board.desc = JSON.parse(res.desc)
+    res.data.admins.map( admin => {
+      state.board.admins.push(admin)
+    })
+    res.data.members.map( member => {
+      state.board.members.push(member)
+    })
     /* res.memberships.map( m => {
       if (m.memberType == 'admin') {
         state.board.admin.push(m.idMember)
@@ -88,14 +93,12 @@ const mutations = {
     state.boards = []
     res.map(b => {
       let board = {};
-      board.id = b.id
-      board.title = b.name
-      board.desc = JSON.parse(b.desc)
-      board.admin = []
-      b.memberships.map( m => {
-        if (m.memberType == 'admin') {
-          board.admin.push(m.idMember)
-        }
+      board.id = b.data.id
+      board.title = b.data.name
+      board.desc = JSON.parse(b.data.desc)
+      board.admins = []
+      b.data.admins.map( admin => {
+        board.admins.push(admin)
       })
       state.boards.push(board)
     })

@@ -126,6 +126,7 @@ export default {
     addDictionary: async function() {
       let that = this
       this.dictionary.idList = this.listid
+      this.dictionary.user = this.user
       if(!this.edit) {
         fetch("http://localhost:8787/newcard/", {
           method: "POST",
@@ -171,6 +172,7 @@ export default {
         headers: {
           'Content-Type': 'application/json'
         },
+        body: JSON.stringify(this.user)
       }).then( () => {
         let snackbar = {
           state: true,
@@ -186,6 +188,9 @@ export default {
     this.getDictionary()
   },
   computed: {
+    ...mapGetters({
+      user: 'user',
+    }), 
     ...mapDictionaryFields({
       opendictionary: 'opendictionary',
     }),

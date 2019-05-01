@@ -190,7 +190,7 @@ export default {
   },
   created: function() {
     this.getLoginStatus()
-    this.$store.dispatch('getuser')
+    /* this.$store.dispatch('getuser') */
     if (this.$route.params.id != undefined) {
       this.$store.dispatch('getboardinfo', this.$route.params.id)
     }

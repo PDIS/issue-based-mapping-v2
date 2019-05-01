@@ -72,8 +72,7 @@
           <v-card-actions class="mt-1" style="background-color:white">  
             <v-btn class="blue-grey darken-4 white--text" :to="{name:'board', params:{id:board.id}}"><v-icon>arrow_right</v-icon>{{ $t("Enter") }}</v-btn>
             <v-spacer></v-spacer> 
-            <!-- <div v-if="board.admin.includes(user.id)"> -->
-            <div>
+            <div v-if="board.admins.includes(user.email)">
               <v-btn icon flat color="teal" :to="{name:'index'}" active-class @click="openboard = !openboard; selectedboardid = board.id"><v-icon>edit</v-icon></v-btn>
               <v-btn icon flat color="pink" :to="{name:'index'}" active-class @click.native.stop="dialog = true; selectedboardid = board.id"><v-icon>delete</v-icon></v-btn>
             </div>
@@ -82,7 +81,7 @@
       </v-flex>
     </v-layout>
     <template v-if="showtable">
-      <div v-if="members.includes(user.id)">
+      <div v-if="members.includes(user.email)">
         <v-btn color="primary" dark class="mb-2" @click="openboard = !openboard">{{ $t("New Topic") }}</v-btn>
       </div>
       <v-data-table
@@ -100,7 +99,7 @@
           <td class="text-xs-left">{{ props.item.desc.date }}</td>
           <td class="text-xs-left">{{ props.item.desc.department }}</td>
           <td class="justify-center px-0">
-            <div v-if="props.item.admin.includes(user.id)">
+            <div v-if="props.item.admins.includes(user.email)">
               <v-icon color="teal" class="mr-2" @click="editboard(props.item.id)">edit</v-icon>
               <v-icon color="pink" @click="dialog=true;selectedboardid=props.item.id">delete</v-icon>
             </div>
@@ -168,7 +167,14 @@ export default {
     ...mapActions(['editboard', 'getsnackbar']),
     closeboard: function(id) {
       let that = this
-      Trello.put('boards/' + id ,{'closed':true},function(res) {
+      /* Trello.put('boards/' + id ,{'closed':true},function(res) { */
+        fetch("http://localhost:8787/closeboard/" + id , {
+          method: "PUT",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(this.user)
+        }).then( data => {
         that.dialog = false
         let snackbar = {
           state: true,

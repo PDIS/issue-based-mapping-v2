@@ -68,9 +68,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['editboard', 'getsnackbar']),
+    ...mapActions(['getboardinfo','editboard', 'getsnackbar']),
     submit: async function() {
       let that = this
+      this.board.user = this.user
       if (this.$refs.form.validate()) {
         if (this.board.desc.issuesource == 'dep') {
           this.board.desc.title = '部會自提'
@@ -110,7 +111,6 @@ export default {
         }
         else {
           try {
-            this.board.user = this.user
             let data = await fetch('http://localhost:8787/newboard/', {
               method: 'POST',
               headers: {
@@ -148,21 +148,8 @@ export default {
       this.board.desc.issuesource = 'dep'
     },
     getstatus: async function() {
-      let that = this
       if (this.selectedboardid != '') {
-        this.board.id = this.selectedboardid
-        try {
-          let data = await fetch('http://localhost:8787/getboardinfo/' + this.board.id)
-          let board = await data.json()
-          this.board.name = board.name
-          this.board.desc = JSON.parse(board.desc)
-        } catch (e) {
-          console.log(e)
-        }
-        /* Trello.boards.get(this.board.id, function(res) {
-          that.board.name = res.name
-          that.board.desc = JSON.parse(res.desc)
-        }) */
+        this.$store.dispatch('getboardinfo', this.selectedboardid)
       }
       else {
         /* this.resetForm() */

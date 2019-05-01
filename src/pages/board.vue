@@ -23,8 +23,7 @@
               </v-card>
             </draggable>
           </v-container>
-          <v-card tile color="grey lighten-3">
-          <!-- <v-card tile v-if="board.admin.includes(user.id) || board.members.includes(user.id)" color="grey lighten-3"> -->
+          <v-card tile v-if="board.admins.includes(user.email) || board.members.includes(user.email)" color="grey lighten-3">
             <v-btn flat text-md-left style="margin:0;width:100%" @click.native.stop="newcard(list)" > 
               <v-icon small>add</v-icon>新增卡片<v-spacer></v-spacer> 
             </v-btn>
@@ -157,7 +156,8 @@ export default {
         method: "PUT",
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify(this.user)
       })
     },
     getrelated: function(currentlist) {
@@ -260,7 +260,8 @@ export default {
         method: "PUT",
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify(this.user)
       }).then( () => {
       /* Trello.put('cards/' + id ,{'closed':true}, function(res) { */
         that.getlists(that.board.id)

@@ -4,7 +4,7 @@
       <v-card-title>
         <h2 :style="bindtitlestyle(selectedlist.name)">{{selectedlist.name}}</h2>
         <v-spacer></v-spacer>
-        <div v-if="(board.admin.includes(user.id) || board.members.includes(user.id)) && editable == true">
+        <div v-if="(board.admins.includes(user.email) || board.members.includes(user.email)) && editable == true">
           <v-btn flat color="grey" class="subheading" @click="resetForm">重新填寫</v-btn>
           <v-btn flat color="red lighten-1" class="subheading"  @click.native.stop="deleteCard = true; deletedID = card.id">刪除便利貼</v-btn>
         </div>
@@ -98,8 +98,7 @@
                 </v-flex>
               </v-layout>
             </v-flex>
-            <!-- <v-flex md12 mx-2 v-if="board.admin.includes(user.id) || board.members.includes(user.id)"> -->
-              <v-flex md12 mx-2>
+            <v-flex md12 mx-2 v-if="board.admins.includes(user.email) || board.members.includes(user.email)">
               <v-layout row wrap v-if="selectedlist.name != '佐證文件' && selectedlist.name != '利害關係人'">
                 <v-flex>
                   <v-btn flat color="primary" v-if="newstakeholdermode == false && newattachmentmode == false" @click.native="newstakeholdermode = true">+新增利害關係人</v-btn>
@@ -320,16 +319,15 @@
               </v-card>
             </v-flex>
           </v-layout>
-          <!-- v-card-actions class="px-3" v-if="(board.admin.includes(user.id) || board.members.includes(user.id)) && newstakeholdermode == false && newattachmentmode == false"> -->
-          <v-card-actions class="px-3" v-if="newstakeholdermode == false && newattachmentmode == false">
+          <v-card-actions class="px-3" v-if="(board.admins.includes(user.email) || board.members.includes(user.email)) && newstakeholdermode == false && newattachmentmode == false">
             <v-spacer></v-spacer>
             <v-btn flat @click.native="opencard = !opencard" class="subheading">取消</v-btn>
             <v-btn flat color="cyan" type="submit" class="subheading" :disabled="!valid" >確認</v-btn>
           </v-card-actions>
-         <!--  <v-card-actions class="px-3" v-if="(!board.admin.includes(user.id) && !board.members.includes(user.id))">
+          <v-card-actions class="px-3" v-if="(!board.admins.includes(user.email) && !board.members.includes(user.email))">
             <v-spacer></v-spacer>
             <v-btn flat @click.native="opencard = !opencard" class="subheading">關閉</v-btn>
-          </v-card-actions> -->
+          </v-card-actions>
         </v-container>
       </v-form>
     </v-card>
@@ -424,6 +422,7 @@ export default {
       this.lists.map( async l => {
         if (l.name == '利害關係人') {
           this.newcard.idList = l.id
+          this.newcard.user = this.user
           let data = await fetch("http://localhost:8787/newcard/", {
             method: "POST",
             headers: {
@@ -450,6 +449,7 @@ export default {
       this.lists.map(async l => {
         if (l.name == '佐證文件') {
           this.newcard.idList = l.id
+          this.newcard.user = this.user
           let data = await fetch("http://localhost:8787/newcard/", {
             method: "POST",
             headers: {
@@ -462,6 +462,10 @@ export default {
             /* Trello.post('cards/' + res.id + '/attachments', {'url': that.newcard.desc.attachment, 'name': that.newcard.name}, function() { */
             fetch("http://localhost:8787/newattachmenturl/" + that.card.id + "/" + that.newcard.name + "/" + that.newcard.desc.attachment, {
               method: "post",
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(this.user)
             }).then( () => {
               that.newcard.name = ''
               that.newcard.desc.attachment = ''
@@ -504,6 +508,10 @@ export default {
       /* Trello.delete('cards/' + card.id + '/attachments/' + card.attachments.id, function() { */
       fetch("http://localhost:8787/deleteattachment/" + card.id + "/" + card.attachments.id, {
         method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(this.user)
       }).then( () => {
         let snackbar = {
           state: true,
@@ -548,6 +556,7 @@ export default {
           this.card.desc.x = 100 + this.selectedlist.cards.length * 150
           this.card.desc.y = this.selectedlist.column * 150
           this.card.idList = this.selectedlist.id
+          this.card.user = this.user
           let data = await fetch("http://localhost:8787/newcard/", {
             method: "POST",
             headers: {
@@ -571,6 +580,10 @@ export default {
             if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
               fetch("http://localhost:8787/newattachmenturl/" + res.id + "/" + that.card.name + "/" + that.card.desc.attachment, {
                 method: "post",
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(this.user)
               }).then( () => {
                 let snackbar = {
                   state: true,
@@ -603,6 +616,10 @@ export default {
                 /* Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.name}, function() { */
                 fetch("http://localhost:8787/newattachmenturl/" + res.id + "/" + that.card.name + "/" + that.card.desc.attachment, {
                   method: "post",
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(this.user)
                 }).then( () => {
                   let snackbar = {
                     state: true,
@@ -647,6 +664,10 @@ export default {
               if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
                 fetch("http://localhost:8787/newattachmenturl/" + res.id + "/" + that.card.name + "/" + that.card.desc.attachment, {
                   method: "post",
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(this.user)
                 }).then( () => {
                   let snackbar = {
                     state: true,

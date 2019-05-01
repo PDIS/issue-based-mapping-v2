@@ -12,7 +12,7 @@
                 <img :src="a+'/50.png'" style="border-radius:50%" v-if="a !== null"/>
                 <img src="https://c7.uihere.com/files/150/864/961/anonymous-icon-business-user-cliparts.jpg" width="55" style="border-radius:50%" v-else/>
               </v-btn>
-              <v-icon  @click="new_member()" medium fab btn outline class=" dark ml-2" v-if="board.admin.includes(user.id)">person_add</v-icon>
+              <v-icon  @click="new_member()" medium fab btn outline class=" dark ml-2" v-if="board.admins.includes(user.email)">person_add</v-icon>
             </div>
           </v-card-text>
         </v-card>
@@ -176,6 +176,7 @@ export default {
         { title: '困難' },
       ],
       linkingMode: false,
+      invite: {}
     }
   },
   methods: {
@@ -183,19 +184,30 @@ export default {
     new_member: function(){
       this.newmemberdialog = true;  
     },
-    newmember: function() {
-      let that = this      
-      for (let this_email of this.email.replace(' ','').split(",")) {
-        Trello.put('boards/' + this.board.id +'/members' ,{'email':this_email ,'type':'normal'},function(res) {
-          let snackbar = {
-            state: true,
-            color: 'success',
-            text: '新增'
-          }
-          that.$store.dispatch('getsnackbar', snackbar)
-          that.$store.dispatch('getboardinfo', that.$route.params.id)
+    newmember: async function() {
+      let that = this
+      this.invite.board = this.board
+      this.invite.email = this.email
+      this.invite.user = this.user
+      try {
+        let data = await fetch('http://localhost:8787/invite/', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(this.invite)
         })
-      }
+        let snackbar = {
+          state: true,
+          color: 'success',
+          text: '新增'
+        }
+        that.$store.dispatch('getsnackbar', snackbar)
+        that.$store.dispatch('getboardinfo', that.$route.params.id)
+        this.newmemberdialog = false;
+      } catch (e) {
+        console.log(e)
+      }      
     },
     newcard: function (name) {
       this.lists.map( list => {
