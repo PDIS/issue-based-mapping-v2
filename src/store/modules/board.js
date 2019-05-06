@@ -41,7 +41,7 @@ const getters = {
 
 const actions = {
   async getboardinfo ({ commit }, route) {
-    let data = await fetch("http://improxy.pdis.nat.gov.tw/getboardinfo/" + route)
+    let data = await fetch("https://improxy.pdis.nat.gov.tw/getboardinfo/" + route)
     let boardinfo = await data.json()
     commit('getboardinfo', boardinfo)
     /* Trello.boards.get(route, {'fields':'all'}, function(res) {
@@ -49,7 +49,7 @@ const actions = {
     }) */
   },
   async getboards ({ commit }) {
-    let data = await fetch("http://improxy.pdis.nat.gov.tw/getboards/")
+    let data = await fetch("https://improxy.pdis.nat.gov.tw/getboards/")
     let boards = await data.json()
     commit('getboards', boards)
     /* Trello.organizations.get('pdisimi/boards',{'filter':'open'}, function(res) {

@@ -423,7 +423,7 @@ export default {
         if (l.name == '利害關係人') {
           this.newcard.idList = l.id
           this.newcard.user = this.user
-          let data = await fetch("http://improxy.pdis.nat.gov.tw/newcard/", {
+          let data = await fetch("https://improxy.pdis.nat.gov.tw/newcard/", {
             method: "POST",
             headers: {
               'Content-Type': 'application/json'
@@ -450,7 +450,7 @@ export default {
         if (l.name == '佐證文件') {
           this.newcard.idList = l.id
           this.newcard.user = this.user
-          let data = await fetch("http://improxy.pdis.nat.gov.tw/newcard/", {
+          let data = await fetch("https://improxy.pdis.nat.gov.tw/newcard/", {
             method: "POST",
             headers: {
               'Content-Type': 'application/json'
@@ -460,7 +460,7 @@ export default {
           let res = await data.json()
           if (that.newcard.desc.attachment != '' && that.newcard.desc.attachment != undefined) {
             /* Trello.post('cards/' + res.id + '/attachments', {'url': that.newcard.desc.attachment, 'name': that.newcard.name}, function() { */
-            fetch("http://improxy.pdis.nat.gov.tw/newattachmenturl/" + that.card.id + "/" + that.newcard.name + "/" + that.newcard.desc.attachment, {
+            fetch("https://improxy.pdis.nat.gov.tw/newattachmenturl/" + that.card.id + "/" + that.newcard.name + "/" + that.newcard.desc.attachment, {
               method: "post",
               headers: {
                 'Content-Type': 'application/json'
@@ -480,7 +480,7 @@ export default {
             })
           } else {
             if (that.newcard.attachments == undefined) {
-              fetch("http://improxy.pdis.nat.gov.tw/newattachment/" + that.card.id + "/" + that.card.name, {
+              fetch("https://improxy.pdis.nat.gov.tw/newattachment/" + that.card.id + "/" + that.card.name, {
                 method: "post",
                 body: that.uploadfile
               }).then( data => {
@@ -506,7 +506,7 @@ export default {
     deleteAttachment: function(card) {
       let that = this
       /* Trello.delete('cards/' + card.id + '/attachments/' + card.attachments.id, function() { */
-      fetch("http://improxy.pdis.nat.gov.tw/deleteattachment/" + card.id + "/" + card.attachments.id, {
+      fetch("https://improxy.pdis.nat.gov.tw/deleteattachment/" + card.id + "/" + card.attachments.id, {
         method: "DELETE",
         headers: {
           'Content-Type': 'application/json'
@@ -557,7 +557,7 @@ export default {
           this.card.desc.y = this.selectedlist.column * 150
           this.card.idList = this.selectedlist.id
           this.card.user = this.user
-          let data = await fetch("http://improxy.pdis.nat.gov.tw/newcard/", {
+          let data = await fetch("https://improxy.pdis.nat.gov.tw/newcard/", {
             method: "POST",
             headers: {
               'Content-Type': 'application/json'
@@ -569,7 +569,7 @@ export default {
             let newCardID = res.id
             let relatedObject = {id: newCardID, name: that.card.name}
             that.cardFrom.desc.related.push(relatedObject)
-            data = await fetch("http://improxy.pdis.nat.gov.tw/editcard/", {
+            data = await fetch("https://improxy.pdis.nat.gov.tw/editcard/", {
               method: "PUT",
               headers: {
                 'Content-Type': 'application/json'
@@ -578,7 +578,7 @@ export default {
             })
             res = await data.json()
             if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
-              fetch("http://improxy.pdis.nat.gov.tw/newattachmenturl/" + res.id + "/" + that.card.name + "/" + that.card.desc.attachment, {
+              fetch("https://improxy.pdis.nat.gov.tw/newattachmenturl/" + res.id + "/" + that.card.name + "/" + that.card.desc.attachment, {
                 method: "post",
                 headers: {
                   'Content-Type': 'application/json'
@@ -596,7 +596,7 @@ export default {
               })
             } else {
               if (that.card.attachments == undefined) {
-                fetch("http://improxy.pdis.nat.gov.tw/newattachment/" + that.card.id + "/" + that.card.name, {
+                fetch("https://improxy.pdis.nat.gov.tw/newattachment/" + that.card.id + "/" + that.card.name, {
                   method: "post",
                   body: that.uploadfile
                 }).then( data => {
@@ -614,7 +614,7 @@ export default {
             } else {
               if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
                 /* Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.name}, function() { */
-                fetch("http://improxy.pdis.nat.gov.tw/newattachmenturl/" + res.id + "/" + that.card.name + "/" + that.card.desc.attachment, {
+                fetch("https://improxy.pdis.nat.gov.tw/newattachmenturl/" + res.id + "/" + that.card.name + "/" + that.card.desc.attachment, {
                   method: "post",
                   headers: {
                     'Content-Type': 'application/json'
@@ -632,7 +632,7 @@ export default {
                 })
               } else {
                 if (that.card.attachments == undefined) {
-                  fetch("http://improxy.pdis.nat.gov.tw/newattachment/" + that.card.id + "/" + that.card.name, {
+                  fetch("https://improxy.pdis.nat.gov.tw/newattachment/" + that.card.id + "/" + that.card.name, {
                     method: "post",
                     body: that.uploadfile
                   }).then( data => {
@@ -651,7 +651,7 @@ export default {
         }
         else {
           this.card.idList = this.selectedlist.id
-          let data = await fetch("http://improxy.pdis.nat.gov.tw/editcard/", {
+          let data = await fetch("https://improxy.pdis.nat.gov.tw/editcard/", {
             method: "PUT",
             headers: {
               'Content-Type': 'application/json'
@@ -662,7 +662,7 @@ export default {
           /* Trello.put('cards/' + this.card.id, {'name': this.card.name, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function(res) { */
             if (that.card.attachments == undefined) {
               if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
-                fetch("http://improxy.pdis.nat.gov.tw/newattachmenturl/" + res.id + "/" + that.card.name + "/" + that.card.desc.attachment, {
+                fetch("https://improxy.pdis.nat.gov.tw/newattachmenturl/" + res.id + "/" + that.card.name + "/" + that.card.desc.attachment, {
                   method: "post",
                   headers: {
                     'Content-Type': 'application/json'
@@ -680,7 +680,7 @@ export default {
                 })
               } else {
                 if (that.card.attachments == undefined) {
-                  fetch("http://improxy.pdis.nat.gov.tw/newattachment/" + that.card.id + "/" + that.card.name, {
+                  fetch("https://improxy.pdis.nat.gov.tw/newattachment/" + that.card.id + "/" + that.card.name, {
                     method: "post",
                     body: that.uploadfile
                   }).then( data => {

@@ -152,7 +152,7 @@ export default {
   methods: {
     ...mapActions(['getboardinfo', 'getlists', 'getsnackbar']),
     movecard: function(event) {
-      fetch("http://improxy.pdis.nat.gov.tw/movecard/" + event.item.id + "/" + event.to.id, {
+      fetch("https://improxy.pdis.nat.gov.tw/movecard/" + event.item.id + "/" + event.to.id, {
         method: "PUT",
         headers: {
           'Content-Type': 'application/json'
@@ -256,7 +256,7 @@ export default {
     },
     closecard: function(id) {
       let that = this
-      fetch("http://improxy.pdis.nat.gov.tw/closecard/" + id, {
+      fetch("https://improxy.pdis.nat.gov.tw/closecard/" + id, {
         method: "PUT",
         headers: {
           'Content-Type': 'application/json'

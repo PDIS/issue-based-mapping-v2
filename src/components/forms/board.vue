@@ -78,7 +78,7 @@ export default {
         }
         if (this.selectedboardid != '') {
           try {
-            let data = await fetch('http://improxy.pdis.nat.gov.tw/editboard/', {
+            let data = await fetch('https://improxy.pdis.nat.gov.tw/editboard/', {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json'
@@ -111,7 +111,7 @@ export default {
         }
         else {
           try {
-            let data = await fetch('http://improxy.pdis.nat.gov.tw/newboard/', {
+            let data = await fetch('https://improxy.pdis.nat.gov.tw/newboard/', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
