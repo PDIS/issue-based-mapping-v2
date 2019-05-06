@@ -190,7 +190,7 @@ export default {
       this.invite.email = this.email
       this.invite.user = this.user
       try {
-        let data = await fetch('http://localhost:8787/invite/', {
+        let data = await fetch('http://improxy.pdis.nat.gov.tw/invite/', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'

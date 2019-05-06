@@ -168,7 +168,7 @@ export default {
     closeboard: function(id) {
       let that = this
       /* Trello.put('boards/' + id ,{'closed':true},function(res) { */
-        fetch("http://localhost:8787/closeboard/" + id , {
+        fetch("http://improxy.pdis.nat.gov.tw/closeboard/" + id , {
           method: "PUT",
           headers: {
             'Content-Type': 'application/json'

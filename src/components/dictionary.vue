@@ -110,7 +110,7 @@ export default {
     getDictionary: async function() {
       let that = this
       this.dictionaries = []
-      let data = await fetch("http://localhost:8787/getlists/" + this.$route.params.id)
+      let data = await fetch("http://improxy.pdis.nat.gov.tw/getlists/" + this.$route.params.id)
       let lists = await data.json()
       /* let lists = await Trello.boards.get(this.$route.params.id + '/lists',{cards: 'open'}) */
       lists.map( (list) => {
@@ -128,7 +128,7 @@ export default {
       this.dictionary.idList = this.listid
       this.dictionary.user = this.user
       if(!this.edit) {
-        fetch("http://localhost:8787/newcard/", {
+        fetch("http://improxy.pdis.nat.gov.tw/newcard/", {
           method: "POST",
           headers: {
             'Content-Type': 'application/json'
@@ -144,7 +144,7 @@ export default {
           that.getDictionary()
         })
       } else {
-        fetch("http://localhost:8787/editcard/", {
+        fetch("http://improxy.pdis.nat.gov.tw/editcard/", {
           method: "PUT",
           headers: {
             'Content-Type': 'application/json'
@@ -167,7 +167,7 @@ export default {
     },
     deleteDictionary: function(id) {
       let that = this
-      fetch("http://localhost:8787/closecard/" + id, {
+      fetch("http://improxy.pdis.nat.gov.tw/closecard/" + id, {
         method: "PUT",
         headers: {
           'Content-Type': 'application/json'
