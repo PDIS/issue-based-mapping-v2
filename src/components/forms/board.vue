@@ -152,7 +152,7 @@ export default {
         this.$store.dispatch('getboardinfo', this.selectedboardid)
       }
       else {
-        /* this.resetForm() */
+        this.resetForm()
       }
     }
   },

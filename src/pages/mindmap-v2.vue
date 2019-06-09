@@ -237,7 +237,14 @@ export default {
             group.on('moved', e => {
               card.desc.x = e.target.left
               card.desc.y = e.target.top
-              Trello.put('cards/' + card.id, {'idList': list.id,'desc': JSON.stringify(card.desc) } , () => {
+              /* Trello.put('cards/' + card.id, {'idList': list.id,'desc': JSON.stringify(card.desc) } , () => {
+              }) */
+              fetch("https://improxy.pdis.nat.gov.tw/editcard/", {
+                method: "PUT",
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(card)
               })
             })
             group.on('mousedblclick', e => {
@@ -263,8 +270,10 @@ export default {
           list.cards.map( card => {
             let start = that.canvas.getItemByName(card.name)
             if (card.desc.related.length != 0) {
-              card.desc.related.map( r => {
-                let end = that.canvas.getItemByName(r.name)
+              card.desc.related.map( async r => {
+                let data = await fetch("https://improxy.pdis.nat.gov.tw/getcard/" + r.id)
+                let res = await data.json()
+                let end = that.canvas.getItemByName(res.name)
                 addChildLine(start, end)
               })
             }
@@ -551,19 +560,31 @@ export default {
       });
     }
 
-      let moveHandler = evt => {
+      let moveHandler = async evt => {
         let movingObject = evt.target;
         let x = movingObject.left + movingObject.width / 2;
         let y = movingObject.top + movingObject.height / 2;
         for (let i = 0; i < movingObject._objects.length; i++) {
           if ( movingObject._objects[i].id != undefined) {
-            Trello.get('cards/' + movingObject._objects[i].id, res => {
+            let data = await fetch("https://improxy.pdis.nat.gov.tw/getcard/" + movingObject._objects[i].id)
+            let res = await data.json()
+            res.desc = JSON.parse(res.desc)
+            res.desc.x = x + movingObject._objects[i].left
+            res.desc.y = y + movingObject._objects[i].top
+            fetch("https://improxy.pdis.nat.gov.tw/editcard/", {
+              method: "PUT",
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(res)
+            })
+           /*  Trello.get('cards/' + movingObject._objects[i].id, res => {
               let desc = JSON.parse(res.desc)
               desc.x = x + movingObject._objects[i].left
               desc.y = y + movingObject._objects[i].top
               Trello.put('cards/' + movingObject._objects[i].id, {'desc': JSON.stringify(desc) } , () => {
               }) 
-            })
+            }) */
           }
         }
       };
@@ -634,7 +655,7 @@ export default {
       this.cardFrom = start
       this.opencard = true; 
       this.editable = false
-      /* this.resetForm() */
+      this.resetForm()
       if (this.selectedlist.name == '政府回應') {
         if (this.card.desc.responsetime == 'nowadays') {
           this.card.name = '[現在]'

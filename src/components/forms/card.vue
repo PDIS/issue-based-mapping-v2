@@ -4,8 +4,10 @@
       <v-card-title>
         <h2 :style="bindtitlestyle(selectedlist.name)">{{selectedlist.name}}</h2>
         <v-spacer></v-spacer>
-        <div v-if="(board.admins.includes(user.email) || board.members.includes(user.email)) && editable == true">
+        <div v-if="(board.admins.includes(user.email) || board.members.includes(user.email))">
           <v-btn flat color="grey" class="subheading" @click="resetForm">重新填寫</v-btn>
+        </div>
+        <div v-if="(board.admins.includes(user.email) || board.members.includes(user.email)) && editable == true">
           <v-btn flat color="red lighten-1" class="subheading"  @click.native.stop="deleteCard = true; deletedID = card.id">刪除便利貼</v-btn>
         </div>
       </v-card-title>
@@ -553,8 +555,8 @@ export default {
       if (this.$refs.form.validate()) {
         if (this.editable == false) 
         {
-          this.card.desc.x = 100 + this.selectedlist.cards.length * 150
-          this.card.desc.y = this.selectedlist.column * 150
+          this.card.desc.x = 100 + this.selectedlist.cards.length * 250
+          this.card.desc.y = this.selectedlist.column * 250
           this.card.idList = this.selectedlist.id
           this.card.user = this.user
           let data = await fetch("https://improxy.pdis.nat.gov.tw/newcard/", {
@@ -728,6 +730,13 @@ export default {
         }
       }
     },
+  },
+  watch: {
+    editable: function() {
+      if (this.editable == false) {
+        this.resetForm()
+      } 
+    }
   },
   computed: {
     ...mapGetters({

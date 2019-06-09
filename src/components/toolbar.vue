@@ -219,7 +219,7 @@ export default {
           this.selectedlist.cards = list.cards
           this.selectedlist.column = list.column
           this.editable = false
-          /* this.resetForm() */
+          this.resetForm()
           if (this.selectedlist.name == '政府回應') {
             if (this.card.desc.responsetime == 'nowadays') {
               this.card.name = '[現在]'
