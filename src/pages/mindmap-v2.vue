@@ -185,17 +185,24 @@ export default {
             element.push(text)
             element.push(category)
             element.push(divider)
-            let tagsCounter = 1
             let offsetX = 0
             let offsetY = 0
-            card.desc.stakeholders.map( s => {
-              if (tagsCounter % 2 == 0) {
+            let lastTagLength = 0
+            card.desc.stakeholders.map( async s => {
+              let data = await fetch("https://improxy.pdis.nat.gov.tw/getcard/" + s.id)
+              let res = await data.json()
+              let tagLength = res.name.length
+              if (tagLength + lastTagLength > 10) {
+                offsetY++
+              }
+              lastTagLength = tagLength
+/*               if (tagsCounter % 2 == 0) {
                 offsetX = 80
               } else {
                 offsetX = 0
                 offsetY++
-              }
-              let stakeholder = new fabric.Textbox( s.name, {
+              } */
+              let stakeholder = new fabric.Textbox( res.name, {
                 textAlign: 'left',
                 fontSize: 14,
                 left: -65 + offsetX,
@@ -206,14 +213,21 @@ export default {
               element.push(stakeholder)
               tagsCounter++
             })
-            card.desc.evidences.map( e => {
-              if (tagsCounter % 2 == 0) {
+            card.desc.evidences.map( async e => {
+              let data = await fetch("https://improxy.pdis.nat.gov.tw/getcard/" + e.id)
+              let res = await data.json()
+              let tagLength = res.name.length
+              if (tagLength + lastTagLength > 10) {
+                offsetY++
+              }
+              lastTagLength = tagLength
+              /* if (tagsCounter % 2 == 0) {
                 offsetX = 80
               } else {
                 offsetX = 0
                 offsetY++
-              }
-              let evidence = new fabric.Textbox( e.name, {
+              } */
+              let evidence = new fabric.Textbox( res.name, {
                 textAlign: 'left',
                 fontSize: 14,
                 left: -65 + offsetX,
