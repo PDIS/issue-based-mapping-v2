@@ -112,8 +112,8 @@ export default {
     },
     draw: function() {
       let that = this
-      const REC_WIDTH = 155;
-      const REC_HEIGHT = 155;
+      const REC_WIDTH = 200;
+      const REC_HEIGHT = 200;
       const TRI_WIDTH = 15;
       const TRI_HEIGHT = 15;
       this.canvas.dispose()
@@ -127,10 +127,10 @@ export default {
             let newCardname = ''
             let fontSize = 16
             let element = []
-            let height = (card.desc.stakeholders.length + card.desc.evidences.length) / 2 * 20 + 170
+            /* let height = (card.desc.stakeholders.length + card.desc.evidences.length) / 2 * 20 + 170 */
             let rect = new fabric.Rect({
-              width: 155,
-              height: height,
+              width: 200,
+              height: 200,
               fill: 'white' ,
               stroke : 'rgba(0,0,0,0.6)',
               strokeWidth : 0.25,
@@ -148,7 +148,7 @@ export default {
             }
             rect.setShadow(shadow);
             for (let i = 1; i < card.name.length + 1 ; i++) {
-              if (i % 8 == 0) {
+              if (i % 10 == 0) {
                 newCardname += card.name.substring(count , i) + ' ' 
                 count = i
               } else if (i == card.name.length) {
@@ -162,23 +162,25 @@ export default {
               originX: 0.5,
               originY: 0.4,
               fontFamily:  "Roboto, 'Noto Sans TC'" ,
-              fixedWidth: 155
+              fixedWidth: 200
             });
             let category = new fabric.Textbox( list.name, {
               textAlign: 'left',
               fontSize: 18,
-              left: -65,
-              top: -75 - (card.desc.stakeholders.length + card.desc.evidences.length) / 2 * 10,
+              left: -85,
+              /* top: -80 - (card.desc.stakeholders.length + card.desc.evidences.length) / 2 * 10, */
+              top: -85,
               fontFamily:  "Roboto, 'Noto Sans TC'" ,
               fixedWidth: 100,
               maxLines: 2
             });
             let divider = new fabric.Rect({
-              width: 155,
+              width: 199,
               height: 5,
               fill: card.categorycolor ,
-              left: -79,
-              top: -45 - (card.desc.stakeholders.length + card.desc.evidences.length) / 2 * 10,
+              left: -100,
+              /* top: -50 - (card.desc.stakeholders.length + card.desc.evidences.length) / 2 * 10, */
+              top: -60
             });
             
             element.push(rect)
@@ -187,56 +189,58 @@ export default {
             element.push(divider)
             let offsetX = 0
             let offsetY = 0
-            let lastTagLength = 0
+            let lineTagsLength = 0
             card.desc.stakeholders.map( async s => {
               let data = await fetch("https://improxy.pdis.nat.gov.tw/getcard/" + s.id)
               let res = await data.json()
               let tagLength = res.name.length
-              if (tagLength + lastTagLength > 10) {
+              if (tagLength + lineTagsLength > 12 && lineTagsLength !== 0) {
                 offsetY++
-              }
-              lastTagLength = tagLength
-/*               if (tagsCounter % 2 == 0) {
-                offsetX = 80
-              } else {
                 offsetX = 0
-                offsetY++
-              } */
+                lineTagsLength = 0
+              }
+              if (tagLength + lineTagsLength < 12) {
+                offsetX = lineTagsLength * 15
+              }
+              if (tagLength > 13 && offsetX == 0) {
+                res.name = res.name.substring(0, 12) + '...'
+              }
+              lineTagsLength += tagLength
               let stakeholder = new fabric.Textbox( res.name, {
                 textAlign: 'left',
                 fontSize: 14,
-                left: -65 + offsetX,
-                top: 45 + offsetY * 20,
+                left: -90 + offsetX,
+                top: 80 - offsetY * 20,
                 backgroundColor: '#D2B4DE',
                 fontFamily:  "Roboto, 'Noto Sans TC'" ,
               });
               element.push(stakeholder)
-              tagsCounter++
             })
             card.desc.evidences.map( async e => {
               let data = await fetch("https://improxy.pdis.nat.gov.tw/getcard/" + e.id)
               let res = await data.json()
               let tagLength = res.name.length
-              if (tagLength + lastTagLength > 10) {
+              if (tagLength + lineTagsLength > 12 && lineTagsLength !== 0) {
                 offsetY++
-              }
-              lastTagLength = tagLength
-              /* if (tagsCounter % 2 == 0) {
-                offsetX = 80
-              } else {
                 offsetX = 0
-                offsetY++
-              } */
+                lineTagsLength = 0
+              }
+              if (tagLength + lineTagsLength < 12) {
+                offsetX = lineTagsLength * 15
+              }
+              if (tagLength > 13 && offsetX == 0) {
+                res.name = res.name.substring(0, 12) + '...'
+              }
+              lineTagsLength += tagLength
               let evidence = new fabric.Textbox( res.name, {
                 textAlign: 'left',
                 fontSize: 14,
-                left: -65 + offsetX,
-                top: 45 + offsetY * 20,
+                left: -90 + offsetX,
+                top: 80 - offsetY * 20,
                 backgroundColor: '#CFD8DC',
                 fontFamily:  "Roboto, 'Noto Sans TC'" ,
               });
               element.push(evidence)
-              tagsCounter++
             })
             let group = new fabric.Group(element, {
               id: card.id,
