@@ -389,6 +389,9 @@ export default {
           y: 0
         }
       },
+      newattachment: {
+
+      }
     }
   },
   methods: {
@@ -462,7 +465,11 @@ export default {
           let res = await data.json()
           if (that.newcard.desc.attachment != '' && that.newcard.desc.attachment != undefined) {
             /* Trello.post('cards/' + res.id + '/attachments', {'url': that.newcard.desc.attachment, 'name': that.newcard.name}, function() { */
-            fetch("https://improxy.pdis.nat.gov.tw/newattachmenturl/" + that.card.id + "/" + that.newcard.name + "/" + that.newcard.desc.attachment, {
+            this.newattachment.user = this.user
+            this.newattachment.id = res.id
+            this.newattachment.name = that.newcard.name
+            this.newattachment.url = that.newcard.desc.attachment
+            fetch("https://improxy.pdis.nat.gov.tw/newattachmenturl", {
               method: "post",
               headers: {
                 'Content-Type': 'application/json'
@@ -555,8 +562,8 @@ export default {
       if (this.$refs.form.validate()) {
         if (this.editable == false) 
         {
-          this.card.desc.x = 100 + this.selectedlist.cards.length * 250
-          this.card.desc.y = this.selectedlist.column * 250
+          this.card.desc.x = 200 + this.selectedlist.cards.length * 500
+          this.card.desc.y = this.selectedlist.column * 500
           this.card.idList = this.selectedlist.id
           this.card.user = this.user
           let data = await fetch("https://improxy.pdis.nat.gov.tw/newcard/", {
@@ -580,12 +587,16 @@ export default {
             })
             res = await data.json()
             if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
-              fetch("https://improxy.pdis.nat.gov.tw/newattachmenturl/" + res.id + "/" + that.card.name + "/" + that.card.desc.attachment, {
+              this.newattachment.user = this.user
+              this.newattachment.id = res.id
+              this.newattachment.name = that.card.name
+              this.newattachment.url = that.card.desc.attachment
+              fetch("https://improxy.pdis.nat.gov.tw/newattachmenturl", {
                 method: "post",
                 headers: {
                   'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(this.user)
+                body: JSON.stringify(this.newattachment)
               }).then( () => {
                 let snackbar = {
                   state: true,
@@ -616,12 +627,16 @@ export default {
             } else {
               if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
                 /* Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.name}, function() { */
-                fetch("https://improxy.pdis.nat.gov.tw/newattachmenturl/" + res.id + "/" + that.card.name + "/" + that.card.desc.attachment, {
+                this.newattachment.user = this.user
+                this.newattachment.id = res.id
+                this.newattachment.name = that.card.name
+                this.newattachment.url = that.card.desc.attachment
+                fetch("https://improxy.pdis.nat.gov.tw/newattachmenturl", {
                   method: "post",
                   headers: {
                     'Content-Type': 'application/json'
                   },
-                  body: JSON.stringify(this.user)
+                  body: JSON.stringify(this.newattachment)
                 }).then( () => {
                   let snackbar = {
                     state: true,
@@ -664,12 +679,16 @@ export default {
           /* Trello.put('cards/' + this.card.id, {'name': this.card.name, 'idList': this.selectedlist.id,'desc': JSON.stringify(this.card.desc) } , function(res) { */
             if (that.card.attachments == undefined) {
               if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
-                fetch("https://improxy.pdis.nat.gov.tw/newattachmenturl/" + res.id + "/" + that.card.name + "/" + that.card.desc.attachment, {
+                this.newattachment.user = this.user
+                this.newattachment.id = res.id
+                this.newattachment.name = that.card.name
+                this.newattachment.url = that.card.desc.attachment
+                fetch("https://improxy.pdis.nat.gov.tw/newattachmenturl", {
                   method: "post",
                   headers: {
                     'Content-Type': 'application/json'
                   },
-                  body: JSON.stringify(this.user)
+                  body: JSON.stringify(this.newattachment)
                 }).then( () => {
                   let snackbar = {
                     state: true,
@@ -735,7 +754,9 @@ export default {
     editable: function() {
       if (this.editable == false) {
         this.resetForm()
-      } 
+      } else {
+        console.log(this.card)
+      }
     }
   },
   computed: {

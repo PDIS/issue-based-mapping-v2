@@ -35,7 +35,7 @@
       <v-flex md6>
         <v-layout align-center justify-start row reverse fill-height>
           <v-btn flat target="_blank" :href="board.desc.link">會議記錄連結</v-btn>
-          <v-btn disabled flat :to="{name:'printout', params:{id:board.id}}">輸出文件</v-btn>
+          <!-- <v-btn disabled flat :to="{name:'printout', params:{id:board.id}}">輸出文件</v-btn> -->
           <v-btn flat @click.stop="opendictionary = !opendictionary">專有名詞字典</v-btn>
         </v-layout>
       </v-flex>
@@ -70,7 +70,7 @@
               </v-list-tile>
             </v-list>
           </v-menu>
-          <v-item-group>
+         <!--  <v-item-group>
             <v-item>
               <v-btn flat icon slot-scope="{ active, toggle }" :color="active ? 'primary' : ''" @click="toggle">
                 <v-icon>fa-link</v-icon>
@@ -81,7 +81,7 @@
                 <v-icon>fa-unlink</v-icon>
               </v-btn>
             </v-item>
-          </v-item-group>
+          </v-item-group> -->
         </v-layout>
         <!-- <v-btn flat icon @click.native="newcard('問題面向')" color="#FFCD13">
           <v-icon large>note</v-icon>
