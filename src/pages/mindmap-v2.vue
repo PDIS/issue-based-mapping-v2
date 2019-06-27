@@ -38,7 +38,12 @@ export default {
   },
   data() {
     return {
-      canvas: new fabric.Canvas('canvas')
+      canvas: new fabric.Canvas('canvas'),
+      center: {
+        top: 500,
+        left: 1000
+      },
+      zoom: 1
     }
   },
   methods: {
@@ -118,8 +123,10 @@ export default {
       const TRI_HEIGHT = 15;
       this.canvas.dispose()
       this.canvas = new fabric.Canvas('canvas')
+      this.canvas.setZoom(this.zoom);
       this.canvas.setHeight(window.innerHeight);
       this.canvas.setWidth(window.innerWidth);
+            console.log(this.canvas.getCenter())
       this.lists.map( list => {
         if (list.name != '利害關係人' && list.name != '佐證文件' && list.name != '專有名詞字典') {
           list.cards.map( card => {
@@ -612,11 +619,10 @@ export default {
       that.canvas.on('mouse:wheel', function(opt) {
         let delta = opt.e.deltaY;
         let pointer = that.canvas.getPointer(opt.e);
-        let zoom = that.canvas.getZoom();
-        zoom = zoom - delta/2000;
-        if (zoom > 20) zoom = 20;
-        if (zoom < 0.01) zoom = 0.01;
-        that.canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+        that.zoom = that.zoom - delta/2000;
+        if (that.zoom > 20) that.zoom = 20;
+        if (that.zoom < 0.01) that.zoom = 0.01;
+        that.canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, that.zoom);
         opt.e.preventDefault();
         opt.e.stopPropagation();
       })
