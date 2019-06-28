@@ -578,23 +578,32 @@ export default {
         })
       })
     },
-   /*  getattachments: function() {
+    getattachments: function() {
+      console.log(this.lists)
       this.lists.map( l => {
         l.cards.map( c => {
+          if (c.name == '佐證文件') {
           c.attachments = []
-          Trello.cards.get(c.id,{fields: 'attachments',attachments: true,},function(res) {
-            if (res.attachments.length != 0) {
-              res.attachments.map( a => {
-                let attachment = {}
-                attachment.name = a.name
-                attachment.url = a.url
-                c.attachments.push(attachment)
-              })
-            }                
-          })
+          /* Trello.cards.get(c.id,{fields: 'attachments',attachments: true,},function(res) { */
+            fetch("https://improxy.pdis.nat.gov.tw/getattachment/" + c.id , {
+              method: "GET",
+              headers: {
+                'Content-Type': 'application/json'
+              },
+            }).then( res => {
+              if (res.attachments.length != 0) {
+                res.attachments.map( a => {
+                  let attachment = {}
+                  attachment.name = a.name
+                  attachment.url = a.url
+                  c.attachments.push(attachment)
+                })
+              }                
+            })
+          }
         })
       })
-    }, */
+    },
     /* fileChanged: function(file) {
       let formData = new FormData();
       formData.append('key','fb8dab318e1888679f571104d8b36ac7')
@@ -730,7 +739,7 @@ export default {
     /* this.getcards() */
     /* this.getavatar() */
     /* this.getmembers() */
-    /* this.getattachments() */
+    this.getattachments()
   },
   computed: {
     ...mapGetters({

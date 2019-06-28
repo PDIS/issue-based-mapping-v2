@@ -469,12 +469,13 @@ export default {
             this.newattachment.id = res.id
             this.newattachment.name = that.newcard.name
             this.newattachment.url = that.newcard.desc.attachment
+            console.log(this.newattachment)
             fetch("https://improxy.pdis.nat.gov.tw/newattachmenturl", {
               method: "post",
               headers: {
                 'Content-Type': 'application/json'
               },
-              body: JSON.stringify(this.user)
+              body: JSON.stringify(this.newattachment)
             }).then( () => {
               that.newcard.name = ''
               that.newcard.desc.attachment = ''
@@ -574,7 +575,7 @@ export default {
             body: JSON.stringify(this.card)
           })
           let res = await data.json() 
-          if (that.cardFrom !== null) {
+/*           if (that.cardFrom !== null) {
             let newCardID = res.id
             let relatedObject = {id: newCardID, name: that.card.name}
             that.cardFrom.desc.related.push(relatedObject)
@@ -591,6 +592,7 @@ export default {
               this.newattachment.id = res.id
               this.newattachment.name = that.card.name
               this.newattachment.url = that.card.desc.attachment
+                          console.log(this.newattachment)
               fetch("https://improxy.pdis.nat.gov.tw/newattachmenturl", {
                 method: "post",
                 headers: {
@@ -624,14 +626,14 @@ export default {
                   })
                 }
               }
-            } else {
+            } else { */
               if (that.card.desc.attachment != '' && that.card.desc.attachment != undefined) {
                 /* Trello.post('cards/' + res.id + '/attachments', {'url': that.card.desc.attachment, 'name': that.card.name}, function() { */
                 this.newattachment.user = this.user
                 this.newattachment.id = res.id
                 this.newattachment.name = that.card.name
                 this.newattachment.url = that.card.desc.attachment
-                fetch("https://improxy.pdis.nat.gov.tw/newattachmenturl", {
+                fetch("https://improxy.pdis.nat.gov.tw/newattachmenturl/", {
                   method: "post",
                   headers: {
                     'Content-Type': 'application/json'
@@ -664,7 +666,7 @@ export default {
                     })
                 }
               }
-            }
+/*             } */
         }
         else {
           this.card.idList = this.selectedlist.id
