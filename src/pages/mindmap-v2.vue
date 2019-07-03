@@ -126,7 +126,6 @@ export default {
       this.canvas.setZoom(this.zoom);
       this.canvas.setHeight(window.innerHeight);
       this.canvas.setWidth(window.innerWidth);
-            console.log(this.canvas.getCenter())
       this.lists.map( list => {
         if (list.name != '利害關係人' && list.name != '佐證文件' && list.name != '專有名詞字典') {
           list.cards.map( card => {
@@ -764,6 +763,7 @@ export default {
   },
   created: function() {
     this.$store.dispatch('getlists', this.$route.params.id)
+    document.addEventListener('contextmenu', event => event.preventDefault());
   },
   computed: {
     ...mapGetters({
