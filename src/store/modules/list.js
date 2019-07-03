@@ -92,6 +92,7 @@ const actions = {
     })
     dispatch('getstakeholders')
     dispatch('getevidences')
+    dispatch('getattachments')
   },
   getstakeholders ({commit}) {
     state.stakeholders = []
@@ -116,19 +117,46 @@ const actions = {
     state.evidences = []
     state.lists.map(list => {
       if (list.name == '佐證文件') {
+        let attachment = {}
         state.evidenceList.id = list.id
         state.evidenceList.name = list.name
         state.evidenceList.cards = list.cards
         state.evidenceList.color = '#CFD8DC'
         state.evidenceList.column = 7
-        list.cards.map( evidence => {
+        list.cards.map( async evidence => {
+          let res = await fetch("https://improxy.pdis.nat.gov.tw/getattachment/" + evidence.id)
+          let data = await res.json()
+          if (data.attachments.length != 0) {
+            attachment = data.attachments[0]
+          }  
           state.evidences.push({
             'id': evidence.id,
             'name': evidence.name,
-            'desc': evidence.desc
+            'desc': evidence.desc,
+            'attachments': attachment
           })
         })
       }
+    })
+  },
+  getattachments ({commit}) {
+    state.lists.map( l => {
+      l.cards.map( async c => {
+        if (c.listname == '佐證文件') {
+          c.attachments = []
+          /* Trello.cards.get(c.id,{fields: 'attachments',attachments: true,},function(res) { */
+          let res = await fetch("https://improxy.pdis.nat.gov.tw/getattachment/" + c.id)
+          let data = await res.json()
+          if (data.attachments.length != 0) {
+            data.attachments.map( a => {
+              let attachment = {}
+              attachment.name = a.name
+              attachment.url = a.url
+              c.attachments.push(attachment)
+            })
+          }                
+        }
+      })
     })
   }, 
 }

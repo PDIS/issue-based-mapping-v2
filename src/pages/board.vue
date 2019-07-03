@@ -739,7 +739,7 @@ export default {
     /* this.getcards() */
     /* this.getavatar() */
     /* this.getmembers() */
-    this.getattachments()
+    /* this.getattachments() */
   },
   computed: {
     ...mapGetters({
