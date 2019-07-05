@@ -752,15 +752,6 @@ export default {
       }
     },
   },
-  watch: {
-    editable: function() {
-      if (this.editable == false) {
-        this.resetForm()
-      } else {
-        console.log(this.card)
-      }
-    }
-  },
   computed: {
     ...mapGetters({
       user: 'user',

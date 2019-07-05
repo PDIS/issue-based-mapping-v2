@@ -214,7 +214,7 @@ export default {
       this.selectedlist.cards = list.cards
       this.selectedlist.column = list.column
       this.editable = false
-      /* this.resetForm() */
+      this.resetForm()
       if (this.selectedlist.name == '政府回應') {
         if (this.card.desc.responsetime == 'nowadays') {
           this.card.name = '[現在]'
@@ -248,6 +248,16 @@ export default {
       this.card.attachments = card.attachments
       this.editable = true
       this.getrelated(list)
+    },
+    resetForm: function() {
+      this.card.name = ''
+      this.card.desc.explain = ''
+      this.card.desc.department= ''
+      this.card.desc.background= ''
+      this.card.desc.role= ''
+      this.card.desc.stakeholders = []
+      this.card.desc.evidences = []
+      this.card.desc.related= []
     },
     searchcards: function(list) {
       return list.cards.filter(card => {
