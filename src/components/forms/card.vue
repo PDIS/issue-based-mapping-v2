@@ -560,13 +560,13 @@ export default {
     },
     submit: async function() {
       let that = this
+      this.card.user = this.user
       if (this.$refs.form.validate()) {
         if (this.editable == false) 
         {
           this.card.desc.x = 200 + this.selectedlist.cards.length * 500
           this.card.desc.y = this.selectedlist.column * 500
           this.card.idList = this.selectedlist.id
-          this.card.user = this.user
           let data = await fetch("https://improxy.pdis.nat.gov.tw/newcard/", {
             method: "POST",
             headers: {
