@@ -31,6 +31,7 @@
             心智圖
           </v-btn>
         </v-btn-toggle>
+        <v-btn flat @click="showLogs">最後更新時間：{{lastUpdatetime}}</v-btn>
       </v-flex>
       <v-flex md6>
         <v-layout align-center justify-start row reverse fill-height>
@@ -132,6 +133,7 @@ import { mapActions, mapGetters } from 'vuex'
 import { createHelpers } from 'vuex-map-fields';
 import snackbar from './snackbar'
 import dictionary from './dictionary'
+import moment from 'moment'
 
 const { mapFields: mapBoardFields } = createHelpers({
   getterType: 'getBoardField',
@@ -176,7 +178,9 @@ export default {
         { title: '困難' },
       ],
       linkingMode: false,
-      invite: {}
+      invite: {},
+      lastUpdatetime: '',
+      logs: []
     }
   },
   methods: {
@@ -277,10 +281,47 @@ export default {
         }
       })
     },
+    getLogs: async function() {
+      try {
+        /* let data = await fetch('https://improxy.pdis.nat.gov.tw/getlogs/' + this.board.id, { */
+        let res = await fetch('https://improxy.pdis.nat.gov.tw/getlogs/' + this.$route.params.id, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        })
+        let data = await res.json()
+        if (data.length != 0) {
+          this.lastUpdatetime = moment(data[0].createdAt).format('YYYY-MM-DD h:mm:ss a')
+          data.map( l => {
+            let log = {}
+            log.name = l.user.name
+            log.time =  moment(l.createdAt).format('YYYY-MM-DD h:mm:ss a')
+            log.data = l.data.name
+            switch (l.action) {
+              case 'CreateCard':
+                log.action = '新增卡片'
+              case 'EditCard':
+                log.action = '修改卡片'
+              case 'CloseCard':
+                log.action = '刪除卡片'
+            }
+            this.logs.push(log)
+          })
+          console.log(this.logs)
+        }
+      } catch (e) {
+        console.log(e)
+      }      
+    },
+    showLogs: function() {
+
+    },
   },
   created: function() {
     if (this.$route.name == 'board') {
       this.mode = 'board'
+      this.getLogs()
     } else {
       this.mode = 'mindmap'
     }
