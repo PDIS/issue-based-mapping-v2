@@ -304,8 +304,8 @@ export default {
     },
     getLogs: async function() {
       try {
-        /* let res = await fetch('https://improxy.pdis.nat.gov.tw/getlogs/' + this.board.id, { */
-        let res = await fetch('http://localhost:8787/getlogs/' + this.$route.params.id, {
+        let res = await fetch('https://improxy.pdis.nat.gov.tw/getlogs/' + this.$route.params.id, {
+        /* let res = await fetch('http://localhost:8787/getlogs/' + this.$route.params.id, { */
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
