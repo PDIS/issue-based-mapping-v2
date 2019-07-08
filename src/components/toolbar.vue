@@ -125,6 +125,26 @@
       </v-card>
     </v-dialog>
     <dictionary></dictionary>
+    <v-dialog v-model="openlog" max-width="50vw">
+      <v-card>
+         <v-list two-line subheader>
+          <v-list-tile
+            v-for="log in logs"
+            :key="log.data"
+            avatar
+          >
+<!--             <v-list-tile-avatar>
+              <v-icon :class="[item.iconClass]">{{ item.icon }}</v-icon>
+            </v-list-tile-avatar> -->
+
+            <v-list-tile-content>
+              <v-list-tile-title>{{ log.name }} {{log.action}} {{log.data}}</v-list-tile-title>
+              <v-list-tile-sub-title>{{ log.time }}</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -180,7 +200,8 @@ export default {
       linkingMode: false,
       invite: {},
       lastUpdatetime: '',
-      logs: []
+      logs: [],
+      openlog: false
     }
   },
   methods: {
@@ -283,8 +304,8 @@ export default {
     },
     getLogs: async function() {
       try {
-        /* let data = await fetch('https://improxy.pdis.nat.gov.tw/getlogs/' + this.board.id, { */
-        let res = await fetch('https://improxy.pdis.nat.gov.tw/getlogs/' + this.$route.params.id, {
+        /* let res = await fetch('https://improxy.pdis.nat.gov.tw/getlogs/' + this.board.id, { */
+        let res = await fetch('http://localhost:8787/getlogs/' + this.$route.params.id, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -301,21 +322,23 @@ export default {
             switch (l.action) {
               case 'CreateCard':
                 log.action = '新增卡片'
+                break
               case 'EditCard':
                 log.action = '修改卡片'
+                break
               case 'CloseCard':
                 log.action = '刪除卡片'
+                break
             }
             this.logs.push(log)
           })
-          console.log(this.logs)
         }
       } catch (e) {
         console.log(e)
       }      
     },
     showLogs: function() {
-
+      this.openlog = !this.openlog
     },
   },
   created: function() {
