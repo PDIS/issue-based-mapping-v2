@@ -43,7 +43,7 @@ export default {
         top: 500,
         left: 1000
       },
-      zoom: 1
+      zoom: 0.5
     }
   },
   methods: {
