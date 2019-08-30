@@ -29,6 +29,7 @@ const state = {
   openevidences: false,
   boardtitledialog: false,
   search: '',
+  linkingMode: '',
 }
 
 const getters = {

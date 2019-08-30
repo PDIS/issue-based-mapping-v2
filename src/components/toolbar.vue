@@ -71,14 +71,17 @@
               </v-list-tile>
             </v-list>
           </v-menu>
-         <!--  <v-item-group>
+<!--           <v-btn flat icon>
+            <v-icon>fa-link</v-icon>
+          </v-btn> -->
+  <!--         <v-item-group>
             <v-item>
-              <v-btn flat icon slot-scope="{ active, toggle }" :color="active ? 'primary' : ''" @click="toggle">
+              <v-btn flat icon slot-scope="{ active, toggle }" :color="active ? 'primary' : ''" @click="toggle; linkingMode = !linkingMode">
                 <v-icon>fa-link</v-icon>
               </v-btn>
             </v-item>
             <v-item>
-              <v-btn flat icon slot-scope="{ active, toggle }" :color="active ? 'primary' : ''" @click="toggle">
+              <v-btn flat icon slot-scope="{ active, toggle }" :color="active ? 'primary' : ''" @click="toggle; unlinkingMode = true">
                 <v-icon>fa-unlink</v-icon>
               </v-btn>
             </v-item>
@@ -197,7 +200,6 @@ export default {
         { title: '政府回應' },
         { title: '困難' },
       ],
-      linkingMode: false,
       invite: {},
       lastUpdatetime: '',
       logs: [],
@@ -335,10 +337,20 @@ export default {
         }
       } catch (e) {
         console.log(e)
-      }      
+      }
     },
     showLogs: function() {
       this.openlog = !this.openlog
+    },
+    resetForm: function() {
+      this.card.name = ''
+      this.card.desc.explain = ''
+      this.card.desc.department= ''
+      this.card.desc.background= ''
+      this.card.desc.role= ''
+      this.card.desc.stakeholders = []
+      this.card.desc.evidences = []
+      this.card.desc.related= []
     },
   },
   created: function() {
@@ -359,6 +371,7 @@ export default {
       openevidences: 'openevidences',
       boardtitledialog: 'boardtitledialog',
       search: 'search',
+      linkingMode: 'linkingMode'
     }),
     ...mapCardFields({
       card: 'card',

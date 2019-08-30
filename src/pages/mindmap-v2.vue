@@ -760,6 +760,16 @@ export default {
       this.editable = true
       this.getrelated(this.selectedlist)
     },
+    resetForm: function() {
+      this.card.name = ''
+      this.card.desc.explain = ''
+      this.card.desc.department= ''
+      this.card.desc.background= ''
+      this.card.desc.role= ''
+      this.card.desc.stakeholders = []
+      this.card.desc.evidences = []
+      this.card.desc.related= []
+    },
   },
   created: function() {
     this.$store.dispatch('getlists', this.$route.params.id)
